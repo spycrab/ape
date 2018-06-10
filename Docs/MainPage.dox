@@ -1,0 +1,8 @@
+/** \mainpage
+
+ ## Introduction
+ Ape (Another PC Emulator) is an experimental IBM PC compatible emulator written in C++17.
+ ## Important Pages
+ Core::CPU::Instruction
+ 
+ **/
