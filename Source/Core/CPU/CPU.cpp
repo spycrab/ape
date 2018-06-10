@@ -867,6 +867,8 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
           throw UnhandledParameterException();
           break;
         }
+      } else {
+        throw ParameterLengthMismatchException();
       }
     }
   }
