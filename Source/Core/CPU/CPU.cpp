@@ -138,6 +138,7 @@ void CPU::Tick()
       UpdateZF(dst8);
       UpdatePF(dst8);
     }
+    break;
   }
   case Type::CALL: {
     auto& parameter = ins.GetParameters()[0];
