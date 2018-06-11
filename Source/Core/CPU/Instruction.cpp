@@ -630,6 +630,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
 
   if (m_type == Type::GRP1) {
     switch (reg_bits) {
+    case 0x02:
+      m_type = Type::ADC;
+      break;
     case 0x07:
       m_type = Type::CMP;
       break;

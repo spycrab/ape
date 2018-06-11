@@ -78,6 +78,48 @@ void CPU::Tick()
   using PType = Instruction::Parameter::Type;
 
   switch (ins.GetType()) {
+  case Type::ADC: {
+    auto& dst = ins.GetParameters()[0];
+    auto& src = ins.GetParameters()[1];
+
+    if (dst.IsWord() != src.IsWord()) {
+      throw ParameterLengthMismatchException();
+    }
+
+    if (dst.IsWord()) {
+      i16& dst_i16 =
+          *reinterpret_cast<i16*>(&ParameterTo<u16&>(dst, ins.GetPrefix()));
+      i16 src_i16 = ParameterTo<u16&>(src, ins.GetPrefix());
+
+      i32 sum = dst_i16 + src_i16;
+
+      dst_i16 = sum & 0xFFFF;
+
+      UpdateCF<i16>(dst_i16 & 0x10000);
+      UpdateOF<i16>(dst_i16 & 0x20000);
+
+      UpdateSF(sum);
+      UpdateZF(sum);
+      UpdatePF(sum);
+    } else {
+      i16& dst_i8 =
+          *reinterpret_cast<i16*>(&ParameterTo<u8&>(dst, ins.GetPrefix()));
+      i16 src_i8 = ParameterTo<u8&>(src, ins.GetPrefix());
+
+      i16 sum = dst_i8 + src_i8;
+
+      UpdateCF<i16>(sum & 0x100);
+      UpdateOF<i16>(sum & 0x200);
+
+      dst_i8 += src_i8;
+
+      UpdateSF(sum);
+      UpdateZF(sum);
+      UpdatePF(sum);
+    }
+
+    break;
+  }
   case Type::ADD: {
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
