@@ -147,8 +147,7 @@ void CPU::Tick()
       u16 offset = ParameterTo<u16>(parameter, ins.GetPrefix());
 
       SP -= sizeof(u16);
-      *reinterpret_cast<u16*>(
-          &m_memory.Get()[Core::Memory::VirtToPhys(SS, SP)]) = IP;
+      m_memory.Get<u16>(SS, SP) = IP;
 
       IP += offset;
     } else {
@@ -158,9 +157,7 @@ void CPU::Tick()
     break;
   }
   case Type::RET: {
-
-    IP = *reinterpret_cast<u16*>(
-        &m_memory.Get()[Core::Memory::VirtToPhys(SS, SP)]);
+    IP = m_memory.Get<u16>(SS, SP);
 
     SP += sizeof(u16);
 
@@ -439,14 +436,14 @@ void CPU::Tick()
       u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
       u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
 
-      dst16 = static_cast<u16>(reinterpret_cast<std::ptrdiff_t>(
-          &src16 - m_memory.Get()[Memory::VirtToPhys(DS, 0)]));
+      dst16 = static_cast<u16>(
+          reinterpret_cast<std::ptrdiff_t>(&src16 - &m_memory.Get<u16>(DS, 0)));
     }
     break;
   }
   case Type::LODSB:
     do {
-      AL = m_memory.Get()[Memory::VirtToPhys(DS, SI)];
+      AL = m_memory.Get<u8>(DS, SI);
 
       SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
     } while (HandleRepetition());
@@ -558,14 +555,13 @@ void CPU::Tick()
       u16 data16 = ParameterTo<u16>(data, ins.GetPrefix());
 
       SP -= sizeof(u16);
-      *reinterpret_cast<u16*>(
-          &m_memory.Get()[Core::Memory::VirtToPhys(SS, SP)]) = data16;
+      m_memory.Get<u16>(SS, SP) = data16;
     } else {
       u8 data8 = ParameterTo<u8>(data, ins.GetPrefix());
 
       SP -= sizeof(u8);
 
-      m_memory.Get()[Core::Memory::VirtToPhys(SS, SP)] = data8;
+      m_memory.Get<u8>(SS, SP) = data8;
     }
 
     break;
@@ -582,7 +578,7 @@ void CPU::Tick()
       LOG("Popped back " + String::ToHex(dst16));
     } else {
       u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      dst8 = m_memory.Get()[Core::Memory::VirtToPhys(SS, SP)];
+      dst8 = m_memory.Get<u8>(SS, SP);
       SP += sizeof(u8);
       LOG("Popped back " + String::ToHex(dst8));
     }
@@ -621,7 +617,7 @@ void CPU::Tick()
     break;
   }
   case Type::STOSB:
-    m_memory.Get()[Memory::VirtToPhys(ES, DI)] = AL;
+    m_memory.Get<u8>(ES, DI) = AL;
 
     DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
     break;
