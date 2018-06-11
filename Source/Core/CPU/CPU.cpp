@@ -805,13 +805,15 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
     case Type::Value_WordAddress:
       return m_memory.Get<u8>(seg_val, parameter.GetData<u16>());
     case Type::Value_BP_Offset:
-      return m_memory.Get<u8>(seg_val, BP + parameter.GetData<u16>());
+      return m_memory.Get<u8>(seg_val, BP + parameter.GetData<u8>());
     case Type::Value_BX_SI:
       return m_memory.Get<u8>(seg_val, SI);
     case Type::Value_SI_Offset:
-      return m_memory.Get<u8>(seg_val, SI + parameter.GetData<u16>());
+      return m_memory.Get<u8>(seg_val, SI + parameter.GetData<u8>());
     case Type::Value_DI:
       return m_memory.Get<u8>(seg_val, DI);
+    case Type::Value_DI_Offset:
+      return m_memory.Get<u8>(seg_val, DI + parameter.GetData<u8>());
     default:
       if constexpr (std::is_same<T, u8>::value) {
         switch (parameter.GetType()) {
@@ -871,7 +873,7 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
       return m_memory.Get<u16>(seg_val, BX);
     case Type::Value_BX_Offset_Word:
       return m_memory.Get<u16>(seg_val, BX + parameter.GetData<u8>());
-    case Type::Value_BP_WordOffset:
+    case Type::Value_BP_WordOffset_Word:
       return m_memory.Get<u16>(seg_val, BP + parameter.GetData<u16>());
 
     default:
