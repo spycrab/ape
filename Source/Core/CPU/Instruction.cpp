@@ -1017,7 +1017,8 @@ bool Instruction::Parameter::IsWord() const
           t == Type::Modifier_Register_Word ||
           t == Type::Modifier_Register_Segment ||
           t == Type::Modifier_Any_Word || t == Type::Value_BX_Word ||
-          t == Type::Value_BX_Offset_Word || t == Type::Value_BP_WordOffset ||
+          t == Type::Value_BX_Offset_Word || t == Type::Value_BP_Offset_Word ||
+          t == Type::Value_BP_WordOffset_Word ||
           t == Type::Value_WordAddress_Word || t == Type::Value_SI_Word ||
           t == Type::Value_SI_Offset_Word);
 }
