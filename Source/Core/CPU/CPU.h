@@ -98,7 +98,7 @@ private:
 
   u16 PrefixToValue(Instruction::SegmentPrefix prefix);
 
-  bool HandleREP();
+  bool HandleRepetition();
 
   //! \cond PRIVATE
   union {

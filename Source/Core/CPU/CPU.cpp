@@ -22,7 +22,7 @@ CPU::CPU(Core::Machine* machine)
 {
 }
 
-bool CPU::HandleREP()
+bool CPU::HandleRepetition()
 {
   CX--;
   LOG("Repetition: " + String::ToHex(m_repeat_mode));
@@ -234,7 +234,7 @@ void CPU::Tick()
 
       SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
       DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-    } while (HandleREP());
+    } while (HandleRepetition());
 
     break;
   }
@@ -449,7 +449,7 @@ void CPU::Tick()
       AL = m_memory.Get()[Memory::VirtToPhys(DS, SI)];
 
       SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-    } while (HandleREP());
+    } while (HandleRepetition());
     break;
   case Type::LOOP: {
     if (CX == 0)
@@ -504,7 +504,7 @@ void CPU::Tick()
 
       DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
       SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-    } while (HandleREP());
+    } while (HandleRepetition());
 
     break;
   }
