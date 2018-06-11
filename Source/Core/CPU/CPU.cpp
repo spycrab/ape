@@ -82,16 +82,16 @@ void CPU::Tick()
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
 
-    if (dst.IsWord() != src.IsWord()) {
-      throw ParameterLengthMismatchException();
-    }
-
     if (dst.IsWord()) {
       i16& dst_i16 =
           *reinterpret_cast<i16*>(&ParameterTo<u16&>(dst, ins.GetPrefix()));
-      i16 src_i16 = ParameterTo<u16&>(src, ins.GetPrefix());
 
-      i32 sum = dst_i16 + src_i16;
+      i32 sum = dst_i16;
+
+      if (src.IsWord())
+        sum += static_cast<i16>(ParameterTo<u16>(src, ins.GetPrefix()));
+      else
+        sum += static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
 
       dst_i16 = sum & 0xFFFF;
 
@@ -219,18 +219,26 @@ void CPU::Tick()
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
 
-    if (dst.IsWord() != src.IsWord()) {
-      throw ParameterLengthMismatchException();
-    }
-
     if (dst.IsWord()) {
       i16 dst_i16 = static_cast<i16>(ParameterTo<u16>(dst, ins.GetPrefix()));
-      i16 src_i16 = static_cast<i16>(ParameterTo<u16>(src, ins.GetPrefix()));
 
-      i32 diff = dst_i16 - src_i16;
+      i32 diff = dst_i16;
 
-      LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
-          String::ToHex<u16>(src_i16));
+      if (src.IsWord()) {
+        i16 src16 = static_cast<i16>(ParameterTo<u16>(src, ins.GetPrefix()));
+
+        diff -= src16;
+
+        LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
+            String::ToHex<u16>(src16));
+      } else {
+        i8 src8 = static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
+
+        diff -= src8;
+
+        LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
+            String::ToHex<u8>(src8));
+      }
 
       UpdateSF(static_cast<i16>(diff));
       UpdateZF(static_cast<i16>(diff));

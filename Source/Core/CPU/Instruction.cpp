@@ -743,6 +743,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         break;
       case PType::Modifier_Register_Segment:
         switch (mod_cmb) {
+        case 0x0E: // ES
+          param.Resolve(PType::ES);
+          break;
         case 0x18: // SS
           param.Resolve(PType::SS);
           break;
