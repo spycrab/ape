@@ -436,8 +436,7 @@ void CPU::Tick()
       u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
       u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
 
-      dst16 = static_cast<u16>(reinterpret_cast<std::ptrdiff_t>(
-          &src16 - m_memory.GetPtr<u16>(DS, 0)));
+      dst16 = static_cast<u16>(&src16 - m_memory.GetPtr<u16>(DS, 0));
     }
     break;
   }
