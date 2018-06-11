@@ -22,6 +22,11 @@ public:
     return *reinterpret_cast<T*>(&Get()[VirtToPhys(segment, offset)]);
   }
 
+  template <typename T> T* GetPtr(u16 segment, u16 offset)
+  {
+    return &Get<T>(segment, offset);
+  }
+
   //! Converts a virtual address to an absolute one
   static u32 VirtToPhys(u16 segment, u16 offset);
 
