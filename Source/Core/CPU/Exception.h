@@ -27,6 +27,11 @@ class ParameterLengthMismatchException : public std::exception
 {
 };
 
+//! Thrown when a instruction doesn't support the parameter type provided
+class UnsupportedParameterException : public std::exception
+{
+};
+
 //! Thrown when a interrupt is neither handled by software nor hardware
 class UnhandledInterruptException : public std::exception
 {
