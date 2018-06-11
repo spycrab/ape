@@ -643,9 +643,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
           param.Resolve(PType::Value_DS_DI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x16: // [BX+offset]
-          param.Resolve(PType::Value_DS_BX_Offset,
-                        *reinterpret_cast<u8*>(data.data()));
+        case 0x16: // [BP+offset]
+          param.Resolve(PType::Value_BP_Offset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
         case 0x18: // AL
           param.Resolve(PType::AL);
@@ -847,10 +847,10 @@ u8 Instruction::GetLength(u8 mod)
         case 0x0B: // [BP+DI+offset]
         case 0x0C: // [SI+offset]
         case 0x0F: // [DI+offset]
-        case 0x16: // [BX+offset]
           length += sizeof(u8);
           break;
         case 0x06: // [BP+offset]
+        case 0x16: // [BP+offset]
           length += sizeof(u16);
           break;
         default:
