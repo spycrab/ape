@@ -31,7 +31,7 @@ std::string ToDB(u8 byte)
 int main(int argc, char** argv)
 {
   std::cerr << "Ape " << VERSION_STRING << " 8086 Disassembler" << std::endl
-            << "(c) spycrab0, 2018" << std::endl
+            << "(c) Ape Emulator Project, 2018" << std::endl
             << std::endl;
 
   if (argc != 2) {

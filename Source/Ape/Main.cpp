@@ -9,7 +9,8 @@
 
 int main(int argc, char** argv)
 {
-  std::cout << "Ape " << VERSION_STRING << " (c) spycrab0, 2018" << std::endl
+  std::cout << "Ape " << VERSION_STRING << " (c) Ape Emulator Project, 2018"
+            << std::endl
             << std::endl;
 
   if (argc != 2) {
