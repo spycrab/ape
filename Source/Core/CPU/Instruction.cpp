@@ -127,25 +127,29 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
     return "[" + PrefixToString(prefix) + "BP+bOffset]";
   case Type::Value_BX_SI:
     return "[" + PrefixToString(prefix) + "BX+SI]";
+  case Type::Value_BX_DI:
+    return "[" + PrefixToString(prefix) + "BX+SI]";
   case Type::Value_BX_SI_Word:
     return "word [" + PrefixToString(prefix) + "BX+SI]";
   case Type::Value_BX_SI_Offset:
     return "[" + PrefixToString(prefix) + "BX+SI+offset]";
   case Type::Value_BX_DI_Offset:
     return "[" + PrefixToString(prefix) + "BX+DI+offset]";
-  case Type::Value_DS_BX:
+  case Type::Value_BX:
     return "[" + PrefixToString(prefix) + "BX]";
-  case Type::Value_DS_BX_Word:
+  case Type::Value_BX_Word:
     return "word [" + PrefixToString(prefix) + "BX]";
-  case Type::Value_DS_BX_Offset:
+  case Type::Value_BX_Offset:
     return "[" + PrefixToString(prefix) + "BX+offset]";
-  case Type::Value_DS_BX_Offset_Word:
+  case Type::Value_BX_Offset_Word:
     return "word [" + PrefixToString(prefix) + "BX+offset]";
-  case Type::Value_DS_DI:
+  case Type::Value_SI:
+    return "[" + PrefixToString(prefix) + "SI]";
+  case Type::Value_DI:
     return "[" + PrefixToString(prefix) + "DI]";
-  case Type::Value_DS_SI_Offset:
+  case Type::Value_SI_Offset:
     return "[" + PrefixToString(prefix) + "SI+offset]";
-  case Type::Value_DS_DI_Offset:
+  case Type::Value_DI_Offset:
     return "[" + PrefixToString(prefix) + "DI+offset]";
   case Type::Value_WordAddress:
     return "[offset]";
@@ -396,23 +400,40 @@ bool Core::CPU::ParameterNeedsResolving(
     const Instruction::Parameter::Type& type)
 {
   using Type = Instruction::Parameter::Type;
-  constexpr std::array resolved_params{
-      Type::AL,          Type::AH,
-      Type::BL,          Type::BH,
-      Type::CL,          Type::CH,
-      Type::DL,          Type::DH,
-      Type::AX,          Type::BX,
-      Type::CX,          Type::DX,
-      Type::CS,          Type::DS,
-      Type::ES,          Type::SS,
-      Type::IP,          Type::BP,
-      Type::SP,          Type::DI,
-      Type::SI,          Type::Implied_0,
-      Type::Implied_1,   Type::Implied_3,
-      Type::Value_BP_SI, Type::Value_BX_SI_Word,
-      Type::Value_DS_BX, Type::Value_DS_BX_Word,
-      Type::Value_DS_DI, Type::Value_SI_Word,
-      Type::None};
+  constexpr std::array resolved_params{Type::AL,
+                                       Type::AH,
+                                       Type::BL,
+                                       Type::BH,
+                                       Type::CL,
+                                       Type::CH,
+                                       Type::DL,
+                                       Type::DH,
+                                       Type::AX,
+                                       Type::BX,
+                                       Type::CX,
+                                       Type::DX,
+                                       Type::CS,
+                                       Type::DS,
+                                       Type::ES,
+                                       Type::SS,
+                                       Type::IP,
+                                       Type::BP,
+                                       Type::SP,
+                                       Type::DI,
+                                       Type::SI,
+                                       Type::Implied_0,
+                                       Type::Implied_1,
+                                       Type::Implied_3,
+                                       Type::Value_BP_SI,
+                                       Type::Value_BP_DI,
+                                       Type::Value_BX_SI_Word,
+                                       Type::Value_BX_SI,
+                                       Type::Value_BX_DI,
+                                       Type::Value_BX,
+                                       Type::Value_BX_Word,
+                                       Type::Value_DI,
+                                       Type::Value_SI_Word,
+                                       Type::None};
 
   return std::find(resolved_params.begin(), resolved_params.end(), type) ==
          resolved_params.end();
@@ -439,58 +460,132 @@ bool Instruction::IsPrefix() const
          m_type == Type::PREFIX_ES || m_type == Type::PREFIX_SS;
 }
 
+static bool ResolveRM8(Instruction::Parameter& param, u8 rm_bits, u8 modrm)
+{
+  using PType = Instruction::Parameter::Type;
+  switch (rm_bits) {
+  case 0b000: // AL
+    param.Resolve(PType::AL);
+    break;
+  case 0b001: // CL
+    param.Resolve(PType::CL);
+    break;
+  case 0b010: // DL
+    param.Resolve(PType::DL);
+    break;
+  case 0b011: // BL
+    param.Resolve(PType::BL);
+    break;
+  case 0b100: // AH
+    param.Resolve(PType::AH);
+    break;
+  case 0b101: // CH
+    param.Resolve(PType::CH);
+    break;
+  case 0b110: // DH
+    param.Resolve(PType::DH);
+    break;
+  case 0b111: // BH
+    param.Resolve(PType::BH);
+    break;
+  default:
+    std::cerr << "Don't know how to resolve the RB modifier "
+              << String::ToBin(rm_bits) << ": " << String::ToHex(modrm)
+              << std::endl;
+    return false;
+  }
+  return true;
+}
+
+static bool ResolveRM16(Instruction::Parameter& param, u8 rm_bits, u8 modrm)
+{
+  using PType = Instruction::Parameter::Type;
+  switch (rm_bits) {
+  case 0b000: // AX
+    param.Resolve(PType::AX);
+    break;
+  case 0b001: // CX
+    param.Resolve(PType::CX);
+    break;
+  case 0b010: // DX
+    param.Resolve(PType::DX);
+    break;
+  case 0b011: // BX
+    param.Resolve(PType::BX);
+    break;
+  case 0b100: // SP
+    param.Resolve(PType::SP);
+    break;
+  case 0b101: // BP
+    param.Resolve(PType::BP);
+    break;
+  case 0b110: // SI
+    param.Resolve(PType::SI);
+    break;
+  case 0b111: // DI
+    param.Resolve(PType::DI);
+    break;
+  default:
+    std::cerr << "Don't know how to resolve the RW modifier "
+              << String::ToBin(rm_bits) << ": " << String::ToHex(modrm)
+              << std::endl;
+    return false;
+  }
+  return true;
+}
+
 bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
 {
 
   // MOD RM Layout
   // |7 6 |5 4 3|2 1 0|
   // |----------------|
-  // |MOD |  R  |  M  |
+  // |Mod | Reg | R/M |
 
   u8 mod_bits = (modrm & 0xC0) >> 3;
-  u8 r_bits = (modrm & 0x38) >> 3;
-  u8 m_bits = modrm & 7;
-  u8 mod_cmb = mod_bits | m_bits;
+  u8 reg_bits = (modrm & 0x38) >> 3;
+  u8 rm_bits = modrm & 0x07;
+  u8 mod_cmb = mod_bits | rm_bits;
 
   if (m_type == Type::GRP1) {
-    switch (m_bits) {
-    case 0x05:
+    switch (reg_bits) {
+    case 0x07:
       m_type = Type::CMP;
       break;
     default:
-      std::cerr << "(GRP1) Don't know what to do with " << String::ToHex(m_bits)
-                << std::endl;
+      std::cerr << "(GRP1) Don't know what to do with "
+                << String::ToHex(reg_bits) << std::endl;
       return false;
     }
   }
 
   if (m_type == Type::GRP2) {
 
-    switch (m_bits) {
-    case 0x02:
+    switch (reg_bits) {
+    case 0x00:
       m_type = Type::ROL;
       break;
-    case 0x06:
+    case 0x04:
       m_type = Type::SHL;
       break;
     default:
-      std::cerr << "(GRP2) Don't know what to do with " << String::ToHex(m_bits)
-                << std::endl;
+      std::cerr << "(GRP2) Don't know what to do with "
+                << String::ToHex(reg_bits) << std::endl;
       return false;
     }
   }
 
   if (m_type == Type::GRP3a) {
-    switch (m_bits) {
+    switch (reg_bits) {
     default:
       std::cerr << "(GRP3a) Don't know what to do with "
-                << String::ToHex(m_bits) << std::endl;
+                << String::ToHex(reg_bits) << std::endl;
       return false;
     }
   }
 
   if (GetType() == Type::GRP3b) {
-    switch (r_bits) {
+    switch (reg_bits) {
     case 0x06:
       m_type = Type::DIV;
       break;
@@ -499,29 +594,28 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
       break;
     default:
       std::cerr << "(GRP3b) Don't know what to do with "
-                << String::ToHex(r_bits) << std::endl;
+                << String::ToHex(reg_bits) << std::endl;
       return false;
     }
   }
 
   if (GetType() == Type::GRP4) {
-    switch (m_bits) {
+    switch (reg_bits) {
     case 0x00:
-    case 0x02:
       m_type = Type::INC;
       break;
     default:
-      std::cerr << "(GRP4) Don't know what to do with " << String::ToHex(m_bits)
-                << std::endl;
+      std::cerr << "(GRP4) Don't know what to do with "
+                << String::ToHex(reg_bits) << std::endl;
       return false;
     }
   }
 
   if (GetType() == Type::GRP5) {
-    switch (m_bits) {
+    switch (reg_bits) {
     default:
-      std::cerr << "(GRP5) Don't know what to do with " << String::ToHex(m_bits)
-                << std::endl;
+      std::cerr << "(GRP5) Don't know what to do with "
+                << String::ToHex(reg_bits) << std::endl;
       return false;
     }
   }
@@ -534,59 +628,12 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
       using PType = Parameter::Type;
       switch (param.GetType()) {
       case PType::Modifier_Register_Byte:
-        switch (r_bits) {
-        case 0x00: // AL
-          param.Resolve(PType::AL);
-          break;
-        case 0x02: // DL
-          param.Resolve(PType::DL);
-          break;
-        case 0x04: // AH
-          param.Resolve(PType::AH);
-          break;
-        case 0x05: // CL
-          param.Resolve(PType::CL);
-          break;
-        case 0x06: // DH
-          param.Resolve(PType::DH);
-          break;
-        case 0x07: // BH
-          param.Resolve(PType::BH);
-          break;
-        default:
-          std::cerr << "Don't know how to resolve the RB modifier "
-                    << String::ToBin(r_bits) << "(" << String::ToHex(r_bits)
-                    << "): " << String::ToHex(modrm) << std::endl;
+        if (!ResolveRM8(param, reg_bits, modrm))
           return false;
-        }
         break;
       case PType::Modifier_Register_Word:
-        switch (r_bits) {
-        case 0x00: // AX
-          param.Resolve(PType::AX);
-          break;
-        case 0x01: // CX
-          param.Resolve(PType::CX);
-          break;
-        case 0x02: // DX
-          param.Resolve(PType::DX);
-          break;
-        case 0x05: // BP
-          param.Resolve(PType::BP);
-          break;
-        case 0x03: // BX
-        case 0x06: // BX
-          param.Resolve(PType::BX);
-          break;
-        case 0x07: // SI
-          param.Resolve(PType::SI);
-          break;
-        default:
-          std::cerr << "Don't know how to resolve the RW modifier "
-                    << String::ToBin(r_bits) << "(" << String::ToHex(r_bits)
-                    << "): " << String::ToHex(modrm) << std::endl;
+        if (!ResolveRM16(param, reg_bits, modrm))
           return false;
-        }
         break;
       case PType::Modifier_Register_Segment:
         switch (mod_cmb) {
@@ -601,69 +648,99 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         }
         break;
       case PType::Modifier_Any_Byte:
+        if (mod_bits == 0b11'000) {
+          if (!ResolveRM8(param, rm_bits, modrm))
+            return false;
+          break;
+        }
         switch (mod_cmb) {
-        case 0x00: // [BX+SI]
+        case 0b00'000: // [BX+SI]
           param.Resolve(PType::Value_BX_SI);
           break;
-        case 0x02: // [BP+SI]
-        case 0x12: // [BP+SI]
+        case 0b00'001: // [BX+DI]
+          param.Resolve(PType::Value_BX_DI);
+          break;
+        case 0b00'010: // [BP+SI]
           param.Resolve(PType::Value_BP_SI);
           break;
-        case 0x05: // [DI]
-          param.Resolve(PType::Value_DS_DI);
+        case 0b00'011: // [BP+DI]
+          param.Resolve(PType::Value_BP_DI);
           break;
-        case 0x06: // [BP+wOffset]
-          param.Resolve(PType::Value_BP_Offset,
+        case 0b00'100: // [SI]
+          param.Resolve(PType::Value_SI);
+          break;
+        case 0b00'101: // [DI]
+          param.Resolve(PType::Value_DI);
+          break;
+        case 0b00'110: // [Addr16]
+          param.Resolve(PType::Value_WordAddress,
                         *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x08: // [BX+SI+wOffset]
+        case 0b00'111: // [BX]
+          param.Resolve(PType::Value_BX);
+
+        case 0b01'000: // [BX+SI+offset]
           param.Resolve(PType::Value_BX_SI_Offset,
-                        *reinterpret_cast<u16*>(data.data()));
+                        *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x09: // [BX+DI+offset]
+        case 0b01'001: // [BX + DI + offset]
           param.Resolve(PType::Value_BX_DI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x0A: // [BP+SI+offset]
+        case 0b01'010: // [BP+SI+offset]
           param.Resolve(PType::Value_BP_SI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x0B: // [BP+DI+offset]
+        case 0b01'011: // [BP+DI+offset]
           param.Resolve(PType::Value_BP_DI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x0C: // [SI+offset]
-          param.Resolve(PType::Value_DS_SI_Offset,
+        case 0b01'100: // [SI+offset]
+          param.Resolve(PType::Value_SI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x0D: // AH
-          param.Resolve(PType::AH);
-          break;
-        case 0x0F: // [DI+offset]
-          param.Resolve(PType::Value_DS_DI_Offset,
+        case 0b01'101: // [DI+offset]
+          param.Resolve(PType::Value_DI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x16: // [BP+offset]
+        case 0b01'110: // [BP+offset]
           param.Resolve(PType::Value_BP_Offset,
+                        *reinterpret_cast<u8*>(data.data()));
+        case 0b01'111: // [BX+offset]
+          param.Resolve(PType::Value_BX_Offset,
+                        *reinterpret_cast<u8*>(data.data()));
+          break;
+
+        case 0b10'000: // [BX+SI+wOffset]
+          param.Resolve(PType::Value_BX_SI_WordOffset,
                         *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x18: // AL
-          param.Resolve(PType::AL);
+        case 0b10'001: // [BX+DI+wOffset]
+          param.Resolve(PType::Value_BX_DI_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x19: // CH
-          param.Resolve(PType::CH);
+        case 0b10'010: // [BP+SI+wOffset]
+          param.Resolve(PType::Value_BP_SI_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x1A: // DL
-          param.Resolve(PType::DL);
+        case 0b10'011: // [BP+DI+wOffset]
+          param.Resolve(PType::Value_BP_DI_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x1C: // AH
-          param.Resolve(PType::AH);
+        case 0b10'100: // [SI+wOffset]
+          param.Resolve(PType::Value_SI_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x1D: // CH
-          param.Resolve(PType::CH);
+        case 0b10'101: // [DI+wOffset]
+          param.Resolve(PType::Value_DI_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x1E: // DH
-          param.Resolve(PType::DH);
+        case 0b10'110: // [BP+wOffset]
+          param.Resolve(PType::Value_BP_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
+        case 0b10'111: // [BX+wOffset]
+          param.Resolve(PType::Value_BX_WordOffset,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
         default:
           std::cerr << "Don't know how to resolve the AB modifier "
@@ -673,37 +750,101 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         }
         break;
       case PType::Modifier_Any_Word:
+        if (mod_bits == 0b11'000) {
+          if (!ResolveRM16(param, rm_bits, modrm))
+            return false;
+          break;
+        }
         switch (mod_cmb) {
-        case 0x00: // [BX + SI]
+        case 0b00'000: // word [BX+SI]
           param.Resolve(PType::Value_BX_SI_Word);
           break;
-        case 0x04: // word [SI]
+        case 0b00'001: // [BX+DI]
+          param.Resolve(PType::Value_BX_DI_Word);
+          break;
+        case 0b00'010: // [BP+SI]
+          param.Resolve(PType::Value_BP_SI_Word);
+          break;
+        case 0b00'011: // [BP+DI]
+          param.Resolve(PType::Value_BP_DI_Word);
+          break;
+        case 0b00'100: // [SI]
           param.Resolve(PType::Value_SI_Word);
           break;
-        case 0x06: // [BP + offset]
-          param.Resolve(PType::Value_BP_WordOffset,
+        case 0b00'101: // [DI]
+          param.Resolve(PType::Value_DI_Word);
+          break;
+        case 0b00'110: // [Addr16]
+          param.Resolve(PType::Value_WordAddress_Word,
                         *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x07:
-          param.Resolve(PType::Value_DS_BX_Word);
+        case 0b00'111: // [BX]
+          param.Resolve(PType::Value_BX_Word);
           break;
-        case 0x0C: // word [SI + bOffset]
+        case 0b01'000: // [BX+SI+offset]
+          param.Resolve(PType::Value_BX_SI_Offset_Word,
+                        *reinterpret_cast<u8*>(data.data()));
+          break;
+        case 0b01'001: // [BX + DI + offset]
+          param.Resolve(PType::Value_BX_DI_Offset_Word,
+                        *reinterpret_cast<u8*>(data.data()));
+          break;
+        case 0b01'010: // [BP+SI+offset]
+          param.Resolve(PType::Value_BP_SI_Offset_Word,
+                        *reinterpret_cast<u8*>(data.data()));
+          break;
+        case 0b01'011: // [BP+DI+offset]
+          param.Resolve(PType::Value_BP_DI_Offset_Word,
+                        *reinterpret_cast<u8*>(data.data()));
+          break;
+        case 0b01'100: // [SI+offset]
           param.Resolve(PType::Value_SI_Offset_Word,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x0F: // [BX + offset]
-          param.Resolve(PType::Value_DS_BX_Offset_Word,
+        case 0b01'101: // [DI+offset]
+          param.Resolve(PType::Value_DI_Offset_Word,
                         *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x18: // AX
-          param.Resolve(PType::AX);
+        case 0b01'110: // [BP+offset]
+          param.Resolve(PType::Value_BP_Offset_Word,
+                        *reinterpret_cast<u8*>(data.data()));
+        case 0b01'111: // [BX+offset]
+          param.Resolve(PType::Value_BX_Offset_Word,
+                        *reinterpret_cast<u8*>(data.data()));
           break;
-        case 0x1A: // DX
-          param.Resolve(PType::DX);
+
+        case 0b10'000: // [BX+SI+wOffset]
+          param.Resolve(PType::Value_BX_SI_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
-        case 0x1B: // BX
-          param.Resolve(PType::BX);
+        case 0b10'001: // [BX+DI+wOffset]
+          param.Resolve(PType::Value_BX_DI_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
           break;
+        case 0b10'010: // [BP+SI+wOffset]
+          param.Resolve(PType::Value_BP_SI_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
+          break;
+        case 0b10'011: // [BP+DI+wOffset]
+          param.Resolve(PType::Value_BP_DI_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
+          break;
+        case 0b10'100: // [SI+wOffset]
+          param.Resolve(PType::Value_SI_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
+          break;
+        case 0b10'101: // [DI+wOffset]
+          param.Resolve(PType::Value_DI_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
+          break;
+        case 0b10'110: // [BP+wOffset]
+          param.Resolve(PType::Value_BP_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
+        case 0b10'111: // [BX+wOffset]
+          param.Resolve(PType::Value_BX_WordOffset_Word,
+                        *reinterpret_cast<u16*>(data.data()));
+          break;
+
         default:
           std::cerr << "Don't know how to resolve the AW modifier "
                     << String::ToBin(mod_cmb) << "(" << String::ToHex(mod_cmb)
@@ -791,10 +932,10 @@ bool Instruction::Parameter::IsWord() const
           t == Type::Literal_Word_Immediate || t == Type::Literal_WordOffset ||
           t == Type::Modifier_Register_Word ||
           t == Type::Modifier_Register_Segment ||
-          t == Type::Modifier_Any_Word || t == Type::Value_DS_BX_Word ||
-          t == Type::Value_DS_BX_Offset_Word ||
-          t == Type::Value_BP_WordOffset || t == Type::Value_WordAddress_Word ||
-          t == Type::Value_SI_Word || t == Type::Value_SI_Offset_Word);
+          t == Type::Modifier_Any_Word || t == Type::Value_BX_Word ||
+          t == Type::Value_BX_Offset_Word || t == Type::Value_BP_WordOffset ||
+          t == Type::Value_WordAddress_Word || t == Type::Value_SI_Word ||
+          t == Type::Value_SI_Offset_Word);
 }
 
 u8 Instruction::GetLength(u8 mod)
@@ -829,62 +970,23 @@ u8 Instruction::GetLength(u8 mod)
       case PType::Literal_Byte_Immediate:
         break;
       case PType::Modifier_Any_Byte:
-        switch (mod_cmb) {
-        case 0x00: // AL
-        case 0x05: // AL
-        case 0x02: // [BP+SI]
-        case 0x0D: // AH
-        case 0x18: // AL
-        case 0x19: // CH
-        case 0x1A: // DL
-        case 0x1C: // AH
-        case 0x1D: // BH
-        case 0x1E: // CL
-          break;
-        case 0x08: // [BX+SI+offset]
-        case 0x09: // [BX+DI+offset]
-        case 0x0A: // [BP+SI+offset]
-        case 0x0B: // [BP+DI+offset]
-        case 0x0C: // [SI+offset]
-        case 0x0F: // [DI+offset]
-          length += sizeof(u8);
-          break;
-        case 0x06: // [BP+offset]
-        case 0x16: // [BP+offset]
-          length += sizeof(u16);
-          break;
-        default:
-          std::cerr << "(IL) Don't know how to resolve the AB modifier "
-                    << String::ToBin(mod_cmb) << "(" << String::ToHex(mod_cmb)
-                    << "): " << String::ToHex(mod) << std::endl;
-          m_type = Type::Invalid;
-          return 0;
-        }
-        break;
       case PType::Modifier_Any_Word:
-        switch (mod_cmb) {
-        case 0x00: // [BX + SI]
-        case 0x04: // WORD [SI]
-        case 0x07: // [DS : BX]
-        case 0x18: // AX
-        case 0x1A: // DX
-        case 0x1B: // BX
-          break;
-        case 0x06: // [BP + wOffset]
+
+        if (mod_cmb == 0b00'110) {
           length += sizeof(u16);
           break;
-        case 0x0C: // WORD [SI + bOffset]
-        case 0x0F: // [BX + bOffset]
+        }
+
+        switch (mod_bits) {
+        case 0b00'000:
+        case 0b11'000:
+          break;
+        case 0b01'000:
           length += sizeof(u8);
           break;
-        default:
-          std::cerr << "(IL) Don't know how to resolve the AW modifier "
-                    << String::ToBin(mod_cmb) << ": " << String::ToBin(mod_bits)
-                    << ":" << String::ToBin(rm_bits) << "("
-                    << String::ToHex(mod_cmb) << "): " << String::ToHex(mod)
-                    << std::endl;
-          m_type = Type::Invalid;
-          return 0;
+        case 0b10'000:
+          length += sizeof(u16);
+          break;
         }
         break;
       default:
@@ -937,16 +1039,16 @@ std::string Instruction::Parameter::ToString(SegmentPrefix prefix,
     case Type::Value_BP_DI_Offset:
       return "[" + PrefixToString(prefix) + "BP+DI+" + String::ToHex(data8) +
              "]";
-    case Type::Value_DS_BX_Offset:
+    case Type::Value_BX_Offset:
       return "[" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) + "]";
-    case Type::Value_DS_BX_Offset_Word:
+    case Type::Value_BX_Offset_Word:
       return "word [" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) +
              "]";
     case Type::Value_SI_Offset_Word:
       return "word [SI+" + String::ToHex(data16) + "]";
-    case Type::Value_DS_SI_Offset:
+    case Type::Value_SI_Offset:
       return "[" + PrefixToString(prefix) + "SI+" + String::ToHex(data8) + "]";
-    case Type::Value_DS_DI_Offset:
+    case Type::Value_DI_Offset:
       return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data8) + "]";
     case Type::Literal_LongAddress_Immediate:
       return String::ToHex<u32>(m_data);
