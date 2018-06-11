@@ -163,8 +163,8 @@ void CPU::Tick()
     break;
   }
   case Type::CBW:
-    // Copy the sign bit into all off AH
-    AH = 0xFF * (AL & 7);
+    // Copy the sign bit into all of AH
+    AH = (AL & 7) ? 0xFF : 0x00;
     break;
   case Type::CLD:
     DF = false;
