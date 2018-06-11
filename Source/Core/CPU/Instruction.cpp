@@ -117,24 +117,40 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
 
   case Type::Value_BP_SI:
     return "[" + PrefixToString(prefix) + "BP+SI]";
+  case Type::Value_BP_SI_Word:
+    return "word [" + PrefixToString(prefix) + "BP+SI]";
   case Type::Value_BP_SI_Offset:
     return "[" + PrefixToString(prefix) + "BP+SI+offset]";
+  case Type::Value_BP_SI_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "BP+SI+offset]";
   case Type::Value_BP_DI_Offset:
     return "[" + PrefixToString(prefix) + "BP+DI+offset]";
+  case Type::Value_BP_DI_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "BP+DI+offset]";
   case Type::Value_BP_WordOffset:
     return "[" + PrefixToString(prefix) + "BP+wOffset]";
+  case Type::Value_BP_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "BP+wOffset]";
   case Type::Value_BP_Offset:
     return "[" + PrefixToString(prefix) + "BP+bOffset]";
+  case Type::Value_BP_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "BP+bOffset]";
   case Type::Value_BX_SI:
-    return "[" + PrefixToString(prefix) + "BX+SI]";
-  case Type::Value_BX_DI:
     return "[" + PrefixToString(prefix) + "BX+SI]";
   case Type::Value_BX_SI_Word:
     return "word [" + PrefixToString(prefix) + "BX+SI]";
+  case Type::Value_BX_DI:
+    return "[" + PrefixToString(prefix) + "BX+SI]";
+  case Type::Value_BX_DI_Word:
+    return "word [" + PrefixToString(prefix) + "BX+SI]";
   case Type::Value_BX_SI_Offset:
     return "[" + PrefixToString(prefix) + "BX+SI+offset]";
+  case Type::Value_BX_SI_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "BX+SI+offset]";
   case Type::Value_BX_DI_Offset:
     return "[" + PrefixToString(prefix) + "BX+DI+offset]";
+  case Type::Value_BX_DI_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "BX+DI+offset]";
   case Type::Value_BX:
     return "[" + PrefixToString(prefix) + "BX]";
   case Type::Value_BX_Word:
@@ -145,21 +161,24 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
     return "word [" + PrefixToString(prefix) + "BX+offset]";
   case Type::Value_SI:
     return "[" + PrefixToString(prefix) + "SI]";
-  case Type::Value_DI:
-    return "[" + PrefixToString(prefix) + "DI]";
-  case Type::Value_SI_Offset:
-    return "[" + PrefixToString(prefix) + "SI+offset]";
-  case Type::Value_DI_Offset:
-    return "[" + PrefixToString(prefix) + "DI+offset]";
-  case Type::Value_WordAddress:
-    return "[offset]";
-  case Type::Value_WordAddress_Word:
-    return "word [offset]";
   case Type::Value_SI_Word:
     return "word [" + PrefixToString(prefix) + "SI]";
+  case Type::Value_DI:
+    return "[" + PrefixToString(prefix) + "DI]";
+  case Type::Value_DI_Word:
+    return "word [" + PrefixToString(prefix) + "SI]";
+  case Type::Value_SI_Offset:
+    return "[" + PrefixToString(prefix) + "SI+offset]";
   case Type::Value_SI_Offset_Word:
     return "word [" + PrefixToString(prefix) + "SI+offset]";
-
+  case Type::Value_DI_Offset:
+    return "[" + PrefixToString(prefix) + "DI+offset]";
+  case Type::Value_DI_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "DI+offset]";
+  case Type::Value_WordAddress:
+    return "[wordAddr]";
+  case Type::Value_WordAddress_Word:
+    return "word [wordAddr]";
   case Type::None:
     return "None";
   }
@@ -394,6 +413,68 @@ std::string Core::CPU::TypeToString(const Instruction::Type& type)
   }
 
   return "???";
+}
+
+std::string Instruction::Parameter::ToString(SegmentPrefix prefix,
+                                             u32 offset) const
+{
+  if (Core::CPU::ParameterNeedsResolving(m_type)) {
+    const u16 data16 = static_cast<u16>(m_data);
+    const u8 data8 = static_cast<u8>(m_data);
+
+    using Type = Parameter::Type;
+    switch (m_type) {
+    case Type::Literal_Byte:
+    case Type::Literal_Byte_Immediate:
+      return String::ToHex(data8);
+    case Type::Literal_Word:
+    case Type::Literal_Word_Immediate:
+      return String::ToHex(data16);
+    case Type::Literal_Offset:
+      return String::ToHex<u8>(
+          static_cast<u8>(offset + 2 + static_cast<i8>(data16)));
+    case Type::Literal_WordOffset:
+      return String::ToHex<u16>(
+          static_cast<u16>(offset + 3 + static_cast<i16>(data16)));
+    case Type::Value_WordAddress_Word:
+      return "word [" + String::ToHex(data16) + "]";
+    case Type::Value_WordAddress:
+      return "[" + String::ToHex(data16) + "]";
+    case Type::Value_BP_Offset:
+      return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) + "]";
+    case Type::Value_BP_WordOffset:
+      return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) + "]";
+    case Type::Value_BX_DI_Offset:
+      return "[" + PrefixToString(prefix) + "BX+DI+" + String::ToHex(data8) +
+             "]";
+    case Type::Value_BX_SI_Offset:
+      return "[" + PrefixToString(prefix) + "BX+SI+" + String::ToHex(data8) +
+             "]";
+    case Type::Value_BP_SI_Offset:
+      return "[" + PrefixToString(prefix) + "BP+SI+" + String::ToHex(data8) +
+             "]";
+    case Type::Value_BP_DI_Offset:
+      return "[" + PrefixToString(prefix) + "BP+DI+" + String::ToHex(data8) +
+             "]";
+    case Type::Value_BX_Offset:
+      return "[" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) + "]";
+    case Type::Value_BX_Offset_Word:
+      return "word [" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) +
+             "]";
+    case Type::Value_SI_Offset_Word:
+      return "word [SI+" + String::ToHex(data16) + "]";
+    case Type::Value_SI_Offset:
+      return "[" + PrefixToString(prefix) + "SI+" + String::ToHex(data8) + "]";
+    case Type::Value_DI_Offset:
+      return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data8) + "]";
+    case Type::Literal_LongAddress_Immediate:
+      return String::ToHex<u32>(m_data);
+    default:
+      return String::ToHex<u32>(m_data);
+    }
+  } else {
+    return ParameterTypeToString(m_type, prefix);
+  }
 }
 
 bool Core::CPU::ParameterNeedsResolving(
@@ -999,65 +1080,6 @@ u8 Instruction::GetLength(u8 mod)
   }
 
   return length;
-}
-
-std::string Instruction::Parameter::ToString(SegmentPrefix prefix,
-                                             u32 offset) const
-{
-  if (Core::CPU::ParameterNeedsResolving(m_type)) {
-    const u16 data16 = static_cast<u16>(m_data);
-    const u8 data8 = static_cast<u8>(m_data);
-
-    using Type = Parameter::Type;
-    switch (m_type) {
-    case Type::Literal_Byte:
-    case Type::Literal_Byte_Immediate:
-      return String::ToHex(data8);
-    case Type::Literal_Word:
-    case Type::Literal_Word_Immediate:
-      return String::ToHex(data16);
-    case Type::Literal_WordOffset:
-      return String::ToHex<u16>(
-          static_cast<u16>(offset + 3 + static_cast<i16>(data16)));
-    case Type::Value_WordAddress_Word:
-      return "word [" + String::ToHex(data16) + "]";
-    case Type::Value_WordAddress:
-      return "[" + String::ToHex(data16) + "]";
-    case Type::Value_BP_Offset:
-      return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) + "]";
-    case Type::Value_BP_WordOffset:
-      return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) + "]";
-    case Type::Value_BX_DI_Offset:
-      return "[" + PrefixToString(prefix) + "BX+DI+" + String::ToHex(data8) +
-             "]";
-    case Type::Value_BX_SI_Offset:
-      return "[" + PrefixToString(prefix) + "BX+SI+" + String::ToHex(data8) +
-             "]";
-    case Type::Value_BP_SI_Offset:
-      return "[" + PrefixToString(prefix) + "BP+SI+" + String::ToHex(data8) +
-             "]";
-    case Type::Value_BP_DI_Offset:
-      return "[" + PrefixToString(prefix) + "BP+DI+" + String::ToHex(data8) +
-             "]";
-    case Type::Value_BX_Offset:
-      return "[" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) + "]";
-    case Type::Value_BX_Offset_Word:
-      return "word [" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) +
-             "]";
-    case Type::Value_SI_Offset_Word:
-      return "word [SI+" + String::ToHex(data16) + "]";
-    case Type::Value_SI_Offset:
-      return "[" + PrefixToString(prefix) + "SI+" + String::ToHex(data8) + "]";
-    case Type::Value_DI_Offset:
-      return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data8) + "]";
-    case Type::Literal_LongAddress_Immediate:
-      return String::ToHex<u32>(m_data);
-    default:
-      return String::ToHex<u32>(m_data);
-    }
-  } else {
-    return ParameterTypeToString(m_type, prefix);
-  }
 }
 
 Instruction::Instruction(Type type) : m_type(type), m_offset(0) {}
