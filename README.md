@@ -6,15 +6,16 @@ Ape (Another PC Emulator) is a free / open source IBM PC compatible emulator wri
 ## Status
 Currently Ape has the following limitations:
 
+- *A lot* of bugs
+- Not all instructions are implemented
+- Not all interrupts are implemented
 - Limited hardware support
-  - Not all instructions are implemented
   - Limited to 8086/8088 instructions only
-  - Not all interrupts are implemented
-  - No Harddrive support
   - No Intel 8087 emulation
+  - No Harddrive support
+  - Only supports booting 5.25" 720K floppies at the moment
 - Limited graphics capabilities
   - currently only outputting to a text file (obviously temporary)
-
 
 ## Requirements
 - A C++17 capable compiler
@@ -24,7 +25,7 @@ Currently Ape has the following limitations:
 
 ## Documentation
 There is currently no live version of the documentation available.
-You have to build it yourself using the steps mentioned above.
+You have to build it yourself using the steps mentioned below.
 
 ## Building
 
