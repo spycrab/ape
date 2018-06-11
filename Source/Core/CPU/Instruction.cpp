@@ -787,7 +787,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
           break;
         case 0b00'111: // [BX]
           param.Resolve(PType::Value_BX);
-
+          break;
         case 0b01'000: // [BX+SI+offset]
           param.Resolve(PType::Value_BX_SI_Offset,
                         *reinterpret_cast<u8*>(data.data()));
@@ -815,6 +815,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         case 0b01'110: // [BP+offset]
           param.Resolve(PType::Value_BP_Offset,
                         *reinterpret_cast<u8*>(data.data()));
+          break;
         case 0b01'111: // [BX+offset]
           param.Resolve(PType::Value_BX_Offset,
                         *reinterpret_cast<u8*>(data.data()));
@@ -847,6 +848,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         case 0b10'110: // [BP+wOffset]
           param.Resolve(PType::Value_BP_WordOffset,
                         *reinterpret_cast<u16*>(data.data()));
+          break;
         case 0b10'111: // [BX+wOffset]
           param.Resolve(PType::Value_BX_WordOffset,
                         *reinterpret_cast<u16*>(data.data()));
@@ -917,6 +919,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         case 0b01'110: // [BP+offset]
           param.Resolve(PType::Value_BP_Offset_Word,
                         *reinterpret_cast<u8*>(data.data()));
+          break;
         case 0b01'111: // [BX+offset]
           param.Resolve(PType::Value_BX_Offset_Word,
                         *reinterpret_cast<u8*>(data.data()));
@@ -949,6 +952,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         case 0b10'110: // [BP+wOffset]
           param.Resolve(PType::Value_BP_WordOffset_Word,
                         *reinterpret_cast<u16*>(data.data()));
+          break;
         case 0b10'111: // [BX+wOffset]
           param.Resolve(PType::Value_BX_WordOffset_Word,
                         *reinterpret_cast<u16*>(data.data()));
