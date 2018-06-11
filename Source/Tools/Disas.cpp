@@ -48,7 +48,10 @@ int main(int argc, char** argv)
         ifs.tellg()); // Address to bark at if anything goes wrong
     u8 opcode = static_cast<u8>(ifs.get());
 
-    auto ins = Core::CPU::Instruction(opcode);
+    auto ins = Core::CPU::Instruction(opcode, address);
+
+    if (ins.IsPrefix())
+      ins = Core::CPU::Instruction(ins, ifs.get(), address);
 
     std::cout << String::ToHex(address) << " ";
 
