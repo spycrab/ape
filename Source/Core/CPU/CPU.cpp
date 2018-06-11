@@ -143,17 +143,15 @@ void CPU::Tick()
   case Type::CALL: {
     auto& parameter = ins.GetParameters()[0];
 
-    if (parameter.IsWord()) {
-      u16 offset = ParameterTo<u16>(parameter, ins.GetPrefix());
+    if (!parameter.IsWord())
+      throw UnsupportedParameterException();
 
-      SP -= sizeof(u16);
-      m_memory.Get<u16>(SS, SP) = IP;
+    u16 offset = ParameterTo<u16>(parameter, ins.GetPrefix());
 
-      IP += offset;
-    } else {
-      throw "wrong";
-    }
+    SP -= sizeof(u16);
+    m_memory.Get<u16>(SS, SP) = IP;
 
+    IP += offset;
     break;
   }
   case Type::RET: {
@@ -410,12 +408,15 @@ void CPU::Tick()
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
 
+    if (dst.IsWord() != src.IsWord())
+      throw ParameterLengthMismatchException();
+
+    if (!dst.IsWord())
+      throw UnsupportedParameterException();
+
     u32 ptr;
 
-    if (src.IsWord())
-      ptr = *reinterpret_cast<u32*>(&ParameterTo<u16&>(src, ins.GetPrefix()));
-    else
-      ptr = *reinterpret_cast<u32*>(&ParameterTo<u8&>(src, ins.GetPrefix()));
+    ptr = *reinterpret_cast<u32*>(&ParameterTo<u16&>(src, ins.GetPrefix()));
 
     u16 segment = (ptr & 0xFFFF0000) >> 16;
     u16 offset = ptr & 0xFFFF;
@@ -432,12 +433,14 @@ void CPU::Tick()
     if (dst.IsWord() != src.IsWord())
       throw ParameterLengthMismatchException();
 
-    if (dst.IsWord()) {
-      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
+    if (!dst.IsWord())
+      throw UnsupportedParameterException();
 
-      dst16 = static_cast<u16>(&src16 - m_memory.GetPtr<u16>(DS, 0));
-    }
+    u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+    u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
+
+    dst16 = static_cast<u16>(&src16 - m_memory.GetPtr<u16>(DS, 0));
+
     break;
   }
   case Type::LODSB:
@@ -550,37 +553,28 @@ void CPU::Tick()
   case Type::PUSH: {
     auto& data = ins.GetParameters()[0];
 
-    if (data.IsWord()) {
-      u16 data16 = ParameterTo<u16>(data, ins.GetPrefix());
+    if (!data.IsWord())
+      throw UnsupportedParameterException();
 
-      SP -= sizeof(u16);
-      m_memory.Get<u16>(SS, SP) = data16;
-    } else {
-      u8 data8 = ParameterTo<u8>(data, ins.GetPrefix());
+    u16 data16 = ParameterTo<u16>(data, ins.GetPrefix());
 
-      SP -= sizeof(u8);
-
-      m_memory.Get<u8>(SS, SP) = data8;
-    }
+    SP -= sizeof(u16);
+    m_memory.Get<u16>(SS, SP) = data16;
 
     break;
   }
   case Type::POP: {
     auto& dst = ins.GetParameters()[0];
 
-    if (dst.IsWord()) {
-      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+    if (!dst.IsWord())
+      throw UnsupportedParameterException();
 
-      dst16 = m_memory.Get<u16>(SS, SP);
-      SP += sizeof(u16);
+    u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
-      LOG("Popped back " + String::ToHex(dst16));
-    } else {
-      u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      dst8 = m_memory.Get<u8>(SS, SP);
-      SP += sizeof(u8);
-      LOG("Popped back " + String::ToHex(dst8));
-    }
+    dst16 = m_memory.Get<u16>(SS, SP);
+    SP += sizeof(u16);
+
+    LOG("Popped back " + String::ToHex(dst16));
     break;
   }
   case Type::REPZ:
