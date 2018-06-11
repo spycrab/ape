@@ -123,10 +123,22 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
     return "[" + PrefixToString(prefix) + "BP+SI+offset]";
   case Type::Value_BP_SI_Offset_Word:
     return "word [" + PrefixToString(prefix) + "BP+SI+offset]";
+  case Type::Value_BP_SI_WordOffset:
+    return "[" + PrefixToString(prefix) + "BP+SI+wOffset]";
+  case Type::Value_BP_SI_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "BP+SI+wOffset]";
+  case Type::Value_BP_DI:
+    return "[" + PrefixToString(prefix) + "BP+DI]";
+  case Type::Value_BP_DI_Word:
+    return "word [" + PrefixToString(prefix) + "BP+DI]";
   case Type::Value_BP_DI_Offset:
     return "[" + PrefixToString(prefix) + "BP+DI+offset]";
   case Type::Value_BP_DI_Offset_Word:
     return "word [" + PrefixToString(prefix) + "BP+DI+offset]";
+  case Type::Value_BP_DI_WordOffset:
+    return "[" + PrefixToString(prefix) + "BP+DI+wOffset]";
+  case Type::Value_BP_DI_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "BP+DI+wOffset]";
   case Type::Value_BP_WordOffset:
     return "[" + PrefixToString(prefix) + "BP+wOffset]";
   case Type::Value_BP_WordOffset_Word:
@@ -147,9 +159,17 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
     return "[" + PrefixToString(prefix) + "BX+SI+offset]";
   case Type::Value_BX_SI_Offset_Word:
     return "word [" + PrefixToString(prefix) + "BX+SI+offset]";
+  case Type::Value_BX_SI_WordOffset:
+    return "[" + PrefixToString(prefix) + "BX+SI+wOffset]";
+  case Type::Value_BX_SI_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "BX+SI+wOffset]";
   case Type::Value_BX_DI_Offset:
     return "[" + PrefixToString(prefix) + "BX+DI+offset]";
   case Type::Value_BX_DI_Offset_Word:
+    return "word [" + PrefixToString(prefix) + "BX+DI+offset]";
+  case Type::Value_BX_DI_WordOffset:
+    return "[" + PrefixToString(prefix) + "BX+DI+offset]";
+  case Type::Value_BX_DI_WordOffset_Word:
     return "word [" + PrefixToString(prefix) + "BX+DI+offset]";
   case Type::Value_BX:
     return "[" + PrefixToString(prefix) + "BX]";
@@ -159,6 +179,10 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
     return "[" + PrefixToString(prefix) + "BX+offset]";
   case Type::Value_BX_Offset_Word:
     return "word [" + PrefixToString(prefix) + "BX+offset]";
+  case Type::Value_BX_WordOffset:
+    return "[" + PrefixToString(prefix) + "BX+wOffset]";
+  case Type::Value_BX_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "BX+wOffset]";
   case Type::Value_SI:
     return "[" + PrefixToString(prefix) + "SI]";
   case Type::Value_SI_Word:
@@ -171,10 +195,18 @@ Core::CPU::ParameterTypeToString(const Instruction::Parameter::Type& type,
     return "[" + PrefixToString(prefix) + "SI+offset]";
   case Type::Value_SI_Offset_Word:
     return "word [" + PrefixToString(prefix) + "SI+offset]";
+  case Type::Value_SI_WordOffset:
+    return "[" + PrefixToString(prefix) + "SI+wOffset]";
+  case Type::Value_SI_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "SI+wOffset]";
   case Type::Value_DI_Offset:
     return "[" + PrefixToString(prefix) + "DI+offset]";
   case Type::Value_DI_Offset_Word:
     return "word [" + PrefixToString(prefix) + "DI+offset]";
+  case Type::Value_DI_WordOffset:
+    return "[" + PrefixToString(prefix) + "DI+wOffset]";
+  case Type::Value_DI_WordOffset_Word:
+    return "word [" + PrefixToString(prefix) + "DI+wOffset]";
   case Type::Value_WordAddress:
     return "[wordAddr]";
   case Type::Value_WordAddress_Word:
