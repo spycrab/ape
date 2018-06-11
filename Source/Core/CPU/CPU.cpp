@@ -152,6 +152,7 @@ void CPU::Tick()
     m_memory.Get<u16>(SS, SP) = IP;
 
     IP += offset;
+
     break;
   }
   case Type::RET: {
@@ -526,7 +527,6 @@ void CPU::Tick()
 
     break;
   }
-
   case Type::MUL: {
     auto& mul = ins.GetParameters()[0];
 
@@ -554,7 +554,15 @@ void CPU::Tick()
       throw ParameterLengthMismatchException();
 
     if (dst.IsWord()) {
-      throw "rock";
+      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+      u16 src16 = ParameterTo<u16>(src, ins.GetPrefix());
+
+      dst16 |= src16;
+      OF = CF = 0;
+
+      UpdateSF(dst16);
+      UpdateZF(dst16);
+      UpdatePF(dst16);
     } else {
       u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
       u8 src8 = ParameterTo<u8>(src, ins.GetPrefix());
@@ -609,21 +617,26 @@ void CPU::Tick()
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
 
-    if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+    u8 shift = ParameterTo<u8>(src, ins.GetPrefix());
 
     if (dst.IsWord()) {
       u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16 shift = ParameterTo<u16>(src, ins.GetPrefix());
 
-      CF = (dst16 << (shift - 1) & 1);
+      OF = CF = (dst16 << (shift - 1) & 1);
       dst16 <<= shift;
+
+      UpdatePF(dst16);
+      UpdateZF(dst16);
+      UpdateSF(static_cast<i16>(dst16));
     } else {
       u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      u8 shift = ParameterTo<u8>(src, ins.GetPrefix());
 
-      CF = (dst8 << (shift - 1) & 1);
+      OF = CF = (dst8 << (shift - 1) & 1);
       dst8 <<= shift;
+
+      UpdatePF(dst8);
+      UpdateZF(dst8);
+      UpdateSF(static_cast<i8>(dst8));
     }
 
     break;
