@@ -8,16 +8,18 @@
 #include <string>
 #include <vector>
 
+#include "Common/Logger.h"
 #include "Common/String.h"
 #include "Common/Types.h"
 #include "Version.h"
 
 #include "Core/CPU/Instruction.h"
 
+using namespace Core::CPU;
+
 std::string ToDB(u8 byte)
 {
-  std::string c;
-  c += static_cast<char>(byte);
+  std::string c(1, static_cast<char>(byte));
 
   if (c == "'")
     c = "\\'";
@@ -28,7 +30,7 @@ std::string ToDB(u8 byte)
 
 int main(int argc, char** argv)
 {
-  std::cerr << "Ape " << VERSION_STRING << " x86 Disassembler" << std::endl
+  std::cerr << "Ape " << VERSION_STRING << " 8086 Disassembler" << std::endl
             << "(c) spycrab0, 2018" << std::endl
             << std::endl;
 
@@ -39,7 +41,7 @@ int main(int argc, char** argv)
   std::ifstream ifs(argv[1], std::ios::binary);
 
   if (!ifs.good()) {
-    std::cerr << "Error: Failed to open " << argv[1] << std::endl;
+    ERROR("Failed to open " + std::string(argv[1]));
     return 1;
   }
 
@@ -48,14 +50,14 @@ int main(int argc, char** argv)
         ifs.tellg()); // Address to bark at if anything goes wrong
     u8 opcode = static_cast<u8>(ifs.get());
 
-    auto ins = Core::CPU::Instruction(opcode, address);
+    auto ins = Instruction(opcode, address);
 
     if (ins.IsPrefix())
-      ins = Core::CPU::Instruction(ins, ifs.get(), address);
+      ins = Instruction(ins, ifs.get(), address);
 
     std::cout << String::ToHex(address) << " ";
 
-    if (ins.GetType() == Core::CPU::Instruction::Type::Invalid) {
+    if (ins.GetType() == Instruction::Type::Invalid) {
       std::cout << "DB " << ToDB(opcode) << std::endl;
       continue;
     }
@@ -64,7 +66,7 @@ int main(int argc, char** argv)
       u8 mod = static_cast<u8>(ifs.get());
       u8 length = ins.GetLength(mod);
 
-      if (ins.GetType() == Core::CPU::Instruction::Type::Invalid) {
+      if (ins.GetType() == Instruction::Type::Invalid) {
         std::cout << "DB " << ToDB(opcode) << std::endl;
         continue;
       }
@@ -75,13 +77,13 @@ int main(int argc, char** argv)
       ifs.read(reinterpret_cast<char*>(data.data()), length);
 
       if (!ifs.good()) {
-        std::cerr << "\tError: Unexpected EOF." << std::endl;
+        ERROR("Unexpected EOF.");
         return 1;
       }
 
       if (!ins.Resolve(mod, data)) {
-        std::cerr << "\tWarning: Failed to fully resolve parameters at "
-                  << String::ToHex(address) << "." << std::endl;
+        ERROR("Warning: Failed to fully resolve parameters at " +
+               String::ToHex(address) + ".");
 
         std::cout << String::ToHex(address + 1) << " ";
         std::cout << "DB " << ToDB(opcode) << std::endl;
