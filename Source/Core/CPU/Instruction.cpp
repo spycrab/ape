@@ -441,9 +441,15 @@ std::string Instruction::Parameter::ToString(SegmentPrefix prefix,
     case Type::Value_WordAddress:
       return "[" + String::ToHex(data16) + "]";
     case Type::Value_BP_Offset:
-      return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) + "]";
+      return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data8) + "]";
+    case Type::Value_BP_Offset_Word:
+      return "word [" + PrefixToString(prefix) + "BP+" + String::ToHex(data8) +
+             "]";
     case Type::Value_BP_WordOffset:
       return "[" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) + "]";
+    case Type::Value_BP_WordOffset_Word:
+      return "word [" + PrefixToString(prefix) + "BP+" + String::ToHex(data16) +
+             "]";
     case Type::Value_BX_DI_Offset:
       return "[" + PrefixToString(prefix) + "BX+DI+" + String::ToHex(data8) +
              "]";
@@ -461,12 +467,28 @@ std::string Instruction::Parameter::ToString(SegmentPrefix prefix,
     case Type::Value_BX_Offset_Word:
       return "word [" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) +
              "]";
+    case Type::Value_BX_WordOffset:
+      return "[" + PrefixToString(prefix) + "BX+" + String::ToHex(data16) + "]";
+    case Type::Value_BX_WordOffset_Word:
+      return "word [" + PrefixToString(prefix) + "BX+" + String::ToHex(data16) +
+             "]";
     case Type::Value_SI_Offset_Word:
       return "word [SI+" + String::ToHex(data16) + "]";
     case Type::Value_SI_Offset:
       return "[" + PrefixToString(prefix) + "SI+" + String::ToHex(data8) + "]";
+    case Type::Value_SI_WordOffset_Word:
+      return "word [SI+" + String::ToHex(data16) + "]";
+    case Type::Value_SI_WordOffset:
+      return "[" + PrefixToString(prefix) + "SI+" + String::ToHex(data16) + "]";
     case Type::Value_DI_Offset:
       return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data8) + "]";
+    case Type::Value_DI_Offset_Word:
+      return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data8) + "]";
+    case Type::Value_DI_WordOffset:
+      return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data16) + "]";
+    case Type::Value_DI_WordOffset_Word:
+      return "[" + PrefixToString(prefix) + "DI+" + String::ToHex(data16) + "]";
+
     case Type::Literal_LongAddress_Immediate:
       return String::ToHex<u32>(m_data);
     default:
