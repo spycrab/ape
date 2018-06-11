@@ -41,12 +41,27 @@ bool Core::HW::FloppyDrive::Read(u32 offset, u32 size, u8* buffer)
 
   m_file->seekg(offset);
 
-  for (u32 i = 0; i < size; i++) {
-    buffer[i] = static_cast<u8>(m_file->get());
-  }
-  // m_file->read(reinterpret_cast<char*>(buffer), size);
+  m_file->read(reinterpret_cast<char*>(buffer), size);
 
   return m_file->good();
 }
 
+bool Core::HW::FloppyDrive::Read(u8 cylinder, u8 head, u8 sector, u8 count,
+                                 u8* buffer)
+{
+  const auto sector_size = GetSectorSize();
+  const auto total_sector =
+      (cylinder * GetHeadCount() + head) * GetSectorsPerTrack() + (sector - 1);
+
+  LOG("Sector = " + String::ToHex<u32>(total_sector));
+  LOG("Address = " + String::ToHex<u32>(total_sector * sector_size));
+
+  return Read(total_sector * sector_size, count * sector_size, buffer);
+}
+
 void Core::HW::FloppyDrive::Eject() { m_file.reset(); }
+
+// This is presuming a 360K 5.25" floppy disc
+u32 Core::HW::FloppyDrive::GetSectorSize() const { return 512; }
+u32 Core::HW::FloppyDrive::GetSectorsPerTrack() const { return 9; }
+u32 Core::HW::FloppyDrive::GetHeadCount() const { return 2; }

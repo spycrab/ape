@@ -65,15 +65,8 @@ void CPU::CallBIOSInterrupt(u8 vector)
 
       LOG(String::ToHex<u32>(sector_count) + " to be read.");
 
-      // This is presuming a 360K 5.25" floppy disc
-      // TODO: Move more of this logic into FloppyDrive.cpp
-      const auto total_sector = (cylinder * 2 + head) * 9 + (sector - 1);
-
-      LOG("Sector = " + String::ToHex<u32>(total_sector));
-      LOG("Address = " + String::ToHex<u32>(total_sector * 512));
-
-      if (!m_machine->GetFloppyDrive().Read(total_sector * 512,
-                                            sector_count * 512, dest)) {
+      if (!m_machine->GetFloppyDrive().Read(cylinder, head, sector,
+                                            sector_count, dest)) {
         AH = 0x40; // Bad seek (Is there a more fitting one?)
         CF = true;
         LOG("Read error!");
