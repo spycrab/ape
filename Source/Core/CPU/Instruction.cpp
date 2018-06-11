@@ -550,6 +550,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         case 0x06: // DH
           param.Resolve(PType::DH);
           break;
+        case 0x07: // BH
+          param.Resolve(PType::BH);
+          break;
         default:
           std::cerr << "Don't know how to resolve the RB modifier "
                     << String::ToBin(r_bits) << "(" << String::ToHex(r_bits)
@@ -655,6 +658,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
           break;
         case 0x1C: // AH
           param.Resolve(PType::AH);
+          break;
+        case 0x1D: // CH
+          param.Resolve(PType::CH);
           break;
         case 0x1E: // DH
           param.Resolve(PType::DH);
@@ -832,6 +838,7 @@ u8 Instruction::GetLength(u8 mod)
         case 0x19: // CH
         case 0x1A: // DL
         case 0x1C: // AH
+        case 0x1D: // BH
         case 0x1E: // CL
           break;
         case 0x08: // [BX+SI+offset]

@@ -60,7 +60,8 @@ void CPU::Tick()
     }
 
     if (!ins.Resolve(mod, data)) {
-      LOG("Failed to resolve");
+      LOG("Failed to resolve " + String::ToHex(opcode) + " with mod " +
+          String::ToHex(mod));
       throw UnhandledParameterException();
     }
   }
