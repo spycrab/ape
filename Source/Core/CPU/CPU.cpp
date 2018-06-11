@@ -443,6 +443,25 @@ void CPU::Tick()
 
     break;
   }
+  case Type::LES: {
+    auto& dst = ins.GetParameters()[0];
+    auto& src = ins.GetParameters()[1];
+
+    if (dst.IsWord() != src.IsWord())
+      throw ParameterLengthMismatchException();
+
+    if (!dst.IsWord())
+      throw UnsupportedParameterException();
+
+    u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+    u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
+
+    u32 address = *reinterpret_cast<u32*>(&src16);
+
+    ES = (address & 0xFFFF0000) >> 16;
+    dst16 = address & 0xFFFF;
+    break;
+  }
   case Type::LODSB:
     do {
       AL = m_memory.Get<u8>(DS, SI);
