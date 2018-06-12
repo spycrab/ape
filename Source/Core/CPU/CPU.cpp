@@ -568,7 +568,7 @@ void CPU::Tick()
   case Type::MOVSB: {
     do {
       u8& dst = m_memory.Get<u8>(ES, DI);
-      u8& src = m_memory.Get<u8>(PrefixToValue(ins.GetPrefix()), SI);
+      u8 src = m_memory.Get<u8>(PrefixToValue(ins.GetPrefix()), SI);
 
       dst = src;
 
@@ -576,6 +576,18 @@ void CPU::Tick()
       SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
     } while (HandleRepetition());
 
+    break;
+  }
+  case Type::MOVSW: {
+    do {
+      u16& dst = m_memory.Get<u16>(ES, DI);
+      u16 src = m_memory.Get<u16>(PrefixToValue(ins.GetPrefix()), SI);
+
+      dst = src;
+
+      DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+      SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+    } while (HandleRepetition());
     break;
   }
   case Type::MUL: {
