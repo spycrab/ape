@@ -41,7 +41,7 @@ bool Core::HW::FloppyDrive::GuessFormat()
     m_head_count = 2;
     break;
   case 1474560:
-    type = "IBM 3.25\"";
+    type = "IBM 3.5\"";
     m_sectors_per_track = 18;
     m_sector_size = 512;
     m_head_count = 2;
