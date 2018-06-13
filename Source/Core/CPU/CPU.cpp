@@ -95,8 +95,8 @@ void CPU::Tick()
 
       dst_i16 = sum & 0xFFFF;
 
-      UpdateCF<i16>(dst_i16 & 0x10000);
-      UpdateOF<i16>(dst_i16 & 0x20000);
+      CF = dst_i16 & 0x10000;
+      OF = dst_i16 & 0x20000;
 
       UpdateSF(sum);
       UpdateZF(sum);
@@ -108,8 +108,8 @@ void CPU::Tick()
 
       i16 sum = dst_i8 + src_i8;
 
-      UpdateCF<i16>(sum & 0x100);
-      UpdateOF<i16>(sum & 0x200);
+      CF = sum & 0x100;
+      OF = sum & 0x200;
 
       dst_i8 += src_i8;
 
