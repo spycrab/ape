@@ -697,6 +697,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     case 0x00:
       m_type = Type::ADD;
       break;
+    case 0x01:
+      m_type = Type::OR;
+      break;
     case 0x02:
       m_type = Type::ADC;
       break;
@@ -711,6 +714,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
       break;
     case 0x06:
       m_type = Type::XOR;
+      break;
     case 0x07:
       m_type = Type::CMP;
       break;
@@ -765,6 +769,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
       break;
     case 0x05:
       m_type = Type::IMUL;
+      break;
     case 0x06:
       m_type = Type::DIV;
       break;
