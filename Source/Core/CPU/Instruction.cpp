@@ -375,6 +375,8 @@ std::string Core::CPU::TypeToString(const Instruction::Type& type)
     return "NOT";
   case Type::SHL:
     return "SHL";
+  case Type::SHR:
+    return "SHR";
 
   case Type::IN:
     return "IN";
@@ -816,6 +818,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
       break;
     case 0x06:
       m_type = Type::PUSH;
+      break;
     default:
       std::cerr << "(GRP5) Don't know what to do with "
                 << String::ToHex(reg_bits) << std::endl;
