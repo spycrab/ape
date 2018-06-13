@@ -1,4 +1,5 @@
 add_library(Core
+  BIOS/Interrupt.cpp
   CPU/CPU.h
   CPU/CPU.cpp
   CPU/Decoder.cpp
@@ -6,6 +7,7 @@ add_library(Core
   CPU/Flags.cpp
   CPU/Instruction.h
   CPU/Instruction.cpp
+  CPU/Instructions/Jumps.cpp
   CPU/Interrupt.cpp
   HW/FloppyDrive.h
   HW/FloppyDrive.cpp
@@ -16,7 +18,10 @@ add_library(Core
 
 target_link_libraries(Core PRIVATE
   Common)
-  
+
+source_group(BIOS FILES
+  BIOS/Interrupt.cpp)
+
 source_group(CPU FILES
   CPU/CPU.h
   CPU/CPU.cpp
@@ -26,6 +31,9 @@ source_group(CPU FILES
   CPU/Instruction.h
   CPU/Instruction.cpp
   CPU/Interrupt.cpp)
+
+source_group(CPU/Instructions FILES
+  CPU/Instructions/Jumps.cpp)
 
 source_group(HW FILES
   HW/FloppyDrive.h

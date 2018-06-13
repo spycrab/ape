@@ -92,6 +92,7 @@ public:
   bool ZF;
 
 private:
+  //! \cond PRIVATE
   template <class T>
   T ParameterTo(const Instruction::Parameter& parameter,
                 Instruction::SegmentPrefix prefix);
@@ -100,7 +101,19 @@ private:
 
   bool HandleRepetition();
 
-  //! \cond PRIVATE
+  // Jumps
+
+  void JMP(const Instruction& instruction);
+
+  void JB(const Instruction& instruction);
+  void JNB(const Instruction& instruction);
+
+  void JZ(const Instruction& instruction);
+  void JNZ(const Instruction& instruction);
+
+  void CALL(const Instruction& instruction);
+  void RET(const Instruction& instruction);
+
   union {
     u16 AX = 0;
     struct {

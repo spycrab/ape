@@ -183,28 +183,12 @@ void CPU::Tick()
     }
     break;
   }
-  case Type::CALL: {
-    auto& parameter = ins.GetParameters()[0];
-
-    if (!parameter.IsWord())
-      throw UnsupportedParameterException();
-
-    u16 offset = ParameterTo<u16>(parameter, ins.GetPrefix());
-
-    SP -= sizeof(u16);
-    m_memory.Get<u16>(SS, SP) = IP;
-
-    IP += offset;
-
+  case Type::CALL:
+    CALL(ins);
     break;
-  }
-  case Type::RET: {
-    IP = m_memory.Get<u16>(SS, SP);
-
-    SP += sizeof(u16);
-
+  case Type::RET:
+    RET(ins);
     break;
-  }
   case Type::CBW:
     // Copy the sign bit into all of AH
     AH = AL & (0b1000'0000) ? 0xFF : 0x00;
@@ -366,96 +350,21 @@ void CPU::Tick()
     CallInterrupt(parameter.GetData<u8>());
     break;
   }
-  case Type::JMP: {
-    auto& parameter = ins.GetParameters()[0];
-    switch (parameter.GetType()) {
-    case PType::Literal_Offset:
-      IP += parameter.GetData<i8>();
-      break;
-    case PType::Literal_LongAddress_Immediate: {
-      u32 address = parameter.GetData<u32>();
-
-      IP = static_cast<u16>((address & 0xFFFF0000) >> 16);
-      DS = static_cast<u16>(address & 0x0000FFFF) >> 8;
-
-      LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(IP));
-      break;
-    }
-    default:
-      LOG("[JMP] Don't know what to do with parameter type: " +
-          ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
-    }
+  case Type::JMP:
+    JMP(ins);
     break;
-  }
-  case Type::JZ: {
-    if (!ZF)
-      break;
-
-    auto& parameter = ins.GetParameters()[0];
-
-    switch (parameter.GetType()) {
-    case PType::Literal_Offset:
-      IP += parameter.GetData<i8>();
-      break;
-    default:
-      LOG("[JZ] Don't know what to do with parameter type: " +
-          ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
-    }
+  case Type::JB:
+    JB(ins);
     break;
-  }
-  case Type::JNZ: {
-    if (ZF)
-      break;
-
-    auto& parameter = ins.GetParameters()[0];
-
-    switch (parameter.GetType()) {
-    case PType::Literal_Offset:
-      IP += parameter.GetData<i8>();
-      break;
-    default:
-      LOG("[JNZ] Don't know what to do with parameter type: " +
-          ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
-    }
+  case Type::JNB:
+    JNB(ins);
     break;
-  }
-  case Type::JB: {
-    if (!CF)
-      break;
-
-    auto& parameter = ins.GetParameters()[0];
-
-    switch (parameter.GetType()) {
-    case PType::Literal_Offset:
-      IP += parameter.GetData<i8>();
-      break;
-    default:
-      LOG("[JB] Don't know what to do with parameter type: " +
-          ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
-    }
+  case Type::JZ:
+    JZ(ins);
     break;
-  }
-  case Type::JNB: {
-    if (CF)
-      break;
-
-    auto& parameter = ins.GetParameters()[0];
-
-    switch (parameter.GetType()) {
-    case PType::Literal_Offset:
-      IP += parameter.GetData<i8>();
-      break;
-    default:
-      LOG("[JNB] Don't know what to do with parameter type: " +
-          ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
-    }
+  case Type::JNZ:
+    JNZ(ins);
     break;
-  }
   case Type::LDS: {
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
