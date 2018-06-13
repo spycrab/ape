@@ -13,7 +13,6 @@ Currently Ape has the following limitations:
   - Limited to 8086/8088 instructions only
   - No Intel 8087 emulation
   - No Harddrive support
-  - Only supports booting 5.25" 720K floppies at the moment
 - Limited graphics capabilities
   - currently only outputting to a text file (obviously temporary)
 

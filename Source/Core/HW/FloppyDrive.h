@@ -20,6 +20,9 @@ public:
   //! Check if a disc is present
   bool HasDisc() const;
 
+  //! Get the size of the inserted disc
+  u32 GetSize() const;
+
   //! Check if the provided image is bootable
   bool IsBootable();
 
@@ -40,6 +43,12 @@ public:
   bool Read(u8 cylinder, u8 head, u8 sector, u8 count, u8* buffer);
 
 private:
+  bool GuessFormat();
+
+  u16 m_sectors_per_track;
+  u16 m_sector_size;
+  u16 m_head_count;
+
   std::unique_ptr<std::ifstream> m_file;
 };
 }
