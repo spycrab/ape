@@ -5,26 +5,10 @@
 //! \file
 #pragma once
 
-#include <iostream>
 #include <string>
 
 //! \cond PRIVATE
-[[maybe_unused]] static void __MSG(std::string type, std::string file, int line,
-                                   std::string msg)
-{
-  auto StripPath = [](std::string file) {
-    static const std::string src_prefix = "Source/";
-    auto index = file.find(src_prefix);
-
-    if (index == std::string::npos)
-      return file;
-
-    return file.substr(index + src_prefix.size());
-  };
-
-  std::cout << "[" << type << " " << StripPath(file) << ":" << line << "] "
-            << msg << std::endl;
-}
+void __MSG(std::string type, std::string file, int line, std::string msg);
 //! \endcond PRIVATE
 
 //! Log a message

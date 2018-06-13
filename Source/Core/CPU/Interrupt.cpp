@@ -9,6 +9,8 @@
 #include "Core/CPU/Exception.h"
 #include "Core/Machine.h"
 
+#include <iostream>
+
 using namespace Core::CPU;
 
 void CPU::CallInterrupt(u8 vector)

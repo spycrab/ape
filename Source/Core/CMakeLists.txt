@@ -14,6 +14,9 @@ add_library(Core
   Memory.h
   Memory.cpp)
 
+target_link_libraries(Core PRIVATE
+  Common)
+  
 source_group(CPU FILES
   CPU/CPU.h
   CPU/CPU.cpp

@@ -87,6 +87,7 @@ configure_file(Source/Version.h.in ${CMAKE_CURRENT_BINARY_DIR}/Version.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Add components
+add_subdirectory(Source/Common)
 add_subdirectory(Source/Core)
 
 add_subdirectory(Source/Ape)
