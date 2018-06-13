@@ -111,9 +111,10 @@ public:
     ADD,
     SUB,
     ADC,
-    SBC,
     DIV,
+    IDIV,
     MUL,
+    IMUL,
     SBB,
 
     // Bitwise operations
@@ -121,7 +122,13 @@ public:
     XOR,
     AND,
     NEG,
+    NOT,
     SHL,
+    SHR,
+    ROL,
+    ROR,
+    RCL,
+    RCR,
 
     // Other
     IN,
@@ -144,7 +151,6 @@ public:
     NOP,
     CWD,
     CBW,
-    ROL,
 
     // Prefixes
     PREFIX_DS,

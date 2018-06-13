@@ -352,12 +352,14 @@ std::string Core::CPU::TypeToString(const Instruction::Type& type)
     return "SUB";
   case Type::ADC:
     return "ADC";
-  case Type::SBC:
-    return "SBC";
   case Type::DIV:
     return "DIV";
+  case Type::IDIV:
+    return "IDIV";
   case Type::MUL:
     return "MUL";
+  case Type::IMUL:
+    return "IMUL";
   case Type::SBB:
     return "SBB";
 
@@ -369,6 +371,8 @@ std::string Core::CPU::TypeToString(const Instruction::Type& type)
     return "AND";
   case Type::NEG:
     return "NEG";
+  case Type::NOT:
+    return "NOT";
   case Type::SHL:
     return "SHL";
 
@@ -415,6 +419,14 @@ std::string Core::CPU::TypeToString(const Instruction::Type& type)
 
   case Type::ROL:
     return "ROL";
+  case Type::ROR:
+    return "ROR";
+
+  case Type::RCL:
+    return "RCL";
+
+  case Type::RCR:
+    return "RCR";
 
   case Type::PREFIX_DS:
     return "DS:";
@@ -682,9 +694,23 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
 
   if (m_type == Type::GRP1) {
     switch (reg_bits) {
+    case 0x00:
+      m_type = Type::ADD;
+      break;
     case 0x02:
       m_type = Type::ADC;
       break;
+    case 0x03:
+      m_type = Type::SBB;
+      break;
+    case 0x04:
+      m_type = Type::AND;
+      break;
+    case 0x05:
+      m_type = Type::SUB;
+      break;
+    case 0x06:
+      m_type = Type::XOR;
     case 0x07:
       m_type = Type::CMP;
       break;
@@ -701,8 +727,20 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     case 0x00:
       m_type = Type::ROL;
       break;
+    case 0x01:
+      m_type = Type::ROR;
+      break;
+    case 0x02:
+      m_type = Type::RCL;
+      break;
+    case 0x03:
+      m_type = Type::RCR;
+      break;
     case 0x04:
       m_type = Type::SHL;
+      break;
+    case 0x05:
+      m_type = Type::SHR;
       break;
     default:
       std::cerr << "(GRP2) Don't know what to do with "
@@ -711,25 +749,30 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     }
   }
 
-  if (m_type == Type::GRP3a) {
+  if (m_type == Type::GRP3a || m_type == Type::GRP3b) {
     switch (reg_bits) {
-    default:
-      std::cerr << "(GRP3a) Don't know what to do with "
-                << String::ToHex(reg_bits) << std::endl;
-      return false;
-    }
-  }
-
-  if (GetType() == Type::GRP3b) {
-    switch (reg_bits) {
-    case 0x06:
-      m_type = Type::DIV;
+    case 0x00:
+      m_type = Type::TEST;
+      break;
+    case 0x02:
+      m_type = Type::NOT;
+      break;
+    case 0x03:
+      m_type = Type::NEG;
       break;
     case 0x04:
       m_type = Type::MUL;
       break;
+    case 0x05:
+      m_type = Type::IMUL;
+    case 0x06:
+      m_type = Type::DIV;
+      break;
+    case 0x07:
+      m_type = Type::IDIV;
+      break;
     default:
-      std::cerr << "(GRP3b) Don't know what to do with "
+      std::cerr << "(GRP3a/b) Don't know what to do with "
                 << String::ToHex(reg_bits) << std::endl;
       return false;
     }
@@ -740,6 +783,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     case 0x00:
       m_type = Type::INC;
       break;
+    case 0x01:
+      m_type = Type::DEC;
+      break;
     default:
       std::cerr << "(GRP4) Don't know what to do with "
                 << String::ToHex(reg_bits) << std::endl;
@@ -749,6 +795,22 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
 
   if (GetType() == Type::GRP5) {
     switch (reg_bits) {
+    case 0x00:
+      m_type = Type::INC;
+      break;
+    case 0x01:
+      m_type = Type::DEC;
+      break;
+    case 0x02:
+    case 0x03:
+      m_type = Type::CALL;
+      break;
+    case 0x04:
+    case 0x05:
+      m_type = Type::JMP;
+      break;
+    case 0x06:
+      m_type = Type::PUSH;
     default:
       std::cerr << "(GRP5) Don't know what to do with "
                 << String::ToHex(reg_bits) << std::endl;
