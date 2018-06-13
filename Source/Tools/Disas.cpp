@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     auto ins = Instruction(opcode, address);
 
     if (ins.IsPrefix())
-      ins = Instruction(ins, ifs.get(), address);
+      ins = Instruction(ins, static_cast<u8>(ifs.get()), address);
 
     std::cout << String::ToHex(address) << " ";
 
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
 
       if (!ins.Resolve(mod, data)) {
         ERROR("Warning: Failed to fully resolve parameters at " +
-               String::ToHex(address) + ".");
+              String::ToHex(address) + ".");
 
         std::cout << String::ToHex(address + 1) << " ";
         std::cout << "DB " << ToDB(opcode) << std::endl;

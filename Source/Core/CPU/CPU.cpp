@@ -99,9 +99,9 @@ void CPU::Tick()
 
       sum &= 0b1'1111'1111'1111'1111;
 
-      UpdateSF(sum);
-      UpdateZF(sum);
-      UpdatePF(sum);
+      UpdateSF(static_cast<i16>(sum));
+      UpdateZF(static_cast<i16>(sum));
+      UpdatePF(static_cast<i16>(sum));
     } else {
       u8& dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
       u8 src_8 = ParameterTo<u8&>(src, ins.GetPrefix());
