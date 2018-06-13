@@ -346,7 +346,7 @@ void CPU::Tick()
     auto& div = ins.GetParameters()[0];
 
     if (div.IsWord()) {
-      u32 dx_ax = AX << 16 | DX;
+      u32 dx_ax = (DX << 16) | AX;
 
       const u16 divisor = ParameterTo<u16>(div, ins.GetPrefix());
 
