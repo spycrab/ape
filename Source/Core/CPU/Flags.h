@@ -14,5 +14,5 @@ template <typename T> void CPU::UpdateOF(i32 value)
 template <typename T> void CPU::UpdateCF(i32 value)
 {
   // Check if there has been a carry or borrow from the last byte
-  CF = value & (sizeof(T) * 8);
+  CF = value & (1 << (sizeof(T) * 8));
 }
