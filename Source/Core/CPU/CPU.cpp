@@ -193,11 +193,23 @@ void CPU::Tick()
     // Copy the sign bit into all of AH
     AH = AL & (0b1000'0000) ? 0xFF : 0x00;
     break;
+  case Type::CLC:
+    CF = false;
+    break;
+  case Type::STC:
+    CF = true;
+    break;
   case Type::CLD:
     DF = false;
     break;
+  case Type::STD:
+    DF = true;
+    break;
   case Type::CLI:
     IF = false;
+    break;
+  case Type::STI:
+    IF = true;
     break;
   case Type::CMP: {
     auto& dst = ins.GetParameters()[0];
@@ -594,9 +606,6 @@ void CPU::Tick()
   case Type::REPNZ:
     m_repeat_mode = RepeatMode::Repeat_Non_Zero;
     return;
-  case Type::STI:
-    IF = true;
-    break;
   case Type::SHL: {
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
