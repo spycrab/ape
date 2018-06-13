@@ -34,6 +34,12 @@ bool Core::HW::FloppyDrive::GuessFormat()
 {
   std::string type;
   switch (GetSize()) {
+  case 184320:
+    type = "IBM 5.25\"";
+    m_sectors_per_track = 9;
+    m_sector_size = 512;
+    m_head_count = 1;
+    break;
   case 368640:
     type = "IBM 5.25\"";
     m_sectors_per_track = 9;
