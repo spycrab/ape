@@ -83,35 +83,37 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord()) {
-      i16& dst_i16 =
-          *reinterpret_cast<i16*>(&ParameterTo<u16&>(dst, ins.GetPrefix()));
+      u16& dst_16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
-      i32 sum = dst_i16;
+      u32 sum = dst_16;
 
       if (src.IsWord())
-        sum += static_cast<i16>(ParameterTo<u16>(src, ins.GetPrefix()));
+        sum += ParameterTo<u16>(src, ins.GetPrefix());
       else
-        sum += static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
+        sum += ParameterTo<u8>(src, ins.GetPrefix());
 
-      dst_i16 = sum & 0xFFFF;
+      dst_16 = sum & 0xFFFF;
 
-      CF = dst_i16 & 0x10000;
-      OF = dst_i16 & 0x20000;
+      CF = dst_16 & 0x10000;
+      OF = dst_16 & 0x20000;
+
+      sum &= 0b1'1111'1111'1111'1111;
 
       UpdateSF(sum);
       UpdateZF(sum);
       UpdatePF(sum);
     } else {
-      i16& dst_i8 =
-          *reinterpret_cast<i16*>(&ParameterTo<u8&>(dst, ins.GetPrefix()));
-      i16 src_i8 = ParameterTo<u8&>(src, ins.GetPrefix());
+      u8& dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
+      u8 src_8 = ParameterTo<u8&>(src, ins.GetPrefix());
 
-      i16 sum = dst_i8 + src_i8;
+      u16 sum = dst_8 + src_8;
 
       CF = sum & 0x100;
       OF = sum & 0x200;
 
-      dst_i8 += src_i8;
+      dst_8 = sum & 0xFF;
+
+      sum &= 0b1'1111'1111;
 
       UpdateSF(sum);
       UpdateZF(sum);
@@ -129,31 +131,29 @@ void CPU::Tick()
     }
 
     if (dst.IsWord()) {
-      i16& dst_i16 =
-          *reinterpret_cast<i16*>(&ParameterTo<u16&>(dst, ins.GetPrefix()));
-      i16 src_i16 = ParameterTo<u16&>(src, ins.GetPrefix());
+      u16& dst_16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+      u16 src_16 = ParameterTo<u16>(src, ins.GetPrefix());
 
-      UpdateOF<i16>(dst_i16 + src_i16);
-      UpdateCF<i16>(dst_i16 + src_i16);
+      UpdateOF<i16>(dst_16 + src_16);
+      UpdateCF<i16>(dst_16 + src_16);
 
-      dst_i16 += src_i16;
+      dst_16 += src_16;
 
-      UpdateSF(dst_i16);
-      UpdateZF(dst_i16);
-      UpdatePF(dst_i16);
+      UpdateSF(dst_16);
+      UpdateZF(dst_16);
+      UpdatePF(dst_16);
     } else {
-      i16& dst_i8 =
-          *reinterpret_cast<i16*>(&ParameterTo<u8&>(dst, ins.GetPrefix()));
-      i16 src_i8 = ParameterTo<u8&>(src, ins.GetPrefix());
+      u8 dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
+      u8 src_8 = ParameterTo<u8>(src, ins.GetPrefix());
 
-      UpdateOF<i8>(dst_i8 + src_i8);
-      UpdateCF<i8>(dst_i8 + src_i8);
+      UpdateOF<i8>(dst_8 + src_8);
+      UpdateCF<i8>(dst_8 + src_8);
 
-      dst_i8 += src_i8;
+      dst_8 += src_8;
 
-      UpdateSF(dst_i8);
-      UpdateZF(dst_i8);
-      UpdatePF(dst_i8);
+      UpdateSF(dst_8);
+      UpdateZF(dst_8);
+      UpdatePF(dst_8);
     }
 
     break;
@@ -718,7 +718,7 @@ void CPU::Tick()
 
     if (dst.IsWord()) {
       u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
+      u16 src16 = ParameterTo<u16>(src, ins.GetPrefix());
 
       UpdateOF<i16>(dst16 - src16);
       UpdateCF<i16>(dst16 - src16);
@@ -730,7 +730,7 @@ void CPU::Tick()
       UpdatePF(dst16);
     } else {
       u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      u8& src8 = ParameterTo<u8&>(src, ins.GetPrefix());
+      u8 src8 = ParameterTo<u8>(src, ins.GetPrefix());
 
       UpdateOF<i8>(dst8 - src8);
       UpdateCF<i8>(dst8 - src8);
