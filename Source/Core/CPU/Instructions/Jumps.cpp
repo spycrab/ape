@@ -37,6 +37,22 @@ void CPU::JMP(const Instruction& instruction)
   }
 }
 
+void CPU::JA(const Instruction& instruction)
+{
+  if (CF || ZF)
+    return;
+
+  JMP(instruction);
+}
+
+void CPU::JBE(const Instruction& instruction)
+{
+  if (!CF && !ZF)
+    return;
+
+  JMP(instruction);
+}
+
 void CPU::JB(const Instruction& instruction)
 {
   if (!CF)
@@ -48,6 +64,22 @@ void CPU::JB(const Instruction& instruction)
 void CPU::JNB(const Instruction& instruction)
 {
   if (CF)
+    return;
+
+  JMP(instruction);
+}
+
+void CPU::JPE(const Instruction& instruction)
+{
+  if (!PF)
+    return;
+
+  JMP(instruction);
+}
+
+void CPU::JS(const Instruction& instruction)
+{
+  if (!SF)
     return;
 
   JMP(instruction);

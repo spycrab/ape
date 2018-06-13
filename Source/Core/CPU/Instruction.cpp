@@ -234,8 +234,6 @@ std::string Core::CPU::TypeToString(const Instruction::Type& type)
     return "JNC";
   case Type::JCXZ:
     return "JCXZ";
-  case Type::JE:
-    return "JE";
   case Type::JPE:
     return "JPE";
   case Type::JNS:

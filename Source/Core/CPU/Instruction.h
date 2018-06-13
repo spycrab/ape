@@ -44,7 +44,6 @@ public:
     JC,
     JNC,
     JCXZ,
-    JE,
     JPE,
     JNS,
     JNO,

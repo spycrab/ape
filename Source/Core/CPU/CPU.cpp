@@ -353,11 +353,23 @@ void CPU::Tick()
   case Type::JMP:
     JMP(ins);
     break;
+  case Type::JA:
+    JA(ins);
+    break;
   case Type::JB:
     JB(ins);
     break;
+  case Type::JBE:
+    JBE(ins);
+    break;
   case Type::JNB:
     JNB(ins);
+    break;
+  case Type::JS:
+    JS(ins);
+    break;
+  case Type::JPE:
+    JPE(ins);
     break;
   case Type::JZ:
     JZ(ins);

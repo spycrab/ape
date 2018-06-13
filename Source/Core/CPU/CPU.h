@@ -76,6 +76,8 @@ public:
   //! Destination Index
   u16 DI = 0;
 
+  //! Adjust Flag
+  bool AF;
   //! Carry Flag
   bool CF;
   //! Interrupt Flag
@@ -105,8 +107,15 @@ private:
 
   void JMP(const Instruction& instruction);
 
+  void JA(const Instruction& instruction);
+
   void JB(const Instruction& instruction);
+  void JBE(const Instruction& instruction);
   void JNB(const Instruction& instruction);
+
+  void JPE(const Instruction& instruction);
+
+  void JS(const Instruction& instruction);
 
   void JZ(const Instruction& instruction);
   void JNZ(const Instruction& instruction);
