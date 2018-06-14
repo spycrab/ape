@@ -310,6 +310,24 @@ void CPU::Tick()
     }
     break;
   }
+  case Type::DAA: {
+    if ((AL & 0xF) > 9 || AF) {
+      bool CF_before = CF;
+
+      UpdateCF<u8>(AL + 6);
+      CF |= CF_before;
+      AL += 6;
+      AF = true;
+    } else {
+      AF = false;
+    }
+
+    UpdateSF(AL);
+    UpdateZF(AL);
+    UpdatePF(AL);
+
+    break;
+  }
   case Type::DEC: {
     auto& parameter = ins.GetParameters()[0];
 
