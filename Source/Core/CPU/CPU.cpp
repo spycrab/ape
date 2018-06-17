@@ -126,13 +126,14 @@ void CPU::Tick()
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
 
-    if (dst.IsWord() != src.IsWord()) {
-      throw ParameterLengthMismatchException();
-    }
-
     if (dst.IsWord()) {
       u16& dst_16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16 src_16 = ParameterTo<u16>(src, ins.GetPrefix());
+      u16 src_16;
+
+      if (src.IsWord())
+        src_16 = ParameterTo<u16>(src, ins.GetPrefix());
+      else
+        src_16 = ParameterTo<u8>(src, ins.GetPrefix());
 
       UpdateOF<i16>(dst_16 + src_16);
       UpdateCF<i16>(dst_16 + src_16);
@@ -145,6 +146,9 @@ void CPU::Tick()
     } else {
       u8 dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
       u8 src_8 = ParameterTo<u8>(src, ins.GetPrefix());
+
+      if (dst.IsWord() != src.IsWord())
+        throw ParameterLengthMismatchException();
 
       UpdateOF<i8>(dst_8 + src_8);
       UpdateCF<i8>(dst_8 + src_8);
