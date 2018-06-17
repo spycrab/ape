@@ -587,8 +587,17 @@ void CPU::Tick()
   case Type::REPNZ:
     m_repeat_mode = RepeatMode::Repeat_Non_Zero;
     return;
+  case Type::ROL:
+    ROL(ins);
+    break;
+  case Type::ROR:
+    ROR(ins);
+    break;
   case Type::SHL:
     SHL(ins);
+    break;
+  case Type::SHR:
+    SHR(ins);
     break;
   case Type::STOSB:
     m_memory.Get<u8>(ES, DI) = AL;
