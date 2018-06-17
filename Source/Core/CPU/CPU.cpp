@@ -285,6 +285,14 @@ void CPU::Tick()
 
     break;
   }
+  case Type::HLT: {
+      LOG("CPU halted, waiting for the next interrupt...");
+
+      // TODO: Actually implement interrupts
+      while (true) {}
+
+      break;
+  }
   case Type::INC: {
     auto& parameter = ins.GetParameters()[0];
 
