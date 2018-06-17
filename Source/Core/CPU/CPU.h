@@ -103,8 +103,7 @@ private:
 
   bool HandleRepetition();
 
-  // Jumps
-
+  //// Jumps
   void JMP(const Instruction& instruction);
 
   void JA(const Instruction& instruction);
@@ -122,6 +121,16 @@ private:
 
   void CALL(const Instruction& instruction);
   void RET(const Instruction& instruction);
+
+  //// Bitwise operations
+  void AND(const Instruction& instruction);
+  void OR(const Instruction& instruction);
+  void XOR(const Instruction& instruction);
+  // Bitwise shifts
+  void ROL(const Instruction& instruction);
+  void ROR(const Instruction& instruction);
+  void SHL(const Instruction& instruction);
+  void SHR(const Instruction& instruction);
 
   union {
     u16 AX = 0;

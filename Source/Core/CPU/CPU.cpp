@@ -162,31 +162,9 @@ void CPU::Tick()
 
     break;
   }
-  case Type::AND: {
-    auto& dst = ins.GetParameters()[0];
-    auto& src = ins.GetParameters()[1];
-
-    if (dst.IsWord()) {
-      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
-
-      dst16 |= src16;
-
-      UpdateSF(dst16);
-      UpdateZF(dst16);
-      UpdatePF(dst16);
-    } else {
-      u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      u8& src8 = ParameterTo<u8&>(src, ins.GetPrefix());
-
-      dst8 |= src8;
-
-      UpdateSF(dst8);
-      UpdateZF(dst8);
-      UpdatePF(dst8);
-    }
+  case Type::AND:
+    AND(ins);
     break;
-  }
   case Type::CALL:
     CALL(ins);
     break;
@@ -286,12 +264,13 @@ void CPU::Tick()
     break;
   }
   case Type::HLT: {
-      LOG("CPU halted, waiting for the next interrupt...");
+    LOG("CPU halted, waiting for the next interrupt...");
 
-      // TODO: Actually implement interrupts
-      while (true) {}
+    // TODO: Actually implement interrupts
+    while (true) {
+    }
 
-      break;
+    break;
   }
   case Type::INC: {
     auto& parameter = ins.GetParameters()[0];
@@ -572,37 +551,9 @@ void CPU::Tick()
 
     break;
   }
-  case Type::OR: {
-    auto& dst = ins.GetParameters()[0];
-    auto& src = ins.GetParameters()[1];
-
-    if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
-
-    if (dst.IsWord()) {
-      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16 src16 = ParameterTo<u16>(src, ins.GetPrefix());
-
-      dst16 |= src16;
-      OF = CF = 0;
-
-      UpdateSF(dst16);
-      UpdateZF(dst16);
-      UpdatePF(dst16);
-    } else {
-      u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      u8 src8 = ParameterTo<u8>(src, ins.GetPrefix());
-
-      dst8 |= src8;
-      OF = CF = 0;
-
-      UpdateSF(dst8);
-      UpdateZF(dst8);
-      UpdatePF(dst8);
-    }
-
+  case Type::OR:
+    OR(ins);
     break;
-  }
   case Type::PUSH: {
     auto& data = ins.GetParameters()[0];
 
@@ -636,34 +587,9 @@ void CPU::Tick()
   case Type::REPNZ:
     m_repeat_mode = RepeatMode::Repeat_Non_Zero;
     return;
-  case Type::SHL: {
-    auto& dst = ins.GetParameters()[0];
-    auto& src = ins.GetParameters()[1];
-
-    u8 shift = ParameterTo<u8>(src, ins.GetPrefix());
-
-    if (dst.IsWord()) {
-      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-
-      OF = CF = (dst16 << (shift - 1) & 1);
-      dst16 <<= shift;
-
-      UpdatePF(dst16);
-      UpdateZF(dst16);
-      UpdateSF(static_cast<i16>(dst16));
-    } else {
-      u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-
-      OF = CF = (dst8 << (shift - 1) & 1);
-      dst8 <<= shift;
-
-      UpdatePF(dst8);
-      UpdateZF(dst8);
-      UpdateSF(static_cast<i8>(dst8));
-    }
-
+  case Type::SHL:
+    SHL(ins);
     break;
-  }
   case Type::STOSB:
     m_memory.Get<u8>(ES, DI) = AL;
 
@@ -722,36 +648,9 @@ void CPU::Tick()
 
     break;
   }
-  case Type::XOR: {
-    auto& dst = ins.GetParameters()[0];
-    auto& src = ins.GetParameters()[1];
-
-    if (dst.IsWord() != src.IsWord()) {
-      throw ParameterLengthMismatchException();
-    }
-
-    if (dst.IsWord()) {
-      u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-      u16 src16 = ParameterTo<u16>(src, ins.GetPrefix());
-      dst16 ^= src16;
-
-      UpdateSF(dst16);
-      UpdateZF(dst16);
-      UpdatePF(dst16);
-    } else {
-      u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-      u8 src8 = ParameterTo<u8>(src, ins.GetPrefix());
-      dst8 ^= src8;
-
-      UpdateSF(dst8);
-      UpdateZF(dst8);
-      UpdatePF(dst8);
-    }
-
-    // TODO: Flags (OF, CF)!
-
+  case Type::XOR:
+    XOR(ins);
     break;
-  }
   default:
     LOG("Don't know what to do with instruction type: " +
         TypeToString(ins.GetType()));

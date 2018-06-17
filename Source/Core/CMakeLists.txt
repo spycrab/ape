@@ -7,6 +7,7 @@ add_library(Core
   CPU/Flags.cpp
   CPU/Instruction.h
   CPU/Instruction.cpp
+  CPU/Instructions/Bitwise.cpp
   CPU/Instructions/Jumps.cpp
   CPU/Interrupt.cpp
   HW/FloppyDrive.h
@@ -32,7 +33,8 @@ source_group(CPU FILES
   CPU/Instruction.cpp
   CPU/Interrupt.cpp)
 
-source_group(CPU/Instructions FILES
+source_group("CPU\\Instructions" FILES
+  CPU/Instructions/Bitwise.cpp
   CPU/Instructions/Jumps.cpp)
 
 source_group(HW FILES
