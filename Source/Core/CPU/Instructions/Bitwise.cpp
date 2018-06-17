@@ -81,7 +81,7 @@ void CPU::SHL(const Instruction& ins)
   if (dst.IsWord()) {
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
-    OF = CF = (dst16 << (shift - 1) & 1);
+    OF = CF = (dst16 << (shift - 1)) >> (sizeof(u16) * 8 - shift - 1);
     dst16 <<= shift;
 
     UpdatePF(dst16);
@@ -90,7 +90,7 @@ void CPU::SHL(const Instruction& ins)
   } else {
     u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
 
-    OF = CF = (dst8 << (shift - 1) & 1);
+    OF = CF = (dst8 << (shift - 1)) >> (sizeof(u8) * 8 - shift - 1);
     dst8 <<= shift;
 
     UpdatePF(dst8);
@@ -109,7 +109,7 @@ void CPU::SHR(const Instruction& ins)
   if (dst.IsWord()) {
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
-    OF = CF = (dst16 >> (shift - 1) & 1);
+    OF = CF = (dst16 >> (shift - 1)) << (sizeof(u16) * 8 - shift - 1);
     dst16 >>= shift;
 
     UpdatePF(dst16);
@@ -118,7 +118,7 @@ void CPU::SHR(const Instruction& ins)
   } else {
     u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
 
-    OF = CF = (dst8 >> (shift - 1) & 1);
+    OF = CF = (dst8 >> (shift - 1)) << (sizeof(u8) * 8 - shift - 1);
     dst8 >>= shift;
 
     UpdatePF(dst8);
