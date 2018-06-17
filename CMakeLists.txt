@@ -84,6 +84,7 @@ endif()
 
 # C++ version file
 configure_file(Source/Version.h.in ${CMAKE_CURRENT_BINARY_DIR}/Version.h)
+set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/Version.h PROPERTIES GENERATED TRUE)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Add components
