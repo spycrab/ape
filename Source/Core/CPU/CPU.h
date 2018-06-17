@@ -81,9 +81,9 @@ public:
   //! Carry Flag
   bool CF;
   //! Interrupt Flag
-  bool IF;
+  bool IF = true;
   //! Direction Flag
-  bool DF;
+  bool DF = false;
   //! Overflow Flag
   bool OF;
   //! Parity Flag
