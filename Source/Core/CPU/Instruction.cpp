@@ -841,13 +841,13 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
         if (!ResolveRM16(param, reg_bits, modrm))
           return false;
         break;
-      case PType::Modifier_Register_Segment:
+      case PType::Modifier_Register_Segment: // All of this is probably BS
         switch (mod_cmb) {
         case 0x0E: // ES
           param.Resolve(PType::ES);
           break;
-        case 0x18: // SS
-          param.Resolve(PType::SS);
+        case 0x18: // DS
+          param.Resolve(PType::DS);
           break;
         default:
           std::cerr << "Don't know how to resolve the RS modifier "
