@@ -1144,18 +1144,43 @@ bool Instruction::Parameter::IsResolved() const { return m_resolved; }
 bool Instruction::Parameter::IsWord() const
 {
   auto t = m_type;
-  return (t == Type::AX || t == Type::BX || t == Type::CX || t == Type::DX ||
-          t == Type::CS || t == Type::DS || t == Type::ES || t == Type::SS ||
-          t == Type::IP || t == Type::BP || t == Type::SP || t == Type::DI ||
-          t == Type::SI || t == Type::Literal_Word ||
-          t == Type::Literal_Word_Immediate || t == Type::Literal_WordOffset ||
-          t == Type::Modifier_Register_Word ||
-          t == Type::Modifier_Register_Segment ||
-          t == Type::Modifier_Any_Word || t == Type::Value_BX_Word ||
-          t == Type::Value_BX_Offset_Word || t == Type::Value_BP_Offset_Word ||
-          t == Type::Value_BP_WordOffset_Word ||
-          t == Type::Value_WordAddress_Word || t == Type::Value_SI_Word ||
-          t == Type::Value_SI_Offset_Word);
+  return (
+      // Registers
+      t == Type::AX || t == Type::BX || t == Type::CX || t == Type::DX ||
+      t == Type::CS || t == Type::DS || t == Type::ES || t == Type::SS ||
+      t == Type::IP || t == Type::BP || t == Type::SP || t == Type::DI ||
+      t == Type::SI ||
+
+      // Literals
+      t == Type::Literal_Word || t == Type::Literal_Word_Immediate ||
+      t == Type::Value_WordAddress_Word || t == Type::Literal_WordOffset ||
+
+      // Modifiers
+      t == Type::Modifier_Register_Segment ||
+      t == Type::Modifier_Register_Word || t == Type::Modifier_Any_Word ||
+
+      // BP
+      t == Type::Value_BP_Offset_Word || t == Type::Value_BP_WordOffset_Word ||
+      t == Type::Value_BP_SI_Word || t == Type::Value_BP_SI_Offset_Word ||
+      t == Type::Value_BP_SI_WordOffset_Word || t == Type::Value_BP_DI_Word ||
+      t == Type::Value_BP_DI_Offset_Word ||
+      t == Type::Value_BP_DI_WordOffset_Word ||
+
+      // BX
+      t == Type::Value_BX_Word || t == Type::Value_BX_Offset_Word ||
+      t == Type::Value_BX_WordOffset_Word || t == Type::Value_BX_SI_Word ||
+      t == Type::Value_BX_SI_Offset_Word ||
+      t == Type::Value_BX_SI_WordOffset_Word || t == Type::Value_BX_DI_Word ||
+      t == Type::Value_BX_DI_Offset_Word ||
+      t == Type::Value_BX_DI_WordOffset_Word ||
+
+      // SI
+      t == Type::Value_SI_Word || t == Type::Value_SI_Offset_Word ||
+      t == Type::Value_SI_WordOffset_Word ||
+
+      // DI
+      t == Type::Value_DI_Word || t == Type::Value_DI_Offset_Word ||
+      t == Type::Value_DI_WordOffset_Word);
 }
 
 u8 Instruction::GetLength(u8 mod)
