@@ -87,7 +87,7 @@ void CPU::ROL(const Instruction& ins)
 
     OF = CF = (dst16 << (shift - 1)) >> (sizeof(u16) * 8 - shift - 1);
     dst16 <<= shift;
-    dst16 |= shifted_out_mask;
+    dst16 |= shifted_out;
 
     UpdatePF(dst16);
     UpdateZF(dst16);
@@ -129,9 +129,9 @@ void CPU::ROR(const Instruction& ins)
 
     u16 shifted_out = (dst16 & shifted_out_mask) << (sizeof(u16) * 8 - shift);
 
-    OF = CF = (dst16 >> (shift - 1)) << (sizeof(u16) * 8 - shift - 1);
+    OF = CF = (dst16 >> (shift - 1)) << (sizeof(u16) * 8 - shift - 1) != 0;
     dst16 >>= shift;
-    dst16 |= shifted_out_mask;
+    dst16 |= shifted_out;
 
     UpdatePF(dst16);
     UpdateZF(dst16);
@@ -146,7 +146,7 @@ void CPU::ROR(const Instruction& ins)
 
     u8 shifted_out = (dst8 & shifted_out_mask) << (sizeof(u8) * 8 - shift);
 
-    OF = CF = (dst8 >> (shift - 1)) << (sizeof(u8) * 8 - shift - 1);
+    OF = CF = (dst8 >> (shift - 1)) << (sizeof(u8) * 8 - shift - 1) != 0;
     dst8 >>= shift;
     dst8 |= shifted_out;
 
@@ -194,7 +194,7 @@ void CPU::SHR(const Instruction& ins)
   if (dst.IsWord()) {
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
-    OF = CF = (dst16 >> (shift - 1)) << (sizeof(u16) * 8 - shift - 1);
+    OF = CF = ((dst16 >> (shift - 1)) << (sizeof(u16) * 8 - shift - 1)) != 0;
     dst16 >>= shift;
 
     UpdatePF(dst16);
@@ -203,7 +203,7 @@ void CPU::SHR(const Instruction& ins)
   } else {
     u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
 
-    OF = CF = (dst8 >> (shift - 1)) << (sizeof(u8) * 8 - shift - 1);
+    OF = CF = ((dst8 >> (shift - 1)) << (sizeof(u8) * 8 - shift - 1)) != 0;
     dst8 >>= shift;
 
     UpdatePF(dst8);
