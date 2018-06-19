@@ -85,6 +85,14 @@ void CPU::JS(const Instruction& instruction)
   JMP(instruction);
 }
 
+void CPU::JNS(const Instruction& instruction)
+{
+  if (SF)
+    return;
+
+  JMP(instruction);
+}
+
 void CPU::JZ(const Instruction& instruction)
 {
   if (!ZF)

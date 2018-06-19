@@ -389,6 +389,9 @@ void CPU::Tick()
   case Type::JS:
     JS(ins);
     break;
+  case Type::JNS:
+    JNS(ins);
+    break;
   case Type::JPE:
     JPE(ins);
     break;

@@ -115,6 +115,7 @@ private:
   void JPE(const Instruction& instruction);
 
   void JS(const Instruction& instruction);
+  void JNS(const Instruction& instruction);
 
   void JZ(const Instruction& instruction);
   void JNZ(const Instruction& instruction);
