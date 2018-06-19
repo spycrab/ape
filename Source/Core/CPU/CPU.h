@@ -103,6 +103,15 @@ private:
 
   bool HandleRepetition();
 
+  //// Arithmetic
+  void ADC(const Instruction& instruction);
+  void ADD(const Instruction& instruction);
+  void DIV(const Instruction& instruction);
+  void SUB(const Instruction& instruction);
+
+  void INC(const Instruction& instruction);
+  void DEC(const Instruction& instruction);
+
   //// Jumps
   void JMP(const Instruction& instruction);
 

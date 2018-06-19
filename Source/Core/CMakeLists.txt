@@ -7,6 +7,7 @@ add_library(Core
   CPU/Flags.cpp
   CPU/Instruction.h
   CPU/Instruction.cpp
+  CPU/Instructions/Arithmetic.cpp
   CPU/Instructions/Bitwise.cpp
   CPU/Instructions/Jumps.cpp
   CPU/Interrupt.cpp
@@ -34,6 +35,7 @@ source_group(CPU FILES
   CPU/Interrupt.cpp)
 
 source_group("CPU\\Instructions" FILES
+  CPU/Instructions/Arithmetic.cpp
   CPU/Instructions/Bitwise.cpp
   CPU/Instructions/Jumps.cpp)
 
