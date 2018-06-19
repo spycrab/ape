@@ -767,6 +767,12 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
     default:
       if constexpr (std::is_same<T, u8>::value) {
         switch (parameter.GetType()) {
+        case Type::Implied_0:
+          return 0;
+        case Type::Implied_1:
+          return 1;
+        case Type::Implied_3:
+          return 3;
         case Type::Literal_Byte:
         case Type::Literal_Byte_Immediate:
           return parameter.GetData<u8>();
@@ -815,6 +821,10 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
 
     case Type::Value_WordAddress_Word:
       return m_memory.Get<u16>(seg_val, parameter.GetData<u16>());
+    case Type::Value_DI_Word:
+      return m_memory.Get<u16>(seg_val, DI);
+    case Type::Value_DI_Offset_Word:
+      return m_memory.Get<u16>(seg_val, DI + parameter.GetData<u8>());
     case Type::Value_SI_Word:
       return m_memory.Get<u16>(seg_val, SI);
     case Type::Value_SI_Offset_Word:
