@@ -37,6 +37,26 @@ void CPU::AND(const Instruction& ins)
   }
 }
 
+void CPU::TEST(const Instruction& ins)
+{
+  auto& dst = ins.GetParameters()[0];
+  if (dst.IsWord()) {
+    u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+    u16 old_val = dst16;
+
+    AND(ins);
+
+    dst16 = old_val;
+  } else {
+    u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
+    u8 old_val = dst8;
+
+    AND(ins);
+
+    dst8 = old_val;
+  }
+}
+
 void CPU::OR(const Instruction& ins)
 {
   auto& dst = ins.GetParameters()[0];

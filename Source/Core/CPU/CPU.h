@@ -125,6 +125,7 @@ private:
 
   //// Bitwise operations
   void AND(const Instruction& instruction);
+  void TEST(const Instruction& instruction);
   void OR(const Instruction& instruction);
   void XOR(const Instruction& instruction);
   // Bitwise shifts

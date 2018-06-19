@@ -641,6 +641,9 @@ void CPU::Tick()
     }
     break;
   }
+  case Type::TEST:
+    TEST(ins);
+    break;
   case Type::XCHG: {
     auto& dst = ins.GetParameters()[0];
     auto& src = ins.GetParameters()[1];
