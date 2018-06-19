@@ -18,18 +18,18 @@ void CPU::AND(const Instruction& ins)
 
   if (dst.IsWord()) {
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
-    u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
+    u16 src16 = ParameterTo<u16>(src, ins.GetPrefix());
 
-    dst16 |= src16;
+    dst16 &= src16;
 
     UpdateSF(dst16);
     UpdateZF(dst16);
     UpdatePF(dst16);
   } else {
     u8& dst8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-    u8& src8 = ParameterTo<u8&>(src, ins.GetPrefix());
+    u8 src8 = ParameterTo<u8>(src, ins.GetPrefix());
 
-    dst8 |= src8;
+    dst8 &= src8;
 
     UpdateSF(dst8);
     UpdateZF(dst8);
