@@ -21,6 +21,9 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
   switch (vector) {
   case 0x21: {
     switch (AH) {
+    case 0x19: // Get Default drive
+        AL = 0;
+        break;
     case 0x30: // Get DOS version
         // Pretend to be MS-DOS 5
         AL = 5;
