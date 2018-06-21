@@ -22,13 +22,22 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
   case 0x21: {
     switch (AH) {
     case 0x19: // Get Default drive
-        AL = 0;
-        break;
+      AL = 0;
+      break;
     case 0x30: // Get DOS version
-        // Pretend to be MS-DOS 5
-        AL = 5;
-        AH = 0;
-        break;
+      // Pretend to be MS-DOS 5
+      AL = 5;
+      AH = 0;
+      break;
+    case 0x3D: // Open file
+      LOG("[STUB] Open requested");
+      LOG("Filename: " + std::string(m_memory.GetPtr<char>(DS, DX)));
+      LOG("AL = " + String::ToHex(AL));
+
+      CF = true;
+      AX = 0x01;
+
+      break;
     default:
       LOG("[INT 0x21] Unhandled parameter AH = " + String::ToHex(AH));
       throw UnhandledInterruptException();
