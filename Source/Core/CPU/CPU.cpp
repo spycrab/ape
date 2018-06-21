@@ -252,6 +252,9 @@ void CPU::Tick()
   case Type::JPE:
     JPE(ins);
     break;
+  case Type::JGE:
+    JGE(ins);
+    break;
   case Type::JZ:
     JZ(ins);
     break;
@@ -586,6 +589,8 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
       return m_memory.Get<u8>(seg_val, BX + DI + parameter.GetData<u8>());
     case Type::Value_BX_DI_WordOffset:
       return m_memory.Get<u8>(seg_val, BX + DI + parameter.GetData<u16>());
+    case Type::Value_SI:
+      return m_memory.Get<u8>(seg_val, SI);
     case Type::Value_SI_Offset:
       return m_memory.Get<u8>(seg_val, SI + parameter.GetData<u8>());
     case Type::Value_SI_WordOffset:
