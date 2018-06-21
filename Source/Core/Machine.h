@@ -25,8 +25,11 @@ public:
   //! Get this machines Memory
   Memory& GetMemory();
 
-  //! Boot the machine
-  bool Boot();
+  //! Boot the machine from the floppy drive
+  bool BootFloppy();
+
+  //! Directly execute a COM file
+  bool BootCOM(const std::string& file);
 
 private:
   HW::FloppyDrive m_floppy_drive;
