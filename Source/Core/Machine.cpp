@@ -4,6 +4,8 @@
 
 #include "Core/Machine.h"
 
+#include "Common/Logger.h"
+
 Core::Machine::Machine() : m_cpu(this), m_memory(1024 * 1024) {}
 
 Core::HW::FloppyDrive& Core::Machine::GetFloppyDrive()
@@ -36,8 +38,14 @@ bool Core::Machine::BootCOM(const std::string& file)
   m_cpu.CS = 0;
   m_cpu.IP = 0x100;
 
-  for (u8* ptr = &m_memory.Get()[0x100]; !ifs.eof(); ptr++)
-    *ptr = static_cast<u8>(ifs.get());
+  size_t index;
+  for (index = 0; !ifs.eof(); index++) {
+    m_memory.Get()[0x100 + index] = static_cast<u8>(ifs.get());
+  }
+
+  LOG("Loaded " + std::to_string(index - 1) + " bytes into memory");
+
+  ifs.close();
 
   m_cpu.Start();
 
