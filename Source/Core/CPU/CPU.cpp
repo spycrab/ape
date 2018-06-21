@@ -24,8 +24,8 @@ CPU::CPU(Core::Machine* machine)
 
 bool CPU::HandleRepetition()
 {
-  CX--;
-  LOG("Repetition: " + String::ToHex(m_repeat_mode));
+  if (m_repeat_mode != RepeatMode::None)
+    CX--;
   switch (m_repeat_mode) {
   case RepeatMode::Repeat:
     return (CX != 0);
@@ -71,8 +71,8 @@ void CPU::Tick()
     throw InvalidInstructionException();
   }
 
-  LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
-      ins.ToString());
+  // LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
+  //     ins.ToString());
 
   using Type = Instruction::Type;
   using PType = Instruction::Parameter::Type;
@@ -131,15 +131,15 @@ void CPU::Tick()
 
         diff -= src16;
 
-        LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
-            String::ToHex<u16>(src16));
+        // LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
+        //     String::ToHex<u16>(src16));
       } else {
         i8 src8 = static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
 
         diff -= src8;
 
-        LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
-            String::ToHex<u8>(src8));
+        // LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
+        //     String::ToHex<u8>(src8));
       }
 
       UpdateSF(static_cast<i16>(diff));
@@ -153,8 +153,8 @@ void CPU::Tick()
 
       i32 diff = dst_i8 - src_i8;
 
-      LOG("Comparing " + String::ToHex<u8>(dst_i8) + " with " +
-          String::ToHex<u8>(src_i8));
+      // LOG("Comparing " + String::ToHex<u8>(dst_i8) + " with " +
+      //    String::ToHex<u8>(src_i8));
 
       UpdateSF(static_cast<i8>(diff));
       UpdateZF(static_cast<i8>(diff));
@@ -171,9 +171,10 @@ void CPU::Tick()
       u8 src = m_memory.Get<u8>(ES, SI);
       u8 cmp = dst - src;
 
-      LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":" +
-          String::ToHex(SI) + ") with " + String::ToHex(src) + " (" +
-          String::ToHex(ES) + ":" + String::ToHex(DI) + ")");
+      // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
+      // +
+      //    String::ToHex(SI) + ") with " + String::ToHex(src) + " (" +
+      //    String::ToHex(ES) + ":" + String::ToHex(DI) + ")");
 
       UpdateSF(cmp);
       UpdateZF(cmp);
@@ -327,6 +328,8 @@ void CPU::Tick()
     } while (HandleRepetition());
     break;
   case Type::LOOP: {
+    // LOG("CX = " + String::ToHex(CX));
+
     if (CX == 0)
       break;
 
