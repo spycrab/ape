@@ -4,6 +4,11 @@
 
 #include "Core/CPU/CPU.h"
 
+#include "Common/Logger.h"
+#include "Common/String.h"
+
+#include "Core/CPU/Exception.h"
+
 using namespace Core::CPU;
 
 void CPU::CallInterrupt(u8 vector)
@@ -11,5 +16,11 @@ void CPU::CallInterrupt(u8 vector)
   // TODO: Our Handlers / Software Handlers
   // TODO: Actually emulate / use interrupt lookups
 
-  CallBIOSInterrupt(vector);
+  if (CallMSDOSInterrupt(vector))
+    return;
+  if (CallBIOSInterrupt(vector))
+    return;
+
+  LOG("Unhandled interrupt vector " + String::ToHex(vector));
+  throw UnhandledInterruptException();
 }

@@ -93,6 +93,9 @@ public:
   //! Zero Flag
   bool ZF;
 
+  //! Simulate MS-DOS (Handle its interrupts)
+  bool simulate_msdos = false;
+
 private:
   //! \cond PRIVATE
   template <class T>
@@ -180,7 +183,8 @@ private:
   template <typename T> void UpdateCF(i32 value);
 
   void CallInterrupt(u8 vector);
-  void CallBIOSInterrupt(u8 vector);
+  bool CallBIOSInterrupt(u8 vector);
+  bool CallMSDOSInterrupt(u8 vector);
 
   enum class RepeatMode : u8 { None, Repeat, Repeat_Zero, Repeat_Non_Zero };
 

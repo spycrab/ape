@@ -16,7 +16,7 @@
 
 using namespace Core::CPU;
 
-void CPU::CallBIOSInterrupt(u8 vector)
+bool CPU::CallBIOSInterrupt(u8 vector)
 {
   switch (vector) {
   case 0x10: // Video services
@@ -94,7 +94,8 @@ void CPU::CallBIOSInterrupt(u8 vector)
     break;
   }
   default:
-    LOG("[CBI] Unknown vector " + String::ToHex(vector));
-    throw UnhandledInterruptException();
+    return false;
   }
+
+  return true;
 }

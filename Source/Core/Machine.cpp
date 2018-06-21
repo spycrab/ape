@@ -37,6 +37,7 @@ bool Core::Machine::BootCOM(const std::string& file)
 
   m_cpu.CS = 0;
   m_cpu.IP = 0x100;
+  m_cpu.simulate_msdos = true;
 
   size_t index;
   for (index = 0; !ifs.eof(); index++) {

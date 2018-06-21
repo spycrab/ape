@@ -16,7 +16,8 @@ add_library(Core
   Machine.h
   Machine.cpp
   Memory.h
-  Memory.cpp)
+  Memory.cpp
+  MSDOS/Interrupt.cpp)
 
 target_link_libraries(Core PRIVATE
   Common)
@@ -50,3 +51,6 @@ source_group(Machine FILES
 source_group(Memory FILES
   Memory.h
   Memory.cpp)
+
+source_group(MSDOS FILES
+  MSDOS/Interrupt.cpp)
