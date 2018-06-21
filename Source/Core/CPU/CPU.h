@@ -110,6 +110,7 @@ private:
   void ADC(const Instruction& instruction);
   void ADD(const Instruction& instruction);
   void DIV(const Instruction& instruction);
+  void SBB(const Instruction& instruction);
   void SUB(const Instruction& instruction);
 
   void INC(const Instruction& instruction);

@@ -170,6 +170,50 @@ void CPU::INC(const Instruction& ins)
   }
 }
 
+void CPU::SBB(const Instruction& ins)
+{
+  auto& dst = ins.GetParameters()[0];
+  auto& src = ins.GetParameters()[1];
+
+  if (dst.IsWord()) {
+    u16& dst_16 = ParameterTo<u16&>(dst, ins.GetPrefix());
+
+    u32 sum = dst_16;
+
+    if (src.IsWord())
+      sum -= ParameterTo<u16>(src, ins.GetPrefix());
+    else
+      sum -= ParameterTo<u8>(src, ins.GetPrefix());
+
+    dst_16 = sum & 0xFFFF;
+
+    CF = dst_16 & 0x10000;
+    OF = dst_16 & 0x20000;
+
+    sum &= 0b1111'1111'1111'1111;
+
+    UpdateSF(static_cast<i16>(sum));
+    UpdateZF(static_cast<i16>(sum));
+    UpdatePF(static_cast<i16>(sum));
+  } else {
+    u8& dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
+    u8 src_8 = ParameterTo<u8&>(src, ins.GetPrefix());
+
+    u16 sum = dst_8 - src_8;
+
+    CF = sum & 0x100;
+    OF = sum & 0x200;
+
+    dst_8 = sum & 0xFF;
+
+    sum &= 0b1111'1111;
+
+    UpdateSF(static_cast<i8>(sum));
+    UpdateZF(static_cast<i8>(sum));
+    UpdatePF(static_cast<i8>(sum));
+  }
+}
+
 void CPU::SUB(const Instruction& ins)
 {
   auto& dst = ins.GetParameters()[0];

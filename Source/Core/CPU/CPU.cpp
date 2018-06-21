@@ -467,6 +467,9 @@ void CPU::Tick()
 
     DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
     break;
+  case Type::SBB:
+    SBB(ins);
+    break;
   case Type::SUB:
     SUB(ins);
     break;
