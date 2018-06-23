@@ -24,7 +24,7 @@ std::optional<HFile> File::Open(const std::string& path, u8 mode)
   const auto& unix_path = Util::Path::ToUnix(path);
 
   if (!Util::File::Exists(unix_path)) {
-    LOG("Requested file " + unix_path + " does not exist");
+    WARN("Requested file " + unix_path + " does not exist");
     return std::nullopt;
   }
 
@@ -42,4 +42,38 @@ std::optional<HFile> File::Open(const std::string& path, u8 mode)
   ERROR("Too many file handles! Can't open new file.");
 
   throw std::nullopt;
+}
+
+std::optional<u32> File::Seek(HFile handle, File::SeekOrigin origin, u32 offset)
+{
+  if (!s_handles.count(handle)) {
+    WARN("Unknown handle " + String::ToHex(handle) + " given");
+    return std::nullopt;
+  }
+
+  LOG("Seeking " + String::ToHex(handle) + " to " + String::ToHex(offset));
+
+  std::fstream& stream = s_handles[handle];
+
+  std::ios::seekdir dir;
+
+  switch (origin) {
+  case SeekOrigin::START:
+    dir = std::ios::beg;
+    break;
+  case SeekOrigin::CUR_POS:
+    dir = std::ios::cur;
+    break;
+  case SeekOrigin::END:
+    dir = std::ios::end;
+    break;
+  default:
+    ERROR("Bad seek origin given!");
+    return std::nullopt;
+  }
+
+  stream.seekg(offset, dir);
+  stream.seekp(offset, dir);
+
+  return stream.tellg();
 }

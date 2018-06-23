@@ -43,6 +43,20 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       CF = !handle.has_value();
       break;
     }
+    case 0x42: { // Seek file
+      auto offset =
+          File::Seek(BX, static_cast<File::SeekOrigin>(AL), CX << 16 | DX);
+
+      if (offset) {
+        CX = (offset.value() & 0xFFFF0000) >> 16;
+        DX = offset.value() & 0xFFFF;
+      } else {
+        AX = 0x01;
+      }
+
+      CF = !offset.has_value();
+      break;
+    }
     default:
       LOG("[INT 0x21] Unhandled parameter AH = " + String::ToHex(AH));
       throw UnhandledInterruptException();

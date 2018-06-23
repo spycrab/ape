@@ -15,7 +15,11 @@ using HFile = u16;
 
 namespace File
 {
+enum class SeekOrigin : u8 { START = 0, CUR_POS = 1, END = 2 };
+
 //! Attempts to create a new MSDOS file handle
 std::optional<HFile> Open(const std::string& path, u8 mode);
+//! Attempts to seek to the given position
+std::optional<u32> Seek(HFile handle, SeekOrigin origin, u32 offset);
 }
 }
