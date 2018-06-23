@@ -1,4 +1,6 @@
 add_library(Common
+  File.h
+  File.cpp
   String.h
   Logger.h
   Logger.cpp
