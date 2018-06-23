@@ -12,9 +12,11 @@
 #include "Common/Types.h"
 
 #include "Core/CPU/Exception.h"
+#include "Core/MSDOS/File.h"
 #include "Core/Machine.h"
 
 using namespace Core::CPU;
+using namespace Core::MSDOS;
 
 bool CPU::CallMSDOSInterrupt(u8 vector)
 {
@@ -29,15 +31,18 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       AL = 5;
       AH = 0;
       break;
-    case 0x3D: // Open file
-      LOG("[STUB] Open requested");
-      LOG("Filename: " + std::string(m_memory.GetPtr<char>(DS, DX)));
-      LOG("AL = " + String::ToHex(AL));
+    case 0x3D: { // Open file
+      auto handle = File::Open(m_memory.GetPtr<char>(DS, DX), AL);
 
-      CF = true;
-      AX = 0x01;
+      if (handle) {
+        AX = handle.value();
+      } else {
+        AX = 0x01;
+      }
 
+      CF = !handle.has_value();
       break;
+    }
     default:
       LOG("[INT 0x21] Unhandled parameter AH = " + String::ToHex(AH));
       throw UnhandledInterruptException();
