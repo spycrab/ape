@@ -43,6 +43,17 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       CF = !handle.has_value();
       break;
     }
+    case 0x3F: { // Read file
+      auto read = File::Read(BX, CX, m_memory.GetPtr<u8>(DS, DX));
+
+      if (read) {
+        AX = read.value();
+      } else {
+        AX = 0x05;
+      }
+
+      CF = !read.has_value();
+    }
     case 0x42: { // Seek file
       auto offset =
           File::Seek(BX, static_cast<File::SeekOrigin>(AL), CX << 16 | DX);

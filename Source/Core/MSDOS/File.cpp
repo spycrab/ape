@@ -77,3 +77,23 @@ std::optional<u32> File::Seek(HFile handle, File::SeekOrigin origin, u32 offset)
 
   return stream.tellg();
 }
+
+std::optional<u16> File::Read(HFile handle, u16 count, u8* dst)
+{
+  if (!s_handles.count(handle)) {
+    WARN("Unknown handle " + String::ToHex(handle) + " given");
+    return std::nullopt;
+  }
+
+  LOG("Reading from " + String::ToHex(handle) + " " + String::ToHex(count) +
+      " bytes");
+
+  std::fstream& stream = s_handles[handle];
+
+  stream.read(reinterpret_cast<char*>(dst), count);
+
+  if (!stream.good())
+    return std::nullopt;
+
+  return count;
+}
