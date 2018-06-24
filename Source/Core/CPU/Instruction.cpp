@@ -736,6 +736,9 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     case 0x05:
       m_type = Type::SHR;
       break;
+    case 0x07: // TODO: Should be SAR
+      m_type = Type::SHR;
+      break;
     default:
       std::cerr << "(GRP2) Don't know what to do with "
                 << String::ToHex(reg_bits) << std::endl;
