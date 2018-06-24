@@ -244,6 +244,9 @@ void CPU::Tick()
   case Type::JNB:
     JNB(ins);
     break;
+  case Type::JCXZ:
+    JCXZ(ins);
+    break;
   case Type::JS:
     JS(ins);
     break;
@@ -252,6 +255,9 @@ void CPU::Tick()
     break;
   case Type::JPE:
     JPE(ins);
+    break;
+  case Type::JG:
+    JG(ins);
     break;
   case Type::JGE:
     JGE(ins);

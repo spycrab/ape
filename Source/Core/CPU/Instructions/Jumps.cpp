@@ -74,6 +74,22 @@ void CPU::JNB(const Instruction& instruction)
   JMP(instruction);
 }
 
+void CPU::JCXZ(const Instruction& instruction)
+{
+  if (CX)
+    return;
+
+  JMP(instruction);
+}
+
+void CPU::JG(const Instruction& instruction)
+{
+  if (ZF && (CF != OF))
+    return;
+
+  JMP(instruction);
+}
+
 void CPU::JGE(const Instruction& instruction)
 {
   if (CF != OF)

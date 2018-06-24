@@ -125,6 +125,9 @@ private:
   void JBE(const Instruction& instruction);
   void JNB(const Instruction& instruction);
 
+  void JCXZ(const Instruction& instruction);
+
+  void JG(const Instruction& instruction);
   void JGE(const Instruction& instruction);
 
   void JPE(const Instruction& instruction);
