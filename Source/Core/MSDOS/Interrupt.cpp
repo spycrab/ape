@@ -78,6 +78,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       }
 
       CF = !read.has_value();
+      break;
     }
     case 0x42: { // Seek file
       auto offset =
