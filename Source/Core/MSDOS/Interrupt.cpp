@@ -21,13 +21,38 @@ using namespace Core::MSDOS;
 bool CPU::CallMSDOSInterrupt(u8 vector)
 {
   switch (vector) {
+  case 0x20: // Exit program
+    LOG("[STUB] Exit requested, shutting down...");
+    std::exit(0);
+    break;
   case 0x21: {
     switch (AH) {
+    case 0x02: { // Print char
+      LOG("OUTPUT: " + std::string(1, DL));
+      std::ofstream ofs("output.txt", std::ios::app);
+      ofs.put(DL);
+      break;
+    }
+    case 0x09: // Print string
+    {
+      std::string s = "";
+
+      char* c = m_memory.GetPtr<char>(DS, DX);
+
+      while (*c != '$')
+        s += *(c++);
+
+      LOG("OUTPUTS: " + s);
+      std::ofstream ofs("output.txt", std::ios::app);
+      ofs.write(s.c_str(), s.size());
+      break;
+    }
     case 0x19: // Get Default drive
       AL = 0;
       break;
     case 0x30: // Get DOS version
       // Pretend to be MS-DOS 5
+      LOG("DOS version requested; faking 5.0");
       AL = 5;
       AH = 0;
       break;
@@ -68,6 +93,11 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       CF = !offset.has_value();
       break;
     }
+    case 0x50: // Set PSP
+      LOG("[STUB] Set PSP = " + String::ToHex(BX));
+      CF = false;
+      break;
+
     default:
       LOG("[INT 0x21] Unhandled parameter AH = " + String::ToHex(AH));
       throw UnhandledInterruptException();
