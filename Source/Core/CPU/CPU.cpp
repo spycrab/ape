@@ -589,6 +589,8 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
       return m_memory.Get<u8>(seg_val, BP + SI + parameter.GetData<u8>());
     case Type::Value_BP_SI_WordOffset:
       return m_memory.Get<u8>(seg_val, BP + SI + parameter.GetData<u16>());
+    case Type::Value_BX:
+      return m_memory.Get<u8>(seg_val, BX);
     case Type::Value_BX_SI:
       return m_memory.Get<u8>(seg_val, BX + SI);
     case Type::Value_BX_SI_Offset:
