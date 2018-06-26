@@ -106,6 +106,14 @@ void CPU::JL(const Instruction& instruction)
   JMP(instruction);
 }
 
+void CPU::JLE(const Instruction& instruction)
+{
+  if (!ZF && (CF == OF))
+    return;
+
+  JMP(instruction);
+}
+
 void CPU::JO(const Instruction& instruction)
 {
   if (!OF)

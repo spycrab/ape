@@ -131,6 +131,7 @@ private:
   void JGE(const Instruction& instruction);
 
   void JL(const Instruction& instruction);
+  void JLE(const Instruction& instruction);
 
   void JO(const Instruction& instruction);
 
