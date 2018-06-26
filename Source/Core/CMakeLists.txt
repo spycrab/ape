@@ -18,7 +18,9 @@ add_library(Core
   Memory.h
   Memory.cpp
   MSDOS/File.cpp
-  MSDOS/Interrupt.cpp)
+  MSDOS/Interrupt.cpp
+  TTY.cpp
+  TTY.h)
 
 target_link_libraries(Core PRIVATE
   Common)
@@ -56,3 +58,7 @@ source_group(Memory FILES
 source_group(MSDOS FILES
   MSDOS/File.cpp
   MSDOS/Interrupt.cpp)
+
+source_group(TTY FILES
+  TTY.cpp
+  TTY.h)

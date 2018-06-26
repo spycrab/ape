@@ -13,6 +13,7 @@
 
 #include "Core/CPU/Exception.h"
 #include "Core/Machine.h"
+#include "Core/TTY.h"
 
 using namespace Core::CPU;
 
@@ -21,10 +22,12 @@ bool CPU::CallBIOSInterrupt(u8 vector)
   switch (vector) {
   case 0x10: // Video services
     switch (AH) {
+    case 0x06: { // Scroll screen
+      TTY::Scroll(BL, BH);
+      break;
+    }
     case 0x0E: { // Write character and move cursor
-      LOG("OUTPUT: " + std::string(1, AL));
-      std::ofstream ofs("output.txt", std::ios::app);
-      ofs.put(AL);
+      TTY::Write(AL);
     } break;
     default:
       LOG("[INT 10h] Unknown parameter AH=" + String::ToHex(AH));
@@ -82,8 +85,7 @@ bool CPU::CallBIOSInterrupt(u8 vector)
   case 0x16: { // Keyboard services
     switch (AH) {
     case 0x00: // Wait for key press
-      LOG("Key requested.");
-      AL = static_cast<u8>(std::cin.get());
+      AL = TTY::Read();
       AH = 0; // TODO: This should be the scancode...
       CF = false;
       break;

@@ -14,6 +14,7 @@
 #include "Core/CPU/Exception.h"
 #include "Core/MSDOS/File.h"
 #include "Core/Machine.h"
+#include "Core/TTY.h"
 
 using namespace Core::CPU;
 using namespace Core::MSDOS;
@@ -28,9 +29,12 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
   case 0x21: {
     switch (AH) {
     case 0x02: { // Print char
-      LOG("OUTPUT: " + std::string(1, DL));
-      std::ofstream ofs("output.txt", std::ios::app);
-      ofs.put(DL);
+      TTY::Write(DL);
+      break;
+    }
+    case 0x06: { // Read char
+      AL = TTY::Read();
+      ZF = false;
       break;
     }
     case 0x09: // Print string
@@ -42,9 +46,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       while (*c != '$')
         s += *(c++);
 
-      LOG("OUTPUTS: " + s);
-      std::ofstream ofs("output.txt", std::ios::app);
-      ofs.write(s.c_str(), s.size());
+      TTY::Write(s);
       break;
     }
     case 0x19: // Get Default drive
