@@ -16,7 +16,7 @@ void TTY::Write(const std::string& string)
   LOG("[TTY STUB] STRING: " + string);
 }
 
-void TTY::Write(const char c) { LOG("[TTY STUB] CHAR: " + std::string(c, 1)); }
+void TTY::Write(const char c) { LOG("[TTY STUB] CHAR: " + std::string(1, c)); }
 
 void TTY::Scroll(const u8 lines, const u8 color)
 {
