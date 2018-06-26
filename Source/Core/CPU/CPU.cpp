@@ -50,7 +50,6 @@ void CPU::Tick()
   }
   if (!ins.IsResolved()) {
     u8 mod = m_memory.Get<u8>(CS, IP++);
-
     u8 length = ins.GetLength(mod);
 
     std::vector<u8> data;
@@ -67,12 +66,13 @@ void CPU::Tick()
   }
 
   if (ins.GetType() == Instruction::Type::Invalid) {
-    LOG("Invalid instruction hit!");
-    throw InvalidInstructionException();
+    LOG("Invalid instruction hit: " + String::ToHex(opcode));
+    return;
+    // throw InvalidInstructionException();
   }
 
-  // LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
-  //     ins.ToString());
+  //  LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
+  //      ins.ToString());
 
   using Type = Instruction::Type;
   using PType = Instruction::Parameter::Type;
@@ -585,6 +585,14 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
       return m_memory.Get<u8>(seg_val, BP + parameter.GetData<u8>());
     case Type::Value_BP_WordOffset:
       return m_memory.Get<u8>(seg_val, BP + parameter.GetData<u16>());
+    case Type::Value_BP_DI:
+      return m_memory.Get<u8>(seg_val, BP + DI);
+    case Type::Value_BP_DI_Offset:
+      return m_memory.Get<u8>(seg_val, BP + DI + parameter.GetData<u8>());
+    case Type::Value_BP_DI_WordOffset:
+      return m_memory.Get<u8>(seg_val, BP + DI + parameter.GetData<u16>());
+    case Type::Value_BP_SI:
+      return m_memory.Get<u8>(seg_val, BP + SI);
     case Type::Value_BP_SI_Offset:
       return m_memory.Get<u8>(seg_val, BP + SI + parameter.GetData<u8>());
     case Type::Value_BP_SI_WordOffset:

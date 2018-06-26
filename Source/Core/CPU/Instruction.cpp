@@ -671,6 +671,7 @@ static bool ResolveRM16(Instruction::Parameter& param, u8 rm_bits, u8 modrm)
 
 bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
 {
+  using PType = Parameter::Type;
 
   // MOD RM Layout
   // |7 6 |5 4 3|2 1 0|
@@ -750,6 +751,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     switch (reg_bits) {
     case 0x00:
       m_type = Type::TEST;
+      m_parameters.push_back(Parameter(PType::Literal_Byte_Immediate));
       break;
     case 0x02:
       m_type = Type::NOT;
@@ -822,7 +824,6 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
 
   for (auto& param : m_parameters) {
     if (!param.IsResolved()) {
-      using PType = Parameter::Type;
       switch (param.GetType()) {
       case PType::Modifier_Register_Byte:
         if (!ResolveRM8(param, reg_bits, modrm))
