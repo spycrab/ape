@@ -465,7 +465,6 @@ void CPU::Tick()
     dst16 = m_memory.Get<u16>(SS, SP);
     SP += sizeof(u16);
 
-    LOG("Popped back " + String::ToHex(dst16));
     break;
   }
   case Type::REPZ:
