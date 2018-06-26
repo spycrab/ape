@@ -262,6 +262,9 @@ void CPU::Tick()
   case Type::JGE:
     JGE(ins);
     break;
+  case Type::JL:
+    JL(ins);
+    break;
   case Type::JZ:
     JZ(ins);
     break;
