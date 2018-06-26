@@ -414,6 +414,7 @@ void CPU::Tick()
     } while (HandleRepetition());
     break;
   }
+  case Type::IMUL: // TODO: This is a bad way to stub IMUL...
   case Type::MUL: {
     auto& mul = ins.GetParameters()[0];
 
