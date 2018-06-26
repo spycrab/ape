@@ -94,6 +94,20 @@ bool CPU::CallBIOSInterrupt(u8 vector)
       throw UnhandledInterruptException();
     }
     break;
+  case 0x17: // Printer services
+    switch (AH) {
+    case 0x00: // Write character
+      LOG("[PRINTER STUB] Writing " + std::string(AL, 1));
+
+      // Set both the "Out of paper" and "Selected" flag to indicate no printer
+      // is attached
+      AH = 0b0011'0000;
+      break;
+    default:
+      LOG("[INT 17h] Unknown parameter AH=" + String::ToHex(AH));
+      throw UnhandledInterruptException();
+    }
+    break;
   }
   default:
     return false;

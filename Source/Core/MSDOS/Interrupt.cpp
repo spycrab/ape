@@ -37,6 +37,11 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       ZF = false;
       break;
     }
+    case 0x07: // Read char (no echo)
+      // TODO: Actually does echo
+      AL = TTY::Read();
+      ZF = false;
+      break;
     case 0x09: // Print string
     {
       std::string s = "";
