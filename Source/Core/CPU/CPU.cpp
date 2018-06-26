@@ -442,6 +442,18 @@ void CPU::Tick()
 
     break;
   }
+  case Type::PUSHF: {
+    u16 eflags = static_cast<u16>(CF) | (1 << 1) | (static_cast<u16>(PF) << 2) |
+                 (static_cast<u16>(AF) << 4) | (static_cast<u16>(ZF) << 6) |
+                 (static_cast<u16>(SF) << 7) | (/*TF*/ 0 << 8) |
+                 (static_cast<u16>(IF) << 9) | (static_cast<u16>(DF) << 10) |
+                 (static_cast<u16>(OF) << 11) | (1 << 14) | (1 << 15);
+
+    SP -= sizeof(u16);
+    m_memory.Get<u16>(SS, SP) = eflags;
+
+    break;
+  }
   case Type::POP: {
     auto& dst = ins.GetParameters()[0];
 
