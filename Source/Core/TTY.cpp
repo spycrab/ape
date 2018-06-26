@@ -29,7 +29,5 @@ void TTY::Clear() { LOG("[TTY STUB] Clear"); }
 char TTY::Read()
 {
   LOG("[TTY STUB] Read");
-  char c;
-  std::cin >> c;
-  return c;
+  return 'A';
 }
