@@ -434,6 +434,9 @@ void CPU::Tick()
 
     break;
   }
+  case Type::NOP:
+    LOG("NOP? NOP.");
+    break;
   case Type::OR:
     OR(ins);
     break;
