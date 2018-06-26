@@ -102,6 +102,9 @@ void CPU::Tick()
   case Type::CLC:
     CF = false;
     break;
+  case Type::CMC:
+    CF = !CF;
+    break;
   case Type::STC:
     CF = true;
     break;
