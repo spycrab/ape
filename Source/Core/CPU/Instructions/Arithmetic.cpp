@@ -197,7 +197,7 @@ void CPU::SBB(const Instruction& ins)
     UpdatePF(static_cast<i16>(sum));
   } else {
     u8& dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
-    u8 src_8 = ParameterTo<u8&>(src, ins.GetPrefix());
+    u8 src_8 = ParameterTo<u8>(src, ins.GetPrefix());
 
     u16 sum = dst_8 - src_8;
 

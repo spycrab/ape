@@ -132,6 +132,8 @@ private:
 
   void JL(const Instruction& instruction);
 
+  void JO(const Instruction& instruction);
+
   void JPE(const Instruction& instruction);
 
   void JS(const Instruction& instruction);
