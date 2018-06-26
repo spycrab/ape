@@ -77,21 +77,21 @@ public:
   u16 DI = 0;
 
   //! Adjust Flag
-  bool AF;
+  bool AF = false;
   //! Carry Flag
-  bool CF;
+  bool CF = false;
   //! Interrupt Flag
   bool IF = true;
   //! Direction Flag
   bool DF = false;
   //! Overflow Flag
-  bool OF;
+  bool OF = false;
   //! Parity Flag
-  bool PF;
+  bool PF = false;
   //! Sign Flag
-  bool SF;
+  bool SF = false;
   //! Zero Flag
-  bool ZF;
+  bool ZF = false;
 
   //! Simulate MS-DOS (Handle its interrupts)
   bool simulate_msdos = false;
