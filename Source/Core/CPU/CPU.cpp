@@ -224,6 +224,7 @@ void CPU::Tick()
   case Type::DEC:
     DEC(ins);
     break;
+  case Type::IDIV: // TODO: This is a bad way to stub IDIV...
   case Type::DIV:
     DIV(ins);
     break;
