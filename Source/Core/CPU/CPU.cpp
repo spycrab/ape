@@ -331,10 +331,10 @@ void CPU::Tick()
   case Type::LOOP: {
     // LOG("CX = " + String::ToHex(CX));
 
+    CX--;
+
     if (CX == 0)
       break;
-
-    CX--;
 
     auto& parameter = ins.GetParameters()[0];
 
@@ -344,6 +344,25 @@ void CPU::Tick()
       break;
     default:
       LOG("[LOOP] Don't know what to do with parameter type: " +
+          ParameterTypeToString(parameter.GetType()));
+      throw UnhandledParameterException();
+    }
+    break;
+  }
+  case Type::LOOPNZ: {
+    CX--;
+
+    if (CX == 0 || !ZF)
+      break;
+
+    auto& parameter = ins.GetParameters()[0];
+
+    switch (parameter.GetType()) {
+    case PType::Literal_Offset:
+      IP += parameter.GetData<i8>();
+      break;
+    default:
+      LOG("[LOOPNZ] Don't know what to do with parameter type: " +
           ParameterTypeToString(parameter.GetType()));
       throw UnhandledParameterException();
     }
