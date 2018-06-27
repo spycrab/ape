@@ -71,8 +71,8 @@ void CPU::Tick()
     // throw InvalidInstructionException();
   }
 
-  LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
-      ins.ToString());
+  //  LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
+  //    ins.ToString());
 
   using Type = Instruction::Type;
   using PType = Instruction::Parameter::Type;
@@ -757,7 +757,9 @@ T CPU::ParameterTo(const Instruction::Parameter& parameter,
           break;
         }
       } else {
-        throw ParameterLengthMismatchException();
+        LOG("[WORD] Unknown type: " +
+            ParameterTypeToString(parameter.GetType()));
+        throw UnhandledParameterException();
       }
     }
   }
