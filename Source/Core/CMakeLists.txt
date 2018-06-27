@@ -10,6 +10,7 @@ add_library(Core
   CPU/Instructions/Arithmetic.cpp
   CPU/Instructions/Bitwise.cpp
   CPU/Instructions/Jumps.cpp
+  CPU/Instructions/String.cpp
   CPU/Interrupt.cpp
   HW/FloppyDrive.h
   HW/FloppyDrive.cpp
@@ -41,7 +42,8 @@ source_group(CPU FILES
 source_group("CPU\\Instructions" FILES
   CPU/Instructions/Arithmetic.cpp
   CPU/Instructions/Bitwise.cpp
-  CPU/Instructions/Jumps.cpp)
+  CPU/Instructions/Jumps.cpp
+  CPU/Instructions/String.cpp)
 
 source_group(HW FILES
   HW/FloppyDrive.h

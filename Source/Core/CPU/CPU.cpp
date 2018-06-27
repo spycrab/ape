@@ -168,29 +168,9 @@ void CPU::Tick()
 
     break;
   }
-  case Type::CMPSB: {
-    do {
-      u8 dst = m_memory.Get<u8>(DS, SI);
-      u8 src = m_memory.Get<u8>(ES, SI);
-      u8 cmp = dst - src;
-
-      // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
-      // +
-      //    String::ToHex(SI) + ") with " + String::ToHex(src) + " (" +
-      //    String::ToHex(ES) + ":" + String::ToHex(DI) + ")");
-
-      UpdateSF(cmp);
-      UpdateZF(cmp);
-      UpdatePF(cmp);
-      UpdateOF<i8>(cmp);
-      UpdateCF<i8>(cmp);
-
-      SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-      DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-    } while (HandleRepetition());
-
+  case Type::CMPSB:
+    CMPSB(ins);
     break;
-  }
   case Type::HLT: {
     LOG("CPU halted, waiting for the next interrupt...");
 
@@ -340,11 +320,7 @@ void CPU::Tick()
     break;
   }
   case Type::LODSB:
-    do {
-      AL = m_memory.Get<u8>(DS, SI);
-
-      SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-    } while (HandleRepetition());
+    LODSB(ins);
     break;
   case Type::LOOP: {
     // LOG("CX = " + String::ToHex(CX));
@@ -392,31 +368,12 @@ void CPU::Tick()
 
     break;
   }
-  case Type::MOVSB: {
-    do {
-      u8& dst = m_memory.Get<u8>(ES, DI);
-      u8 src = m_memory.Get<u8>(PrefixToValue(ins.GetPrefix()), SI);
-
-      dst = src;
-
-      DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-      SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
-    } while (HandleRepetition());
-
+  case Type::MOVSB:
+    MOVSB(ins);
     break;
-  }
-  case Type::MOVSW: {
-    do {
-      u16& dst = m_memory.Get<u16>(ES, DI);
-      u16 src = m_memory.Get<u16>(PrefixToValue(ins.GetPrefix()), SI);
-
-      dst = src;
-
-      DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
-      SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
-    } while (HandleRepetition());
+  case Type::MOVSW:
+    MOVSW(ins);
     break;
-  }
   case Type::IMUL: // TODO: This is a bad way to stub IMUL...
   case Type::MUL: {
     auto& mul = ins.GetParameters()[0];
@@ -500,9 +457,7 @@ void CPU::Tick()
     SHR(ins);
     break;
   case Type::STOSB:
-    m_memory.Get<u8>(ES, DI) = AL;
-
-    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
+    STOSB(ins);
     break;
   case Type::SBB:
     SBB(ins);

@@ -157,6 +157,13 @@ private:
   void SHL(const Instruction& instruction);
   void SHR(const Instruction& instruction);
 
+  //// String
+  void CMPSB(const Instruction& instruction);
+  void LODSB(const Instruction& instruction);
+  void MOVSB(const Instruction& instruction);
+  void MOVSW(const Instruction& instruction);
+  void STOSB(const Instruction& instruction);
+
   union {
     u16 AX = 0;
     struct {
