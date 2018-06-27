@@ -8,9 +8,11 @@ using namespace Core::CPU;
 
 void CPU::STOSB(const Instruction& ins)
 {
-  m_memory.Get<u8>(ES, DI) = AL;
+  do {
+    m_memory.Get<u8>(ES, DI) = AL;
 
-  DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
+    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
+  } while (HandleRepetition());
 }
 
 void CPU::CMPSB(const Instruction& ins)
