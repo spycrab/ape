@@ -497,15 +497,27 @@ std::string Instruction::Parameter::ToString(SegmentPrefix prefix,
     case Type::Value_BX_DI_Offset:
       return "[" + PrefixToString(prefix) + "BX+DI+" + String::ToHex(data8) +
              "]";
+    case Type::Value_BX_DI_Offset_Word:
+      return "[" + PrefixToString(prefix) + "BX+DI+" + String::ToHex(data8) +
+             "]";
     case Type::Value_BX_SI_Offset:
       return "[" + PrefixToString(prefix) + "BX+SI+" + String::ToHex(data8) +
              "]";
+    case Type::Value_BX_SI_Offset_Word:
+      return "word [" + PrefixToString(prefix) + "BX+SI+" +
+             String::ToHex(data8) + "]";
     case Type::Value_BP_SI_Offset:
       return "[" + PrefixToString(prefix) + "BP+SI+" + String::ToHex(data8) +
              "]";
+    case Type::Value_BP_SI_Offset_Word:
+      return "word [" + PrefixToString(prefix) + "BP+SI+" +
+             String::ToHex(data8) + "]";
     case Type::Value_BP_DI_Offset:
       return "[" + PrefixToString(prefix) + "BP+DI+" + String::ToHex(data8) +
              "]";
+    case Type::Value_BP_DI_Offset_Word:
+      return "word [" + PrefixToString(prefix) + "BP+DI+" +
+             String::ToHex(data8) + "]";
     case Type::Value_BX_Offset:
       return "[" + PrefixToString(prefix) + "BX+" + String::ToHex(data8) + "]";
     case Type::Value_BX_Offset_Word:
