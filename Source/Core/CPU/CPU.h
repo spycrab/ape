@@ -159,10 +159,16 @@ private:
 
   //// String
   void CMPSB(const Instruction& instruction);
+  void CMPSW(const Instruction& instruction);
+
   void LODSB(const Instruction& instruction);
+  void LODSW(const Instruction& instruction);
+
   void MOVSB(const Instruction& instruction);
   void MOVSW(const Instruction& instruction);
+
   void STOSB(const Instruction& instruction);
+  void STOSW(const Instruction& instruction);
 
   union {
     u16 AX = 0;

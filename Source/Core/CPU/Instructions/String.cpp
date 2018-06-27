@@ -15,6 +15,15 @@ void CPU::STOSB(const Instruction&)
   } while (HandleRepetition());
 }
 
+void CPU::STOSW(const Instruction&)
+{
+  do {
+    m_memory.Get<u16>(ES, DI) = AX;
+
+    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+  } while (HandleRepetition());
+}
+
 void CPU::CMPSB(const Instruction&)
 {
   do {
@@ -38,12 +47,44 @@ void CPU::CMPSB(const Instruction&)
   } while (HandleRepetition());
 }
 
+void CPU::CMPSW(const Instruction&)
+{
+  do {
+    u16 dst = m_memory.Get<u16>(DS, SI);
+    u16 src = m_memory.Get<u16>(ES, SI);
+    u16 cmp = dst - src;
+
+    // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
+    // +
+    //    String::ToHex(SI) + ") with " + String::ToHex(src) + " (" +
+    //    String::ToHex(ES) + ":" + String::ToHex(DI) + ")");
+
+    UpdateSF(cmp);
+    UpdateZF(cmp);
+    UpdatePF(cmp);
+    UpdateOF<i16>(cmp);
+    UpdateCF<i16>(cmp);
+
+    SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+  } while (HandleRepetition());
+}
+
 void CPU::LODSB(const Instruction&)
 {
   do {
     AL = m_memory.Get<u8>(DS, SI);
 
     SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
+  } while (HandleRepetition());
+}
+
+void CPU::LODSW(const Instruction&)
+{
+  do {
+    AX = m_memory.Get<u16>(DS, SI);
+
+    SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
 }
 

@@ -171,6 +171,9 @@ void CPU::Tick()
   case Type::CMPSB:
     CMPSB(ins);
     break;
+  case Type::CMPSW:
+    CMPSW(ins);
+    break;
   case Type::HLT: {
     LOG("CPU halted, waiting for the next interrupt...");
 
@@ -322,6 +325,9 @@ void CPU::Tick()
   case Type::LODSB:
     LODSB(ins);
     break;
+  case Type::LODSW:
+    LODSW(ins);
+    break;
   case Type::LOOP: {
     // LOG("CX = " + String::ToHex(CX));
 
@@ -458,6 +464,9 @@ void CPU::Tick()
     break;
   case Type::STOSB:
     STOSB(ins);
+    break;
+  case Type::STOSW:
+    STOSW(ins);
     break;
   case Type::SBB:
     SBB(ins);
