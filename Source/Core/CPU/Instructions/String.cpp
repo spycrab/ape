@@ -6,7 +6,7 @@
 
 using namespace Core::CPU;
 
-void CPU::STOSB(const Instruction& ins)
+void CPU::STOSB(const Instruction&)
 {
   do {
     m_memory.Get<u8>(ES, DI) = AL;
@@ -15,7 +15,7 @@ void CPU::STOSB(const Instruction& ins)
   } while (HandleRepetition());
 }
 
-void CPU::CMPSB(const Instruction& ins)
+void CPU::CMPSB(const Instruction&)
 {
   do {
     u8 dst = m_memory.Get<u8>(DS, SI);
@@ -38,7 +38,7 @@ void CPU::CMPSB(const Instruction& ins)
   } while (HandleRepetition());
 }
 
-void CPU::LODSB(const Instruction& ins)
+void CPU::LODSB(const Instruction&)
 {
   do {
     AL = m_memory.Get<u8>(DS, SI);
