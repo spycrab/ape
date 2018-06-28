@@ -529,7 +529,8 @@ void CPU::Tick()
 
 void CPU::Start()
 {
-  while (true) {
+  running = true;
+  while (running) {
     Tick();
   }
 }

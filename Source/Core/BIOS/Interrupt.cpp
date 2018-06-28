@@ -112,7 +112,7 @@ bool CPU::CallBIOSInterrupt(u8 vector)
   case 0x19: // Reset
   {
     LOG("[STUB] Reset requested; Exiting...");
-    std::exit(0);
+    running = false;
     break;
   }
   default:

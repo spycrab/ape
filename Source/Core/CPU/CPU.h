@@ -96,6 +96,9 @@ public:
   //! Simulate MS-DOS (Handle its interrupts)
   bool simulate_msdos = false;
 
+  //! Set whether the CPU is running
+  bool running = false;
+
 private:
   //! \cond PRIVATE
   template <class T>

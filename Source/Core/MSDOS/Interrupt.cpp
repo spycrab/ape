@@ -24,7 +24,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
   switch (vector) {
   case 0x20: // Exit program
     LOG("[STUB] Exit requested, shutting down...");
-    std::exit(0);
+    running = false;
     break;
   case 0x21: {
     switch (AH) {
