@@ -68,9 +68,22 @@ void MainWindow::OpenFile()
 
   Core::Machine machine;
 
+  if (path.endsWith(".com", Qt::CaseInsensitive)) {
+    machine.BootCOM(path.toStdString());
+    return;
+  }
   auto& drive = machine.GetFloppyDrive();
 
-  drive.Insert(path.toStdString());
+  if (!drive.Insert(path.toStdString())) {
+    QMessageBox::critical(this, tr("Error"), tr("Failed to mount floppy!"));
+    return;
+  }
+
+  if (!drive.IsBootable()) {
+    QMessageBox::critical(this, tr("Error"),
+                          tr("The provided disk is not bootable!"));
+    return;
+  }
 
   machine.BootFloppy();
 }
