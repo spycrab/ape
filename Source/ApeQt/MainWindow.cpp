@@ -21,7 +21,13 @@ QString MainWindow::GetQuote() const
 {
   const QStringList list{tr("Less FPS than DOSBox"),
                          tr("Garuantee void if opened"),
-                         tr("May contain traces of nuts")};
+                         tr("May contain traces of nuts"),
+                         tr("NOP? NOP!"),
+                         tr("Realest Mode of them all"),
+                         tr("640K ought to be enough for everyone"),
+                         tr("Just works (sometimes)"),
+                         tr("MOV UP, ME ; Scotty"),
+                         tr("Big Blue is coming for you")};
 
   srand(time(NULL));
   return list[random() % list.size()];
