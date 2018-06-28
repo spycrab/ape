@@ -39,6 +39,8 @@ MainWindow::MainWindow()
 
   CreateWidgets();
   ConnectWidgets();
+
+  resize(800, 600);
 }
 
 void MainWindow::CreateWidgets()
