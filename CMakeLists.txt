@@ -91,6 +91,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(Source/Common)
 add_subdirectory(Source/Core)
 
+add_subdirectory(Source/ApeQt)
 add_subdirectory(Source/ApeCLI)
 add_subdirectory(Source/Tools)
 add_subdirectory(Source/Tests)
