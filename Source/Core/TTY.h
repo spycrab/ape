@@ -6,6 +6,12 @@
 
 #include "Common/Types.h"
 
+#pragma once
+
+class TTYBackend;
+
+extern TTYBackend* g_TTYBackend;
+
 namespace TTY
 {
 void Init();

@@ -13,6 +13,10 @@
 
 #include "Version.h"
 
+#include "ApeQt/TTYWidget.h"
+
+#include "Core/Machine.h"
+
 QString MainWindow::GetQuote() const
 {
   const QStringList list{tr("Less FPS than DOSBox"),
@@ -47,6 +51,8 @@ void MainWindow::CreateWidgets()
   help_menu->addAction(tr("About..."), this, &MainWindow::ShowAbout);
 
   setMenuBar(m_menu_bar);
+
+  setCentralWidget(new TTYWidget);
 }
 
 void MainWindow::ConnectWidgets() {}
@@ -59,6 +65,14 @@ void MainWindow::OpenFile()
 
   if (path.isEmpty())
     return;
+
+  Core::Machine machine;
+
+  auto& drive = machine.GetFloppyDrive();
+
+  drive.Insert(path.toStdString());
+
+  machine.BootFloppy();
 }
 
 void MainWindow::ShowAbout()
