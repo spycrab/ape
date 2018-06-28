@@ -175,12 +175,8 @@ void CPU::Tick()
     CMPSW(ins);
     break;
   case Type::HLT: {
-    LOG("CPU halted, waiting for the next interrupt...");
-
-    // TODO: Actually implement interrupts
-    while (true) {
-    }
-
+    LOG("[STUB] CPU halted, stopping for now...");
+    running = false;
     break;
   }
   case Type::INC:
