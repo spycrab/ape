@@ -19,6 +19,7 @@ Currently Ape has the following limitations:
 ## Requirements
 - A C++17 capable compiler
 - CMake
+- Qt 5 (5.9 or newer)
 - Doxygen (*Docs only*)
 - GoogleTest (*Tests only*)
 
@@ -37,7 +38,8 @@ cmake ..
 ```sh
 make Docs # Documentation
 make Disasm # Disassembler
-make Ape # Actual emulator
+make ApeCLI # CLI Emulator
+make ApeQt # UI Emulator
 
 make all # All of the above
 
