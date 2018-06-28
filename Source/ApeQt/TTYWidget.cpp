@@ -13,10 +13,13 @@ TTYWidget::~TTYWidget() { g_TTYBackend = nullptr; }
 
 void TTYWidget::Write(const std::string& string)
 {
-  append(QString::fromStdString(string));
+  insertPlainText(QString::fromStdString(string));
 }
 
-void TTYWidget::Write(const char c) { append(QString(QLatin1Char(c))); }
+void TTYWidget::Write(const char c)
+{
+  insertPlainText(QString(QLatin1Char(c)));
+}
 
 void TTYWidget::Clear() { clear(); }
 
