@@ -1,4 +1,5 @@
 find_package(Qt5 REQUIRED COMPONENTS Gui Widgets)
+find_package(Threads REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -12,4 +13,5 @@ add_executable(ApeQt
 target_link_libraries(ApeQt
 PRIVATE
   Core
-  Qt5::Widgets)
+  Qt5::Widgets
+  Threads::Threads)

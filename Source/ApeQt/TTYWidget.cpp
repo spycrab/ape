@@ -3,6 +3,7 @@
 // Refer to the LICENSE file included.
 
 #include "ApeQt/TTYWidget.h"
+#include "ApeQt/QueueOnObject.h"
 
 #include <QString>
 
@@ -13,12 +14,14 @@ TTYWidget::~TTYWidget() { g_TTYBackend = nullptr; }
 
 void TTYWidget::Write(const std::string& string)
 {
-  insertPlainText(QString::fromStdString(string));
+  QueueOnObject(this, [this, string] {
+    insertPlainText(QString::fromStdString(string));
+  });
 }
 
 void TTYWidget::Write(const char c)
 {
-  insertPlainText(QString(QLatin1Char(c)));
+  QueueOnObject(this, [this, c] { insertPlainText(QString(QLatin1Char(c))); });
 }
 
 void TTYWidget::Clear() { clear(); }

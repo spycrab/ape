@@ -11,6 +11,7 @@ class MainWindow : public QMainWindow
 {
 public:
   explicit MainWindow();
+  ~MainWindow();
 
 private:
   void CreateWidgets();

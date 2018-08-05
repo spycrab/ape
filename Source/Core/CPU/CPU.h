@@ -5,6 +5,8 @@
 #pragma once
 //! \file
 
+#include <atomic>
+
 #include "Common/Types.h"
 #include "Core/CPU/Instruction.h"
 #include "Core/Memory.h"
@@ -97,7 +99,7 @@ public:
   bool simulate_msdos = false;
 
   //! Set whether the CPU is running
-  bool running = false;
+  std::atomic<bool> running = false;
 
 private:
   //! \cond PRIVATE

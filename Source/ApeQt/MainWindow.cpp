@@ -6,6 +6,8 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <memory>
+#include <thread>
 
 #include <QFileDialog>
 #include <QMenuBar>
@@ -16,6 +18,9 @@
 #include "ApeQt/TTYWidget.h"
 
 #include "Core/Machine.h"
+
+std::unique_ptr<Core::Machine> s_machine = nullptr;
+std::thread s_thread;
 
 QString MainWindow::GetQuote() const
 {
@@ -41,6 +46,15 @@ MainWindow::MainWindow()
   ConnectWidgets();
 
   resize(800, 600);
+
+  if (s_machine != nullptr)
+    s_machine->Shutdown();
+}
+
+MainWindow::~MainWindow()
+{
+  if (s_thread.joinable())
+    s_thread.join();
 }
 
 void MainWindow::CreateWidgets()
@@ -67,6 +81,9 @@ void MainWindow::ConnectWidgets() {}
 
 void MainWindow::OpenFile()
 {
+  if (s_thread.joinable())
+    s_thread.join();
+
   const QString& path =
       QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
                                    tr("Floppy Image(*.img);; COM File(*.com)"));
@@ -74,13 +91,13 @@ void MainWindow::OpenFile()
   if (path.isEmpty())
     return;
 
-  Core::Machine machine;
+  s_machine.reset(new Core::Machine);
 
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
-    machine.BootCOM(path.toStdString());
+    s_thread = std::thread([path] { s_machine->BootCOM(path.toStdString()); });
     return;
   }
-  auto& drive = machine.GetFloppyDrive();
+  auto& drive = s_machine->GetFloppyDrive();
 
   if (!drive.Insert(path.toStdString())) {
     QMessageBox::critical(this, tr("Error"), tr("Failed to mount floppy!"));
@@ -93,7 +110,7 @@ void MainWindow::OpenFile()
     return;
   }
 
-  machine.BootFloppy();
+  s_thread = std::thread([path] { s_machine->BootFloppy(); });
 }
 
 void MainWindow::ShowAbout()

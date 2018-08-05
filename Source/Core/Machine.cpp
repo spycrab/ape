@@ -28,6 +28,8 @@ bool Core::Machine::BootFloppy()
   return true;
 }
 
+void Core::Machine::Shutdown() { m_cpu.running = false; }
+
 bool Core::Machine::BootCOM(const std::string& file)
 {
   std::ifstream ifs(file, std::ios::binary);

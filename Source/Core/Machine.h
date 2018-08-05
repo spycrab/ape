@@ -28,6 +28,9 @@ public:
   //! Boot the machine from the floppy drive
   bool BootFloppy();
 
+  //! Shutdown the machine
+  void Shutdown();
+
   //! Directly execute a COM file
   bool BootCOM(const std::string& file);
 
