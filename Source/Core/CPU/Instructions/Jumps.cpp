@@ -180,8 +180,11 @@ void CPU::CALL(const Instruction& instruction)
       Instruction::Parameter::Type::Literal_LongAddress_Immediate) {
     u32 addr = parameter.GetData<u32>();
 
-    u16 segment = (addr & 0xFFFF0000) >> 16;
-    u16 offset = (addr & 0xFFFF);
+    u16 offset = (addr & 0xFFFF0000) >> 8;
+    u16 segment = (addr & 0xFFFF);
+
+    SP -= sizeof(u16);
+    m_memory.Get<u16>(SS, SP) = IP;
 
     CS = segment;
     IP = offset;
