@@ -26,6 +26,21 @@ bool CPU::CallBIOSInterrupt(u8 vector)
       TTY::Scroll(BL, BH);
       break;
     }
+    case 0x02: { // Set cursor
+      TTY::SetCursorRow(DH);
+      TTY::SetCursorColumn(DL);
+      break;
+    }
+    case 0x03: { // Get cursor info
+      AX = 0;
+
+      // TODO: Start and end scan line?
+      CH = CL = 0;
+
+      DH = TTY::GetCursorRow();
+      DL = TTY::GetCursorColumn();
+      break;
+    }
     case 0x0E: { // Write character and move cursor
       TTY::Write(AL);
     } break;

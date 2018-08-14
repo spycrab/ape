@@ -19,6 +19,10 @@ void Write(const std::string& string);
 void Write(const char c);
 void Scroll(const u8 lines, const u8 color);
 void MoveCursor(const u32 x, const u32 y);
+u8 GetCursorRow();
+void SetCursorRow(u8 row);
+u8 GetCursorColumn();
+void SetCursorColumn(u8 column);
 void Clear();
 char Read();
 }

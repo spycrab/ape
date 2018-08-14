@@ -6,6 +6,7 @@
 #include "ApeQt/QueueOnObject.h"
 
 #include <QString>
+#include <QTextBlock>
 
 #include "Core/TTY.h"
 
@@ -30,3 +31,17 @@ char TTYWidget::Read() { return 'x'; }
 
 void TTYWidget::Scroll(const u8, const u8) {}
 void TTYWidget::MoveCursor(const u32, const u32) {}
+
+u8 TTYWidget::GetCursorRow() const { return textCursor().blockNumber(); }
+void TTYWidget::SetCursorRow(u8 row)
+{
+  setTextCursor(QTextCursor(document()->findBlockByLineNumber(row)));
+}
+
+u8 TTYWidget::GetCursorColumn() const { return textCursor().columnNumber(); }
+void TTYWidget::SetCursorColumn(u8 column)
+{
+  textCursor().setPosition(QTextCursor::StartOfLine);
+  textCursor().movePosition(QTextCursor::Right, QTextCursor::MoveAnchor,
+                            column);
+}

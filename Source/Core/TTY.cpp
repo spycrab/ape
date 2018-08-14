@@ -63,3 +63,41 @@ char TTY::Read()
     return 'A';
   }
 }
+
+u8 TTY::GetCursorRow()
+{
+  if (g_TTYBackend) {
+    return g_TTYBackend->GetCursorRow();
+  } else {
+    LOG("[TTY STUB] Cursor row");
+    return 0;
+  }
+}
+
+void TTY::SetCursorRow(u8 row)
+{
+  if (g_TTYBackend) {
+    g_TTYBackend->SetCursorRow(row);
+  } else {
+    LOG("[TTY STUB] Set cursor row");
+  }
+}
+
+u8 TTY::GetCursorColumn()
+{
+  if (g_TTYBackend) {
+    return g_TTYBackend->GetCursorColumn();
+  } else {
+    LOG("[TTY STUB] Cursor column");
+    return 0;
+  }
+}
+
+void TTY::SetCursorColumn(u8 column)
+{
+  if (g_TTYBackend) {
+    g_TTYBackend->SetCursorColumn(column);
+  } else {
+    LOG("[TTY STUB] Set cursor column");
+  }
+}

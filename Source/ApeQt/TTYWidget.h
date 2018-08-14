@@ -20,6 +20,12 @@ public:
   void Scroll(const u8 lines, const u8 colors) override;
   void MoveCursor(const u32 x, const u32 y) override;
 
+  u8 GetCursorRow() const override;
+  void SetCursorRow(u8 row) override;
+
+  u8 GetCursorColumn() const override;
+  void SetCursorColumn(u8 column) override;
+
   void Clear() override;
   char Read() override;
 };
