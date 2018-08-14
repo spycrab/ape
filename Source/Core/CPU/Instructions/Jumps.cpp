@@ -130,6 +130,14 @@ void CPU::JPE(const Instruction& instruction)
   JMP(instruction);
 }
 
+void CPU::JPO(const Instruction& instruction)
+{
+  if (PF)
+    return;
+
+  JMP(instruction);
+}
+
 void CPU::JS(const Instruction& instruction)
 {
   if (!SF)

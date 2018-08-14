@@ -239,6 +239,9 @@ void CPU::Tick()
   case Type::JPE:
     JPE(ins);
     break;
+  case Type::JPO:
+    JPO(ins);
+    break;
   case Type::JG:
     JG(ins);
     break;
