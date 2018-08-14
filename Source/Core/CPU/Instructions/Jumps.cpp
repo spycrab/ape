@@ -166,6 +166,21 @@ void CPU::CALL(const Instruction& instruction)
 {
   auto& parameter = instruction.GetParameters()[0];
 
+  LOG(ParameterTypeToString(parameter.GetType()));
+
+  if (parameter.GetType() ==
+      Instruction::Parameter::Type::Literal_LongAddress_Immediate) {
+    u32 addr = parameter.GetData<u32>();
+
+    u16 segment = (addr & 0xFFFF0000) >> 16;
+    u16 offset = (addr & 0xFFFF);
+
+    CS = segment;
+    IP = offset;
+
+    return;
+  }
+
   if (!parameter.IsWord())
     throw UnsupportedParameterException();
 
