@@ -10,7 +10,14 @@
 
 #include "Core/TTY.h"
 
-TTYWidget::TTYWidget() { g_TTYBackend = this; }
+TTYWidget::TTYWidget()
+{
+  g_TTYBackend = this;
+  insertPlainText(QStringLiteral("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"));
+  auto cursor = textCursor();
+  cursor.setPosition(0);
+  setTextCursor(cursor);
+}
 TTYWidget::~TTYWidget() { g_TTYBackend = nullptr; }
 
 void TTYWidget::Write(const std::string& string)
@@ -33,15 +40,25 @@ void TTYWidget::Scroll(const u8, const u8) {}
 void TTYWidget::MoveCursor(const u32, const u32) {}
 
 u8 TTYWidget::GetCursorRow() const { return textCursor().blockNumber(); }
+
 void TTYWidget::SetCursorRow(u8 row)
 {
-  setTextCursor(QTextCursor(document()->findBlockByLineNumber(row)));
+  QueueOnObject(this, [this, row] {
+    auto cursor = textCursor();
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row);
+    setTextCursor(cursor);
+
+  });
 }
 
 u8 TTYWidget::GetCursorColumn() const { return textCursor().columnNumber(); }
 void TTYWidget::SetCursorColumn(u8 column)
 {
-  textCursor().setPosition(QTextCursor::StartOfLine);
-  textCursor().movePosition(QTextCursor::Right, QTextCursor::MoveAnchor,
-                            column);
+  QueueOnObject(this, [this, column] {
+    auto cursor = textCursor();
+    cursor.movePosition(QTextCursor::StartOfLine);
+    cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, column);
+    setTextCursor(cursor);
+  });
 }
