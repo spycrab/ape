@@ -28,4 +28,5 @@ public:
 
   void Clear() override;
   char Read() override;
+  u8 m_row = 0, m_column = 0;
 };

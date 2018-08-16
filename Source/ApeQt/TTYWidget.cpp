@@ -37,12 +37,21 @@ void TTYWidget::Clear() { clear(); }
 char TTYWidget::Read() { return 'x'; }
 
 void TTYWidget::Scroll(const u8, const u8) {}
-void TTYWidget::MoveCursor(const u32, const u32) {}
+void TTYWidget::MoveCursor(const u32 row, const u32 column)
+{
+  m_row = row;
+  m_column = column;
+}
 
-u8 TTYWidget::GetCursorRow() const { return textCursor().blockNumber(); }
+u8 TTYWidget::GetCursorRow() const { return m_row; }
 
 void TTYWidget::SetCursorRow(u8 row)
 {
+  if (m_row == row)
+    return;
+
+  m_row = row;
+
   QueueOnObject(this, [this, row] {
     auto cursor = textCursor();
     cursor.setPosition(0);
@@ -52,9 +61,14 @@ void TTYWidget::SetCursorRow(u8 row)
   });
 }
 
-u8 TTYWidget::GetCursorColumn() const { return textCursor().columnNumber(); }
+u8 TTYWidget::GetCursorColumn() const { return m_column; }
 void TTYWidget::SetCursorColumn(u8 column)
 {
+  if (m_column == column)
+    return;
+
+  m_column = column;
+
   QueueOnObject(this, [this, column] {
     auto cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfLine);
