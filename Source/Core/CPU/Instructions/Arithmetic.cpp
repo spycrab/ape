@@ -75,7 +75,7 @@ void CPU::ADD(const Instruction& ins)
     UpdateZF(dst_16);
     UpdatePF(dst_16);
   } else {
-    u8 dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
+    u8& dst_8 = ParameterTo<u8&>(dst, ins.GetPrefix());
     u8 src_8 = ParameterTo<u8>(src, ins.GetPrefix());
 
     if (dst.IsWord() != src.IsWord())
