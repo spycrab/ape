@@ -14,7 +14,7 @@ Currently Ape has the following limitations:
   - No Intel 8087 emulation
   - No Harddrive support
 - Limited graphics capabilities
-  - currently only outputting to a text file (obviously temporary)
+  - currently only outputting plain text
 
 ## Requirements
 - A C++17 capable compiler
@@ -24,8 +24,9 @@ Currently Ape has the following limitations:
 - GoogleTest (*Tests only*)
 
 ## Documentation
-There is currently no live version of the documentation available.
-You have to build it yourself using the steps mentioned below.
+
+You can either check out a semi-recent version of the documentation [online](https://spycrab.github.io/ape-docs-live/) (Also available as a [PDF](https://github.io/ape-docs-live/docs.pdf)).
+..or build the most recent version yourself using the steps listed below.
 
 ## Building
 
@@ -38,8 +39,8 @@ cmake ..
 ```sh
 make Docs # Documentation
 make Disasm # Disassembler
-make ApeCLI # CLI Emulator
-make ApeQt # UI Emulator
+make ApeCLI # Emulator without an UI
+make ApeQt # Emulator with a Qt5 UI
 
 make all # All of the above
 
@@ -47,8 +48,7 @@ make test # Run the testsuite
 ```
 
 ## Windows
-Either use MinGW or Cygwin to get a Posix-like environment
-or use CMake GUI to generate a Visual Studio Project.
+Either use MinGW or Cygwin to get a Posix-like environment or use CMake GUI to generate a Visual Studio Project.
 
 
 ## License
