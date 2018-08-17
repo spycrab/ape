@@ -25,7 +25,8 @@ Currently Ape has the following limitations:
 
 ## Documentation
 
-You can either check out a semi-recent version of the documentation [online](https://spycrab.github.io/ape-docs-live/) (Also available as a [PDF](https://github.io/ape-docs-live/docs.pdf)).
+You can either check out a semi-recent version of the documentation [online](https://spycrab.github.io/ape-docs-live/) (Also available as a [PDF](https://spycrab.github.io/ape-docs-live/docs.pdf)).  
+
 ..or build the most recent version yourself using the steps listed below.
 
 ## Building
