@@ -3,20 +3,32 @@
 Here are some common terms used in this documentation and their meaning
 
 ## PC
-Personal Computer. Means IBM PC in this context
+Personal Computer. Means IBM PC in this context,
+
+Also commonly used as a synonym for IP.
 
 ## RAM
-Random Access Memory. Means non-sequential, volatile memory in this context
+Random Access Memory. Means non-sequential, volatile memory in this context.
 
 ## CPU
-Centeral Processing Unit. Most important component of a PC that controls the other component.
+Centeral Processing Unit. Most important component of a PC that controls all other components.
 
 ### Opcode
-Operation code. A byte (or byte + reg modifier) that tells the CPU what type of instruction to execute.
+Operation code. A byte (or byte + register modifier) that tells the CPU what type of instruction to execute.
+
 ### Instruction
-The smallest logical unit the CPU processes. Usually only performs one task and updates flags accordingly.
+The smallest kind of "command" the CPU processes. Usually only performs one simple task and updates flags accordingly.
+
+Instructions are usually represented as:
+
+```
+OPERATION destination, source
+```
+
+Although there are some slight deviations (operations without parameters / a source).
+
 ### Flags
-Indicators of the results of previous instructions. Often used in conjungtion if conditional jumps.
+Indicators of the results of previous instructions. Often used in conjungtion with conditional jumps.
 #### AF
 Adjust Flag. Used when adjusting values (e.g. DAA)
 #### CF
@@ -24,7 +36,7 @@ Carry Flag. Used when an arithmetic instruction exceeds the lower bounds of the 
 #### OF
 Overflow Flag. Used when an instruction exceeds the upper bounds of the data type.
 #### PF
-Parity Flag. Indicates whether the result of an instruction has bit-parity (The same amount of 1s and 0s)
+Parity Flag. Indicates whether the result of an instruction has bit-parity (The same amount of ones and zeros).
 #### SF
 Sign Flag. Indicates whether the signed result of an instruction is negative. (If set, negative else posiive).
 #### ZF
@@ -32,11 +44,19 @@ Zero Flag. Indicates whether the result of an instruction is zero.
 #### IF
 Interrupt Flag. Enables / Disables interrupts.
 #### DF
-    Direction Flag. Used by string instructions to decide whether to increment or decrement after an operation (If set, decrement else increment).
+Direction Flag. Used by string instructions to decide whether to increment or decrement after an operation (If set, decrement else increment).
 ### Registers
+
+Registers can be thought of as very fast memory (much faster than RAM) inside a CPU that operations can be performed on.
+
+In many cases data in memory is not changed in place but instead loaded into registers modified and then stored back to memory.
+
 #### General purpose
+
+Registers that can be freely modified by the programmer.
+
 ##### AX/AH/AL
-Often used as an accumulator
+Often used as an accumulator.
 ##### BX/BH/BL
 Often used to point at data in the data segment.
 ##### CX/CH/CL
@@ -44,6 +64,9 @@ Often used as a counter (e.g. by REP).
 ##### DX/DH/DL
 Often used as an I/O pointer.
 #### Segment registers
+
+Segment registers control which part (segment) of memory is used by the CPU for certain tasks.
+
 ##### CS
 Code Segment. Used in conjungtion with IP for fetching opcodes
 ##### DS
@@ -54,13 +77,13 @@ Extra Segment. Used as a destination segment in string instructions
 Stack Segment. Used for storing the stack segment.
 #### Pointers
 ##### IP
-Instruction Pointer. Used in conjungtion with CS:IP to represent the current offset.
+Instruction Pointer. Used in conjungtion with CS to represent the current offset.
 ##### BP
 Base Pointer. Pointer to data on the stack
 ##### SP
 Stack Pointer. Pointer to the current top of stack
 ##### SI
-Source Index. Used as a source pointer by string instruction.
+Source Index. Used as a source pointer by string instructions.
 ##### DI
-Destination Index. Used as a destination pointer by string instruction.
+Destination Index. Used as a destination pointer by string instructions.
 **/
