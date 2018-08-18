@@ -38,7 +38,7 @@ QString MainWindow::GetQuote() const
   return list[random() % list.size()];
 }
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(const std::string&& path)
 {
   setWindowTitle(tr("Ape %1 - %2!").arg(VERSION_STRING).arg(GetQuote()));
 
@@ -49,6 +49,8 @@ MainWindow::MainWindow()
 
   if (s_machine != nullptr)
     s_machine->Shutdown();
+
+  StartFile(QString::fromStdString(path));
 }
 
 MainWindow::~MainWindow()
@@ -88,6 +90,11 @@ void MainWindow::OpenFile()
       QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
                                    tr("Floppy Image(*.img);; COM File(*.com)"));
 
+  StartFile(path);
+}
+
+void MainWindow::StartFile(const QString& path)
+{
   if (path.isEmpty())
     return;
 

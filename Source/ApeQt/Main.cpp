@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 {
   QApplication app(argc, argv);
 
-  MainWindow win;
+  MainWindow win(argc > 1 ? argv[1] : "");
   win.show();
 
   return app.exec();
