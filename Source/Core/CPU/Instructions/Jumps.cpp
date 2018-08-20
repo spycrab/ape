@@ -84,7 +84,7 @@ void CPU::JCXZ(const Instruction& instruction)
 
 void CPU::JG(const Instruction& instruction)
 {
-  if (ZF && (CF != OF))
+  if (ZF || (SF != OF))
     return;
 
   JMP(instruction);
@@ -92,7 +92,7 @@ void CPU::JG(const Instruction& instruction)
 
 void CPU::JGE(const Instruction& instruction)
 {
-  if (CF != OF)
+  if (SF != OF)
     return;
 
   JMP(instruction);
@@ -100,7 +100,7 @@ void CPU::JGE(const Instruction& instruction)
 
 void CPU::JL(const Instruction& instruction)
 {
-  if (CF == OF)
+  if (SF == OF)
     return;
 
   JMP(instruction);
@@ -108,7 +108,7 @@ void CPU::JL(const Instruction& instruction)
 
 void CPU::JLE(const Instruction& instruction)
 {
-  if (!ZF && (CF == OF))
+  if (!ZF && (SF == OF))
     return;
 
   JMP(instruction);
