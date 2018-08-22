@@ -185,7 +185,7 @@ void CPU::Tick()
     if ((AL & 0xF) > 9 || AF) {
       bool CF_before = CF;
 
-      UpdateCF<u8>(static_cast < u16(AL) + 6);
+      UpdateCF<u8>(static_cast<u16>(AL) + 6);
       CF |= CF_before;
       AL += 6;
       AF = true;
