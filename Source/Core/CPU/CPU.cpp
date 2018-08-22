@@ -125,45 +125,44 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord()) {
-      i16 dst_i16 = static_cast<i16>(ParameterTo<u16>(dst, ins.GetPrefix()));
+      u16 dst_u16 = ParameterTo<u16>(dst, ins.GetPrefix());
+      u16 src_u16;
 
-      i32 diff = dst_i16;
+      i32 diff = static_cast<i16>(dst_u16);
 
       if (src.IsWord()) {
-        i16 src16 = static_cast<i16>(ParameterTo<u16>(src, ins.GetPrefix()));
-
-        diff -= src16;
+        src_u16 = ParameterTo<u16>(src, ins.GetPrefix());
 
         // LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
         //     String::ToHex<u16>(src16));
       } else {
-        i8 src8 = static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
-
-        diff -= src8;
+        src_u16 = ParameterTo<u8>(src, ins.GetPrefix());
 
         // LOG("Comparing " + String::ToHex<u16>(dst_i16) + " with " +
         //     String::ToHex<u8>(src8));
       }
 
+      diff -= static_cast<i16>(src_u16);
+
       UpdateSF(static_cast<i16>(diff));
       UpdateZF(static_cast<i16>(diff));
       UpdatePF(static_cast<i16>(diff));
       UpdateOF<i16>(diff);
-      UpdateCF<i16>(diff);
+      UpdateCF<i16>(dst_u16 - src_u16);
     } else {
-      i8 dst_i8 = static_cast<i8>(ParameterTo<u8>(dst, ins.GetPrefix()));
-      i8 src_i8 = static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
+      u8 dst_u8 = ParameterTo<u8>(dst, ins.GetPrefix());
+      u8 src_u8 = ParameterTo<u8>(src, ins.GetPrefix());
 
-      i32 diff = dst_i8 - src_i8;
+      i32 diff = static_cast<i8>(dst_u8) - static_cast<i8>(src_u8);
 
       // LOG("Comparing " + String::ToHex<u8>(dst_i8) + " with " +
-      //    String::ToHex<u8>(src_i8));
+      //     String::ToHex<u8>(src_i8));
 
       UpdateSF(static_cast<i8>(diff));
       UpdateZF(static_cast<i8>(diff));
       UpdatePF(static_cast<i8>(diff));
       UpdateOF<i8>(diff);
-      UpdateCF<i8>(diff);
+      UpdateCF<i8>(dst_u8 - src_u8);
     }
 
     break;
@@ -186,7 +185,7 @@ void CPU::Tick()
     if ((AL & 0xF) > 9 || AF) {
       bool CF_before = CF;
 
-      UpdateCF<u8>(AL + 6);
+      UpdateCF<u8>(static_cast < u16(AL) + 6);
       CF |= CF_before;
       AL += 6;
       AF = true;
