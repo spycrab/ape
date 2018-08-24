@@ -35,7 +35,7 @@ QString MainWindow::GetQuote() const
                          tr("Big Blue is coming for you")};
 
   srand(time(NULL));
-  return list[random() % list.size()];
+  return list[rand() % list.size()];
 }
 
 MainWindow::MainWindow(const std::string&& path)
