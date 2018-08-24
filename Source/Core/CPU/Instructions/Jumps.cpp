@@ -23,8 +23,7 @@ void CPU::JMP(const Instruction& instruction)
     break;
   case PType::Value_BP_Offset_Word:
   case PType::Literal_WordOffset:
-    IP +=
-        static_cast<i16>(ParameterTo<u16>(parameter, instruction.GetPrefix()));
+    IP += ParameterTo<i16>(parameter, instruction.GetPrefix());
     break;
   case PType::Literal_LongAddress_Immediate: {
     u32 address = parameter.GetData<u32>();

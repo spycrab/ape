@@ -58,14 +58,13 @@ void CPU::ADD(const Instruction& ins)
   auto& src = ins.GetParameters()[1];
 
   if (dst.IsWord()) {
-    i16& dst_16 =
-        *reinterpret_cast<i16*>(&ParameterTo<u16&>(dst, ins.GetPrefix()));
+    i16& dst_16 = ParameterTo<i16&>(dst, ins.GetPrefix());
     i16 src_16;
 
     if (src.IsWord())
-      src_16 = static_cast<i16>(ParameterTo<u16>(src, ins.GetPrefix()));
+      src_16 = ParameterTo<i16>(src, ins.GetPrefix());
     else
-      src_16 = static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
+      src_16 = ParameterTo<i8>(src, ins.GetPrefix());
 
     UpdateOF<i16>(dst_16 + src_16);
     UpdateCF<i16>(static_cast<u16>(dst_16) + static_cast<u16>(src_16));
@@ -76,8 +75,8 @@ void CPU::ADD(const Instruction& ins)
     UpdateZF(dst_16);
     UpdatePF(dst_16);
   } else {
-    i8& dst_8 = *reinterpret_cast<i8*>(&ParameterTo<u8&>(dst, ins.GetPrefix()));
-    i8 src_8 = static_cast<i8>(ParameterTo<u8>(src, ins.GetPrefix()));
+    i8& dst_8 = ParameterTo<i8&>(dst, ins.GetPrefix());
+    i8 src_8 = ParameterTo<i8>(src, ins.GetPrefix());
 
     if (dst.IsWord() != src.IsWord())
       throw ParameterLengthMismatchException();
@@ -98,8 +97,7 @@ void CPU::DEC(const Instruction& ins)
   auto& parameter = ins.GetParameters()[0];
 
   if (parameter.IsWord()) {
-    i16& data_i16 =
-        *reinterpret_cast<i16*>(&ParameterTo<u16&>(parameter, ins.GetPrefix()));
+    i16& data_i16 = ParameterTo<i16&>(parameter, ins.GetPrefix());
 
     UpdateOF<i16>(static_cast<i32>(data_i16) - 1);
 
@@ -109,8 +107,7 @@ void CPU::DEC(const Instruction& ins)
     UpdateZF(data_i16);
     UpdatePF(data_i16);
   } else {
-    i8& data_i8 =
-        *reinterpret_cast<i8*>(&ParameterTo<u8&>(parameter, ins.GetPrefix()));
+    i8& data_i8 = ParameterTo<i8&>(parameter, ins.GetPrefix());
 
     UpdateOF<i8>(static_cast<i32>(data_i8) - 1);
 
@@ -146,8 +143,7 @@ void CPU::INC(const Instruction& ins)
   auto& parameter = ins.GetParameters()[0];
 
   if (parameter.IsWord()) {
-    i16& data_i16 =
-        *reinterpret_cast<i16*>(&ParameterTo<u16&>(parameter, ins.GetPrefix()));
+    i16& data_i16 = ParameterTo<i16&>(parameter, ins.GetPrefix());
 
     UpdateOF<i16>(static_cast<i32>(data_i16) + 1);
 
@@ -158,8 +154,7 @@ void CPU::INC(const Instruction& ins)
     UpdatePF(data_i16);
 
   } else {
-    i8& data_i8 =
-        *reinterpret_cast<i8*>(&ParameterTo<u8&>(parameter, ins.GetPrefix()));
+    i8& data_i8 = ParameterTo<i8&>(parameter, ins.GetPrefix());
 
     UpdateOF<i8>(static_cast<i32>(data_i8) + 1);
 
