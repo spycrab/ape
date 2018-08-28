@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.9)
 project(ape CXX)
 
+option(ENABLE_QT    "Enable Qt UI" ON)
+option(ENABLE_CLI   "Enable CLI"   ON)
+option(ENABLE_TOOLS "Build Tools"  ON)
+option(ENABLE_TESTS "Build Tests"  ON)
+
 set(CMAKE_BUILD_TYPE Debug)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Binaries)
@@ -87,11 +92,4 @@ configure_file(Source/Version.h.in ${CMAKE_CURRENT_BINARY_DIR}/Version.h)
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/Version.h PROPERTIES GENERATED TRUE)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-# Add components
-add_subdirectory(Source/Common)
-add_subdirectory(Source/Core)
-
-add_subdirectory(Source/ApeQt)
-add_subdirectory(Source/ApeCLI)
-add_subdirectory(Source/Tools)
-add_subdirectory(Source/Tests)
+add_subdirectory(Source)
