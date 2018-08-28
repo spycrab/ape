@@ -47,14 +47,14 @@ MainWindow::MainWindow(const std::string&& path)
 
   resize(800, 600);
 
-  if (s_machine != nullptr)
-    s_machine->Shutdown();
-
   StartFile(QString::fromStdString(path));
 }
 
 MainWindow::~MainWindow()
 {
+  if (s_machine != nullptr)
+    s_machine->Shutdown();
+
   if (s_thread.joinable())
     s_thread.join();
 }
