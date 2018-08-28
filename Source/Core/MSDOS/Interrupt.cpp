@@ -54,6 +54,9 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       TTY::Write(s);
       break;
     }
+    case 0x0b: // See if chars are available in stdin
+      AL = TTY::IsCharAvailable();
+      break;
     case 0x19: // Get Default drive
       AL = 0;
       break;

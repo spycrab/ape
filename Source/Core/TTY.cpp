@@ -101,3 +101,13 @@ void TTY::SetCursorColumn(u8 column)
     LOG("[TTY STUB] Set cursor column");
   }
 }
+
+bool TTY::IsCharAvailable()
+{
+  if (g_TTYBackend) {
+    return g_TTYBackend->IsCharAvailable();
+  } else {
+    LOG("[TTY STUB] Char available");
+    return false;
+  }
+}

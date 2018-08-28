@@ -5,8 +5,11 @@
 #include "ApeQt/TTYWidget.h"
 #include "ApeQt/QueueOnObject.h"
 
+#include <QKeyEvent>
 #include <QString>
 #include <QTextBlock>
+
+#include "Common/Logger.h"
 
 #include "Core/TTY.h"
 
@@ -34,7 +37,15 @@ void TTYWidget::Write(const char c)
 
 void TTYWidget::Clear() { clear(); }
 
-char TTYWidget::Read() { return 'x'; }
+char TTYWidget::Read()
+{
+  while (m_pressed_keys.empty()) {
+  }
+
+  return (*m_pressed_keys.begin()).first;
+}
+
+bool TTYWidget::IsCharAvailable() const { return !m_pressed_keys.empty(); }
 
 void TTYWidget::Scroll(const u8, const u8) {}
 void TTYWidget::MoveCursor(const u32 row, const u32 column)
@@ -75,4 +86,20 @@ void TTYWidget::SetCursorColumn(u8 column)
     cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, column);
     setTextCursor(cursor);
   });
+}
+
+void TTYWidget::keyPressEvent(QKeyEvent* event)
+{
+  std::string s = event->text().toStdString();
+  char c = s[0];
+
+  m_pressed_keys[c] = true;
+}
+
+void TTYWidget::keyReleaseEvent(QKeyEvent* event)
+{
+  char c = event->text().toStdString()[0];
+
+  if (m_pressed_keys.count(c))
+    m_pressed_keys.erase(m_pressed_keys.find(c));
 }

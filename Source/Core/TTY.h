@@ -25,4 +25,5 @@ u8 GetCursorColumn();
 void SetCursorColumn(u8 column);
 void Clear();
 char Read();
+bool IsCharAvailable();
 }

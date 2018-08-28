@@ -21,4 +21,5 @@ public:
   virtual void SetCursorColumn(u8 column) = 0;
   virtual void Clear() = 0;
   virtual char Read() = 0;
+  virtual bool IsCharAvailable() const = 0;
 };
