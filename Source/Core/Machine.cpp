@@ -30,14 +30,15 @@ bool Core::Machine::BootFloppy()
 
 void Core::Machine::Shutdown() { m_cpu.running = false; }
 
-bool Core::Machine::BootCOM(const std::string& file)
+bool Core::Machine::BootCOM(const std::string& file,
+                            const std::string&& parameters)
 {
   std::ifstream ifs(file, std::ios::binary);
 
   if (!ifs.good())
     return false;
 
-  m_cpu.CS = 0;
+  m_cpu.DS = 0;
   m_cpu.IP = 0x100;
   m_cpu.simulate_msdos = true;
 
@@ -47,6 +48,17 @@ bool Core::Machine::BootCOM(const std::string& file)
   }
 
   LOG("Loaded " + std::to_string(index - 1) + " bytes into memory");
+
+  m_memory.Get<u8>(0x0000, 0x0080) = parameters.size();
+
+  u16 offset;
+
+  for (offset = 0x0081; offset < parameters.length(); offset++)
+    m_memory.Get<char>(0x0000, offset) = parameters[offset - 0x0081];
+
+  m_memory.Get<char>(0x0000, offset) = '\0';
+
+  LOG("Command line parameters are \"" + parameters + "\"");
 
   ifs.close();
 

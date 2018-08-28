@@ -32,7 +32,7 @@ public:
   void Shutdown();
 
   //! Directly execute a COM file
-  bool BootCOM(const std::string& file);
+  bool BootCOM(const std::string& file, const std::string&& parameters = "");
 
 private:
   HW::FloppyDrive m_floppy_drive;

@@ -13,8 +13,9 @@ int main(int argc, char** argv)
             << std::endl
             << std::endl;
 
-  if (argc < 2 || argc > 3) {
-    std::cerr << argv[0] << " (floppy image) [floppy/com]" << std::endl;
+  if (argc < 2 || argc > 4) {
+    std::cerr << argv[0] << " (floppy image) [floppy/com] [boot parameters]"
+              << std::endl;
     return 1;
   }
 
@@ -36,8 +37,7 @@ int main(int argc, char** argv)
 
     return machine.BootFloppy() ? 0 : 1;
   } else if (std::string(argv[2]) == "com") {
-    if (!machine.BootCOM(argv[1]))
-      return 1;
+    return !machine.BootCOM(argv[1], argc > 3 ? argv[3] : "");
   }
 
   std::cerr << "Unknown media type '" << argv[2] << "'" << std::endl;
