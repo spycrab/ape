@@ -444,6 +444,23 @@ void CPU::Tick()
 
     break;
   }
+  case Type::POPF: {
+    u16 eflags = m_memory.Get<u16>(SS, SP);
+
+    CF = eflags & 1;
+    PF = eflags & (1 << 2);
+    AF = eflags & (1 << 4);
+    ZF = eflags & (1 << 6);
+    SF = eflags & (1 << 7);
+    // TF = eflags & (1 << 8);
+    IF = eflags & (1 << 9);
+    DF = eflags & (1 << 10);
+    OF = eflags & (1 << 11);
+
+    SP -= sizeof(u16);
+
+    break;
+  }
   case Type::POP: {
     auto& dst = ins.GetParameters()[0];
 
