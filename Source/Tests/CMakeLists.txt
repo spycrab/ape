@@ -1,10 +1,9 @@
-# Testing
 find_package(GTest)
 
 if (GTEST_FOUND)
   enable_testing()
 
-  string(APPEND CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Tests")
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Tests")
 
   add_executable(StringTest Common/StringTest.cpp)
   set_target_properties(StringTest PROPERTIES FOLDER ${CMAKE_BINARY_DIR}/Tests)
