@@ -4,9 +4,6 @@
 
  Ape (Another PC Emulator) is an experimental IBM PC compatible emulator written in C++17.
 
- ## Important pages
-  - Terms.dox - Should help newcomers with understanding the terminology used in this documentation
-
  ## Classes worth reading up on
 
  * Machine
