@@ -360,6 +360,7 @@ private:
   void JLE(const Instruction& instruction);
 
   void JO(const Instruction& instruction);
+  void JNO(const Instruction& instruction);
 
   void JPE(const Instruction& instruction);
   void JPO(const Instruction& instruction);

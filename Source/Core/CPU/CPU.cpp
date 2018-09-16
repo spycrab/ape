@@ -252,6 +252,9 @@ void CPU::Tick()
   case Type::JO:
     JO(ins);
     break;
+  case Type::JNO:
+    JNO(ins);
+    break;
   case Type::JZ:
     JZ(ins);
     break;

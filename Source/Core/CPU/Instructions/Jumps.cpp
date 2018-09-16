@@ -121,6 +121,14 @@ void CPU::JO(const Instruction& instruction)
   JMP(instruction);
 }
 
+void CPU::JNO(const Instruction& instruction)
+{
+  if (OF)
+    return;
+
+  JMP(instruction);
+}
+
 void CPU::JPE(const Instruction& instruction)
 {
   if (!PF)
