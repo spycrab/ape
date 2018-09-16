@@ -2,6 +2,7 @@
 // Licensed under GPLv3+
 // Refer to the LICENSE file included.
 
+#include <stdexcept>
 #include <string>
 
 #include <QMainWindow>
@@ -25,6 +26,7 @@ private:
   void ShowAbout();
 
   void StartFile(const QString& path);
+  void HandleException(std::exception e);
 
   QMenuBar* m_menu_bar;
 };

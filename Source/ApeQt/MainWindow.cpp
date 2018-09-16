@@ -13,11 +13,12 @@
 #include <QMenuBar>
 #include <QMessageBox>
 
-#include "Version.h"
-
+#include "ApeQt/QueueOnObject.h"
 #include "ApeQt/TTYWidget.h"
 
 #include "Core/Machine.h"
+
+#include "Version.h"
 
 std::unique_ptr<Core::Machine> s_machine = nullptr;
 std::thread s_thread;
@@ -101,7 +102,13 @@ void MainWindow::StartFile(const QString& path)
   s_machine.reset(new Core::Machine);
 
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
-    s_thread = std::thread([path] { s_machine->BootCOM(path.toStdString()); });
+    s_thread = std::thread([this, path] {
+      try {
+        s_machine->BootCOM(path.toStdString());
+      } catch (std::exception e) {
+        HandleException(e);
+      }
+    });
     return;
   }
   auto& drive = s_machine->GetFloppyDrive();
@@ -117,7 +124,23 @@ void MainWindow::StartFile(const QString& path)
     return;
   }
 
-  s_thread = std::thread([path] { s_machine->BootFloppy(); });
+  s_thread = std::thread([this, path] {
+    try {
+      s_machine->BootFloppy();
+    } catch (std::exception e) {
+      HandleException(e);
+    }
+  });
+}
+
+void MainWindow::HandleException(std::exception e)
+{
+  QueueOnObject(this, [this, e] {
+    QMessageBox::critical(
+        this, tr("Error"),
+        tr("A fatal error exception and emulation cannot continue:\n%1")
+            .arg(QString::fromStdString(e.what())));
+  });
 }
 
 void MainWindow::ShowAbout()
