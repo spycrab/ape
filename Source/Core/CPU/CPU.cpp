@@ -57,14 +57,12 @@ void CPU::Tick()
     if (!ins.Resolve(mod, data)) {
       LOG("Failed to resolve " + String::ToHex(opcode) + " with mod " +
           String::ToHex(mod));
-      throw UnhandledParameterException();
+      throw InvalidParameterException(opcode, mod);
     }
   }
 
   if (ins.GetType() == Instruction::Type::Invalid) {
-    LOG("Invalid instruction hit: " + String::ToHex(opcode));
-    return;
-    // throw InvalidInstructionException();
+    throw InvalidInstructionException(opcode);
   }
 
   //  LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
@@ -266,10 +264,10 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+      throw ParameterLengthMismatchException(ins, dst, src);
 
     if (!dst.IsWord())
-      throw UnsupportedParameterException();
+      throw UnsupportedParameterException(ins, dst);
 
     u32 ptr;
 
@@ -288,10 +286,10 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+      throw ParameterLengthMismatchException(ins, dst, src);
 
     if (!dst.IsWord())
-      throw UnsupportedParameterException();
+      throw UnsupportedParameterException(ins, dst);
 
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
     u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
@@ -305,10 +303,10 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+      throw ParameterLengthMismatchException(ins, dst, src);
 
     if (!dst.IsWord())
-      throw UnsupportedParameterException();
+      throw UnsupportedParameterException(ins, dst);
 
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
     u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
@@ -342,7 +340,7 @@ void CPU::Tick()
     default:
       LOG("[LOOP] Don't know what to do with parameter type: " +
           ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
+      throw UnhandledParameterException(parameter);
     }
     break;
   }
@@ -361,7 +359,7 @@ void CPU::Tick()
     default:
       LOG("[LOOPNZ] Don't know what to do with parameter type: " +
           ParameterTypeToString(parameter.GetType()));
-      throw UnhandledParameterException();
+      throw UnhandledParameterException(parameter);
     }
     break;
   }
@@ -370,7 +368,7 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+      throw ParameterLengthMismatchException(ins, dst, src);
 
     if (dst.IsWord()) {
       u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
@@ -426,7 +424,7 @@ void CPU::Tick()
     auto& data = ins.GetParameters()[0];
 
     if (!data.IsWord())
-      throw UnsupportedParameterException();
+      throw UnsupportedParameterException(ins, data);
 
     u16 data16 = ParameterTo<u16>(data, ins.GetPrefix());
 
@@ -468,7 +466,7 @@ void CPU::Tick()
     auto& dst = ins.GetParameters()[0];
 
     if (!dst.IsWord())
-      throw UnsupportedParameterException();
+      throw UnsupportedParameterException(ins, dst);
 
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
@@ -515,7 +513,7 @@ void CPU::Tick()
     auto& src = ins.GetParameters()[1];
 
     if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+      throw ParameterLengthMismatchException(ins, dst, src);
 
     if (dst.IsWord()) {
       u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
@@ -533,9 +531,7 @@ void CPU::Tick()
     XOR(ins);
     break;
   default:
-    LOG("Don't know what to do with instruction type: " +
-        TypeToString(ins.GetType()));
-    throw UnhandledInstructionException();
+    throw UnhandledInstructionException(ins);
   }
 
   m_repeat_mode = RepeatMode::None;

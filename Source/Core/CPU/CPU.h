@@ -133,7 +133,7 @@ private:
       if (parameter.IsWord()) {
         LOG("[BYTE] Tried to convert a WORD parameter to BYTE for " +
             parameter.ToString(prefix) + "!");
-        throw ParameterLengthMismatchException();
+        throw ParameterLengthMismatchException(parameter);
       }
 
       switch (parameter.GetType()) {
@@ -224,12 +224,12 @@ private:
 
         LOG("[BYTE] Unknown type: " +
             ParameterTypeToString(parameter.GetType()));
-        throw UnhandledParameterException();
+        throw UnhandledParameterException(parameter);
       }
     } else if constexpr (std::is_same<T, u16>::value ||
                          std::is_same<T, u16&>::value) {
       if (!parameter.IsWord())
-        throw ParameterLengthMismatchException();
+        throw ParameterLengthMismatchException(parameter);
 
       switch (parameter.GetType()) {
       case Type::AX:
@@ -316,13 +316,13 @@ private:
           default:
             LOG("[WORD] Unknown type: " +
                 ParameterTypeToString(parameter.GetType()));
-            throw UnhandledParameterException();
+            throw UnhandledParameterException(parameter);
             break;
           }
         } else {
           LOG("[WORD] Unknown type: " +
               ParameterTypeToString(parameter.GetType()));
-          throw UnhandledParameterException();
+          throw UnhandledParameterException(parameter);
         }
       }
     }

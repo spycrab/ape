@@ -79,7 +79,7 @@ void CPU::ADD(const Instruction& ins)
     i8 src_8 = ParameterTo<i8>(src, ins.GetPrefix());
 
     if (dst.IsWord() != src.IsWord())
-      throw ParameterLengthMismatchException();
+      throw ParameterLengthMismatchException(ins, dst, src);
 
     UpdateOF<i8>(dst_8 + src_8);
     UpdateCF<i8>(static_cast<u8>(dst_8) + static_cast<u8>(src_8));
@@ -216,7 +216,7 @@ void CPU::SUB(const Instruction& ins)
   auto& src = ins.GetParameters()[1];
 
   if (dst.IsWord() != src.IsWord())
-    throw ParameterLengthMismatchException();
+    throw ParameterLengthMismatchException(ins, dst, src);
 
   if (dst.IsWord()) {
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());

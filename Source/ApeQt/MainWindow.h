@@ -2,11 +2,14 @@
 // Licensed under GPLv3+
 // Refer to the LICENSE file included.
 
+#include <optional>
 #include <stdexcept>
 #include <string>
 
 #include <QMainWindow>
 #include <QString>
+
+#include "Core/CPU/Exception.h"
 
 class QMenuBar;
 
@@ -26,7 +29,7 @@ private:
   void ShowAbout();
 
   void StartFile(const QString& path);
-  void HandleException(std::exception e);
+  void HandleException(Core::CPU::CPUException e);
 
   QMenuBar* m_menu_bar;
 };

@@ -37,7 +37,7 @@ void CPU::JMP(const Instruction& instruction)
   default:
     LOG("[JMP] Don't know what to do with parameter type: " +
         ParameterTypeToString(parameter.GetType()));
-    throw UnhandledParameterException();
+    throw UnhandledParameterException(parameter);
   }
 }
 
@@ -166,7 +166,7 @@ void CPU::CALL(const Instruction& instruction)
   }
 
   if (!parameter.IsWord())
-    throw UnsupportedParameterException();
+    throw UnsupportedParameterException(instruction, parameter);
 
   u16 offset = ParameterTo<u16>(parameter, instruction.GetPrefix());
 

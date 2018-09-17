@@ -1242,7 +1242,7 @@ u8 Instruction::GetLength(u8 mod)
         std::cerr << "(IL) Don't know how to resolve "
                   << Core::CPU::ParameterTypeToString(p.GetType(), m_prefix)
                   << std::endl;
-        throw UnhandledParameterException();
+        throw UnhandledParameterException(p);
       }
     }
   }

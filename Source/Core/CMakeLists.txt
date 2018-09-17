@@ -3,6 +3,8 @@ add_library(Core
   CPU/CPU.h
   CPU/CPU.cpp
   CPU/Decoder.cpp
+  CPU/Exception.h
+  CPU/Exception.cpp
   CPU/Flags.h
   CPU/Flags.cpp
   CPU/Instruction.h
@@ -33,6 +35,8 @@ source_group(CPU FILES
   CPU/CPU.h
   CPU/CPU.cpp
   CPU/Decoder.cpp
+  CPU/Exception.h
+  CPU/Exception.cpp
   CPU/Flags.h
   CPU/Flags.cpp
   CPU/Instruction.h

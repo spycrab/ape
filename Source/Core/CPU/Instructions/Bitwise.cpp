@@ -63,7 +63,7 @@ void CPU::OR(const Instruction& ins)
   auto& src = ins.GetParameters()[1];
 
   if (dst.IsWord() != src.IsWord())
-    throw ParameterLengthMismatchException();
+    throw ParameterLengthMismatchException(ins, dst, src);
 
   if (dst.IsWord()) {
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
@@ -238,7 +238,7 @@ void CPU::XOR(const Instruction& ins)
   auto& src = ins.GetParameters()[1];
 
   if (dst.IsWord() != src.IsWord()) {
-    throw ParameterLengthMismatchException();
+    throw ParameterLengthMismatchException(ins, dst, src);
   }
 
   if (dst.IsWord()) {
