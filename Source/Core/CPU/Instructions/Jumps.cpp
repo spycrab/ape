@@ -43,138 +43,104 @@ void CPU::JMP(const Instruction& instruction)
 
 void CPU::JA(const Instruction& instruction)
 {
-  if (CF || ZF)
-    return;
-
-  JMP(instruction);
+  if (!CF && !ZF)
+    JMP(instruction);
 }
 
 void CPU::JBE(const Instruction& instruction)
 {
-  if (!CF && !ZF)
-    return;
-
-  JMP(instruction);
+  if (CF || ZF)
+    JMP(instruction);
 }
 
 void CPU::JB(const Instruction& instruction)
 {
-  if (!CF)
-    return;
-
-  JMP(instruction);
+  if (CF)
+    JMP(instruction);
 }
 
 void CPU::JNB(const Instruction& instruction)
 {
-  if (CF)
-    return;
-
-  JMP(instruction);
+  if (!CF)
+    JMP(instruction);
 }
 
 void CPU::JCXZ(const Instruction& instruction)
 {
-  if (CX)
-    return;
-
-  JMP(instruction);
+  if (!CX)
+    JMP(instruction);
 }
 
 void CPU::JG(const Instruction& instruction)
 {
-  if (ZF || (SF != OF))
-    return;
-
-  JMP(instruction);
+  if (!ZF && (SF == OF))
+    JMP(instruction);
 }
 
 void CPU::JGE(const Instruction& instruction)
 {
-  if (SF != OF)
-    return;
-
-  JMP(instruction);
+  if (SF == OF)
+    JMP(instruction);
 }
 
 void CPU::JL(const Instruction& instruction)
 {
-  if (SF == OF)
-    return;
-
-  JMP(instruction);
+  if (SF != OF)
+    JMP(instruction);
 }
 
 void CPU::JLE(const Instruction& instruction)
 {
-  if (!ZF && (SF == OF))
-    return;
-
-  JMP(instruction);
+  if (ZF || SF != OF)
+    JMP(instruction);
 }
 
 void CPU::JO(const Instruction& instruction)
 {
-  if (!OF)
-    return;
-
-  JMP(instruction);
+  if (OF)
+    JMP(instruction);
 }
 
 void CPU::JNO(const Instruction& instruction)
 {
-  if (OF)
-    return;
-
-  JMP(instruction);
+  if (!OF)
+    JMP(instruction);
 }
 
 void CPU::JPE(const Instruction& instruction)
 {
-  if (!PF)
-    return;
-
-  JMP(instruction);
+  if (PF)
+    JMP(instruction);
 }
 
 void CPU::JPO(const Instruction& instruction)
 {
-  if (PF)
-    return;
-
-  JMP(instruction);
+  if (!PF)
+    JMP(instruction);
 }
 
 void CPU::JS(const Instruction& instruction)
 {
-  if (!SF)
-    return;
-
-  JMP(instruction);
+  if (SF)
+    JMP(instruction);
 }
 
 void CPU::JNS(const Instruction& instruction)
 {
-  if (SF)
-    return;
-
-  JMP(instruction);
+  if (!SF)
+    JMP(instruction);
 }
 
 void CPU::JZ(const Instruction& instruction)
 {
-  if (!ZF)
-    return;
-
-  JMP(instruction);
+  if (ZF)
+    JMP(instruction);
 }
 
 void CPU::JNZ(const Instruction& instruction)
 {
-  if (ZF)
-    return;
-
-  JMP(instruction);
+  if (!ZF)
+    JMP(instruction);
 }
 
 void CPU::CALL(const Instruction& instruction)
