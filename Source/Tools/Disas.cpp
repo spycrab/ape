@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Common/Logger.h"
+#include "Common/ParameterParser.h"
 #include "Common/String.h"
 #include "Common/Types.h"
 #include "Version.h"
@@ -34,14 +35,32 @@ int main(int argc, char** argv)
             << "(c) Ape Emulator Project, 2018" << std::endl
             << std::endl;
 
-  if (argc != 2) {
-    std::cout << "Usage: " << argv[0] << " (file)" << std::endl;
+  ParameterParser p;
+
+  p.AddString("file");
+  p.AddCommand("help");
+
+  if (!p.Parse(argc, argv)) {
+    std::cerr << "Failed to parse parameters." << std::endl
+              << "See --help for a list of options" << std::endl;
+  }
+
+  if (p.CheckCommand("help")) {
+    std::cerr << "Usage: " << argv[0] << " --file (file)" << std::endl;
     return 1;
   }
-  std::ifstream ifs(argv[1], std::ios::binary);
+
+  const auto& file = p.GetString("file");
+
+  if (file == "") {
+    std::cerr << "No file to disassemble provided. Exiting." << std::endl;
+    return 2;
+  }
+
+  std::ifstream ifs(file, std::ios::binary);
 
   if (!ifs.good()) {
-    ERROR("Failed to open " + std::string(argv[1]));
+    ERROR("Failed to open " + file);
     return 1;
   }
 
