@@ -29,7 +29,7 @@ void CPU::JMP(const Instruction& instruction)
     u32 address = parameter.GetData<u32>();
 
     IP = static_cast<u16>((address & 0xFFFF0000) >> 16);
-    DS = static_cast<u16>(address & 0x0000FFFF) >> 8;
+    DS = static_cast<u16>(address & 0x0000FFFF) << 8;
 
     LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(IP));
     break;
