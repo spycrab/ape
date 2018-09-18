@@ -52,14 +52,7 @@ MainWindow::MainWindow(const std::string&& path)
   StartFile(QString::fromStdString(path));
 }
 
-MainWindow::~MainWindow()
-{
-  if (s_machine != nullptr)
-    s_machine->Shutdown();
-
-  if (s_thread.joinable())
-    s_thread.join();
-}
+MainWindow::~MainWindow() { StopMachine(); }
 
 void MainWindow::CreateWidgets()
 {
@@ -71,6 +64,12 @@ void MainWindow::CreateWidgets()
                        QKeySequence("Ctrl+O"));
   file_menu->addAction(tr("Exit"), this, &MainWindow::close,
                        QKeySequence("Alt+F4"));
+
+  auto* machine_menu = m_menu_bar->addMenu(tr("Machine"));
+
+  m_machine_stop = machine_menu->addAction(
+      tr("Stop"), this, &MainWindow::StopMachine, QKeySequence("Ctrl+H"));
+  m_machine_stop->setEnabled(false);
 
   auto* help_menu = m_menu_bar->addMenu(tr("Help"));
 
@@ -111,9 +110,13 @@ void MainWindow::StartFile(const QString& path)
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     s_thread = std::thread([this, path] {
       try {
+        m_machine_stop->setEnabled(true);
+
         ShowStatus(tr("Running..."));
         s_machine->BootCOM(path.toStdString());
         ShowStatus(tr("Stopped."));
+
+        m_machine_stop->setEnabled(false);
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
@@ -135,13 +138,26 @@ void MainWindow::StartFile(const QString& path)
 
   s_thread = std::thread([this, path] {
     try {
+      m_machine_stop->setEnabled(true);
+
       ShowStatus(tr("Running..."));
       s_machine->BootFloppy();
       ShowStatus(tr("Stopped."));
+
+      m_machine_stop->setEnabled(false);
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
   });
+}
+
+void MainWindow::StopMachine()
+{
+  if (s_machine != nullptr)
+    s_machine->Shutdown();
+
+  if (s_thread.joinable())
+    s_thread.join();
 }
 
 void MainWindow::HandleException(Core::CPU::CPUException e)
