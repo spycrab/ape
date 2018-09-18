@@ -6,6 +6,8 @@ option(ENABLE_CLI   "Enable CLI"   ON)
 option(ENABLE_TOOLS "Build Tools"  ON)
 option(ENABLE_TESTS "Build Tests"  ON)
 
+option(ENABLE_ALL_WARNINGS "Enable all warnings" OFF)
+
 set(CMAKE_BUILD_TYPE Debug)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Binaries)
@@ -81,10 +83,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Turn all warnings on
-if (MSVC)
-  add_compile_options(/W4)
-else()
-  add_compile_options(-Wall -Wextra -pedantic -Werror)
+if (ENABLE_ALL_WARNINGS)
+  if (MSVC)
+    add_compile_options(/W4)
+  else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+  endif()
 endif()
 
 # C++ version file
