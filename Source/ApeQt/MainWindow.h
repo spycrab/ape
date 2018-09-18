@@ -2,14 +2,16 @@
 // Licensed under GPLv3+
 // Refer to the LICENSE file included.
 
-#include <optional>
+#include <memory>
 #include <stdexcept>
 #include <string>
+#include <thread>
 
 #include <QMainWindow>
 #include <QString>
 
 #include "Core/CPU/Exception.h"
+#include "Core/Machine.h"
 
 class QAction;
 class QMenuBar;
@@ -39,4 +41,7 @@ private:
   QMenuBar* m_menu_bar;
   QAction* m_machine_stop;
   QStatusBar* m_status_bar;
+
+  std::unique_ptr<Core::Machine> m_machine = nullptr;
+  std::thread m_thread;
 };

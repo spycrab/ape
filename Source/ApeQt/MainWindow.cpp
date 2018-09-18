@@ -21,9 +21,6 @@
 
 #include "Version.h"
 
-std::unique_ptr<Core::Machine> s_machine = nullptr;
-std::thread s_thread;
-
 QString MainWindow::GetQuote() const
 {
   const QStringList list{tr("Less FPS than DOSBox"),
@@ -90,8 +87,8 @@ void MainWindow::ConnectWidgets() {}
 
 void MainWindow::OpenFile()
 {
-  if (s_thread.joinable())
-    s_thread.join();
+  if (m_thread.joinable())
+    m_thread.join();
 
   const QString& path =
       QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
@@ -105,15 +102,15 @@ void MainWindow::StartFile(const QString& path)
   if (path.isEmpty())
     return;
 
-  s_machine.reset(new Core::Machine);
+  m_machine.reset(new Core::Machine);
 
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
-    s_thread = std::thread([this, path] {
+    m_thread = std::thread([this, path] {
       try {
         m_machine_stop->setEnabled(true);
 
         ShowStatus(tr("Running..."));
-        s_machine->BootCOM(path.toStdString());
+        m_machine->BootCOM(path.toStdString());
         ShowStatus(tr("Stopped."));
 
         m_machine_stop->setEnabled(false);
@@ -123,7 +120,7 @@ void MainWindow::StartFile(const QString& path)
     });
     return;
   }
-  auto& drive = s_machine->GetFloppyDrive();
+  auto& drive = m_machine->GetFloppyDrive();
 
   if (!drive.Insert(path.toStdString())) {
     QMessageBox::critical(this, tr("Error"), tr("Failed to mount floppy!"));
@@ -136,12 +133,12 @@ void MainWindow::StartFile(const QString& path)
     return;
   }
 
-  s_thread = std::thread([this, path] {
+  m_thread = std::thread([this, path] {
     try {
       m_machine_stop->setEnabled(true);
 
       ShowStatus(tr("Running..."));
-      s_machine->BootFloppy();
+      m_machine->BootFloppy();
       ShowStatus(tr("Stopped."));
 
       m_machine_stop->setEnabled(false);
@@ -153,11 +150,11 @@ void MainWindow::StartFile(const QString& path)
 
 void MainWindow::StopMachine()
 {
-  if (s_machine != nullptr)
-    s_machine->Shutdown();
+  if (m_machine != nullptr)
+    m_machine->Shutdown();
 
-  if (s_thread.joinable())
-    s_thread.join();
+  if (m_thread.joinable())
+    m_thread.join();
 }
 
 void MainWindow::HandleException(Core::CPU::CPUException e)
