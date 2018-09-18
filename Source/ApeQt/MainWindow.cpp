@@ -4,8 +4,8 @@
 
 #include "ApeQt/MainWindow.h"
 
-#include <ctime>
 #include <memory>
+#include <random>
 
 #include <QFileDialog>
 #include <QMenuBar>
@@ -32,8 +32,11 @@ QString MainWindow::GetQuote() const
                          tr("Big Blue is coming for you"),
                          tr("Crashes in your general direction")};
 
-  srand(time(NULL));
-  return list[rand() % list.size()];
+  std::random_device rd;
+  std::default_random_engine engine(rd());
+  std::uniform_int_distribution<int> rnd(0, list.size() - 1);
+
+  return list[rnd(engine)];
 }
 
 MainWindow::MainWindow(const std::string&& path)
