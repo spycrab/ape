@@ -12,6 +12,7 @@
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QStatusBar>
 
 #include "ApeQt/QueueOnObject.h"
 #include "ApeQt/TTYWidget.h"
@@ -78,6 +79,12 @@ void MainWindow::CreateWidgets()
   setMenuBar(m_menu_bar);
 
   setCentralWidget(new TTYWidget);
+
+  m_status_bar = new QStatusBar;
+
+  ShowStatus(tr("Welcome to Ape!"), 5000);
+
+  setStatusBar(m_status_bar);
 }
 
 void MainWindow::ConnectWidgets() {}
@@ -104,7 +111,9 @@ void MainWindow::StartFile(const QString& path)
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     s_thread = std::thread([this, path] {
       try {
+        ShowStatus(tr("Running..."));
         s_machine->BootCOM(path.toStdString());
+        ShowStatus(tr("Stopped."));
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
@@ -126,7 +135,9 @@ void MainWindow::StartFile(const QString& path)
 
   s_thread = std::thread([this, path] {
     try {
+      ShowStatus(tr("Running..."));
       s_machine->BootFloppy();
+      ShowStatus(tr("Stopped."));
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
@@ -140,6 +151,15 @@ void MainWindow::HandleException(Core::CPU::CPUException e)
         this, tr("Error"),
         tr("A fatal error exception and emulation cannot continue:\n\n%1")
             .arg(QString::fromStdString(e.what())));
+  });
+
+  ShowStatus("Crashed :(");
+}
+
+void MainWindow::ShowStatus(const QString& message, int timeout)
+{
+  QueueOnObject(this, [this, message, timeout] {
+    m_status_bar->showMessage(message, timeout);
   });
 }
 

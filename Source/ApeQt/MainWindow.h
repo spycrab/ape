@@ -12,6 +12,7 @@
 #include "Core/CPU/Exception.h"
 
 class QMenuBar;
+class QStatusBar;
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +31,8 @@ private:
 
   void StartFile(const QString& path);
   void HandleException(Core::CPU::CPUException e);
+  void ShowStatus(const QString& status, int timeout = 0);
 
   QMenuBar* m_menu_bar;
+  QStatusBar* m_status_bar;
 };
