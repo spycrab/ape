@@ -105,7 +105,7 @@ void MainWindow::StartFile(const QString& path)
     s_thread = std::thread([this, path] {
       try {
         s_machine->BootCOM(path.toStdString());
-      } catch (Core::CPU::CPUException e) {
+      } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
     });
@@ -127,7 +127,7 @@ void MainWindow::StartFile(const QString& path)
   s_thread = std::thread([this, path] {
     try {
       s_machine->BootFloppy();
-    } catch (Core::CPU::CPUException e) {
+    } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
   });
