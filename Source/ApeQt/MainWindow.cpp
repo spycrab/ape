@@ -31,7 +31,8 @@ QString MainWindow::GetQuote() const
                          tr("640K ought to be enough for everyone"),
                          tr("Just works (sometimes)"),
                          tr("MOV UP, ME ; Scotty"),
-                         tr("Big Blue is coming for you")};
+                         tr("Big Blue is coming for you"),
+                         tr("Crashes in your general direction")};
 
   srand(time(NULL));
   return list[rand() % list.size()];
