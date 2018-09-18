@@ -4,10 +4,8 @@
 
 #include "ApeQt/MainWindow.h"
 
-#include <cstdlib>
 #include <ctime>
 #include <memory>
-#include <thread>
 
 #include <QFileDialog>
 #include <QMenuBar>

@@ -3,7 +3,6 @@
 // Refer to the LICENSE file included.
 
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <thread>
 
