@@ -68,7 +68,13 @@ void MainWindow::CreateWidgets()
 
   m_machine_stop = machine_menu->addAction(
       tr("Stop"), this, &MainWindow::StopMachine, QKeySequence("Ctrl+H"));
+
+  m_machine_pause = machine_menu->addAction(tr("Pause / Resume"), this,
+                                            &MainWindow::PauseMachine,
+                                            QKeySequence("Ctrl+P"));
+
   m_machine_stop->setEnabled(false);
+  m_machine_pause->setEnabled(false);
 
   auto* help_menu = m_menu_bar->addMenu(tr("Help"));
 
@@ -110,12 +116,14 @@ void MainWindow::StartFile(const QString& path)
     m_thread = std::thread([this, path] {
       try {
         m_machine_stop->setEnabled(true);
+        m_machine_pause->setEnabled(true);
 
         ShowStatus(tr("Running..."));
         m_machine->BootCOM(path.toStdString());
         ShowStatus(tr("Stopped."));
 
         m_machine_stop->setEnabled(false);
+        m_machine_pause->setEnabled(false);
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
@@ -138,12 +146,14 @@ void MainWindow::StartFile(const QString& path)
   m_thread = std::thread([this, path] {
     try {
       m_machine_stop->setEnabled(true);
+      m_machine_pause->setEnabled(true);
 
       ShowStatus(tr("Running..."));
       m_machine->BootFloppy();
       ShowStatus(tr("Stopped."));
 
       m_machine_stop->setEnabled(false);
+      m_machine_pause->setEnabled(false);
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
@@ -152,11 +162,16 @@ void MainWindow::StartFile(const QString& path)
 
 void MainWindow::StopMachine()
 {
-  if (m_machine != nullptr)
-    m_machine->Shutdown();
+  m_machine->Shutdown();
 
   if (m_thread.joinable())
     m_thread.join();
+}
+
+void MainWindow::PauseMachine()
+{
+  m_machine->Pause();
+  ShowStatus("Paused / Resumed");
 }
 
 void MainWindow::HandleException(Core::CPU::CPUException e)

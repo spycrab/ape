@@ -30,6 +30,8 @@ bool Core::Machine::BootFloppy()
 
 void Core::Machine::Shutdown() { m_cpu.running = false; }
 
+void Core::Machine::Pause() { m_cpu.paused = !m_cpu.paused; }
+
 bool Core::Machine::BootCOM(const std::string& file,
                             const std::string&& parameters)
 {

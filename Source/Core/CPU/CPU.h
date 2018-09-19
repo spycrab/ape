@@ -104,6 +104,7 @@ public:
 
   //! Set whether the CPU is running
   std::atomic<bool> running = false;
+  std::atomic<bool> paused = false;
 
 private:
   //! \cond PRIVATE

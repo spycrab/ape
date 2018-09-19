@@ -32,13 +32,17 @@ private:
   void ShowAbout();
 
   void StartFile(const QString& path);
+
   void StopMachine();
+  void PauseMachine();
+
 
   void HandleException(Core::CPU::CPUException e);
   void ShowStatus(const QString& status, int timeout = 0);
 
   QMenuBar* m_menu_bar;
   QAction* m_machine_stop;
+  QAction* m_machine_pause;
   QStatusBar* m_status_bar;
 
   std::unique_ptr<Core::Machine> m_machine = nullptr;

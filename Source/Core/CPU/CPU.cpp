@@ -542,6 +542,7 @@ void CPU::Start()
   running = true;
   while (running) {
     Tick();
+    while (paused && running) {}
   }
 }
 

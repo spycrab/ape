@@ -31,6 +31,9 @@ public:
   //! Shutdown the machine
   void Shutdown();
 
+  //! Pause the machine (Or unpause it if it's paused already)
+  void Pause();
+
   //! Directly execute a COM file
   bool BootCOM(const std::string& file, const std::string&& parameters = "");
 
