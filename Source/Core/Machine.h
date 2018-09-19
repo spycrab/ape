@@ -5,11 +5,12 @@
 #pragma once
 //! \file
 
+#include <vector>
+
 #include "Core/CPU/CPU.h"
 #include "Core/HW/FloppyDrive.h"
+#include "Core/HW/VGA.h"
 #include "Core/Memory.h"
-
-#include <vector>
 
 namespace Core
 {
@@ -25,6 +26,9 @@ public:
   //! Get this machines Memory
   Memory& GetMemory();
 
+  //! Get this machines graphics adapter
+  HW::VGACard& GetVGA();
+
   //! Boot the machine from the floppy drive
   bool BootFloppy();
 
@@ -39,6 +43,7 @@ public:
 
 private:
   HW::FloppyDrive m_floppy_drive;
+  HW::VGACard m_vga;
   CPU::CPU m_cpu;
 
   Core::Memory m_memory;

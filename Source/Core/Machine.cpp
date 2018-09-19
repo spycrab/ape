@@ -6,12 +6,19 @@
 
 #include "Common/Logger.h"
 
-Core::Machine::Machine() : m_cpu(this), m_memory(1024 * 1024) {}
+#include "Core/TTY.h"
+
+Core::Machine::Machine() : m_vga(this), m_cpu(this), m_memory(1024 * 1024)
+{
+  TTY::Init(&m_vga);
+}
 
 Core::HW::FloppyDrive& Core::Machine::GetFloppyDrive()
 {
   return m_floppy_drive;
 }
+
+Core::HW::VGACard& Core::Machine::GetVGA() { return m_vga; }
 
 Core::Memory& Core::Machine::GetMemory() { return m_memory; }
 

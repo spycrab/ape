@@ -9,105 +9,80 @@
 #include "Common/Logger.h"
 #include "Common/String.h"
 
-#include "Core/TTYBackend.h"
+#include "Core/HW/VGA.h"
 
-TTYBackend* g_TTYBackend = nullptr;
+static u8 s_column = 0;
+static u8 s_row = 1;
 
-void TTY::Init() {}
+static Core::HW::VGACard* s_vga = nullptr;
+
+void TTY::Init(Core::HW::VGACard* vga) { s_vga = vga; }
 
 void TTY::Write(const std::string& string)
 {
-  if (g_TTYBackend)
-    g_TTYBackend->Write(string);
-  else
-    LOG("[TTY STUB] STRING: " + string);
+  for (char c : string)
+    Write(c);
 }
 
 void TTY::Write(const char c)
 {
-  if (g_TTYBackend)
-    g_TTYBackend->Write(c);
-  else
+  if (s_vga == nullptr) {
     LOG("[TTY STUB] CHAR: " + std::string(1, c));
+    return;
+  }
+
+  s_vga->GetBuffer()[((s_row - 1) * 80 + s_column) * sizeof(u16)] = c;
+  s_column++;
+
+  s_column %= 80;
 }
 
 void TTY::Scroll(const u8 lines, const u8 color)
 {
-  if (g_TTYBackend)
-    g_TTYBackend->Scroll(lines, color);
-  else
-    LOG("[TTY STUB] Scroll " + String::ToHex(lines) +
-        " C: " + String::ToHex(color));
+  LOG("[TTY STUB] Scroll " + String::ToHex(lines) +
+      " C: " + String::ToHex(color));
 }
 void TTY::MoveCursor(const u32 x, const u32 y)
 {
-  if (g_TTYBackend)
-    g_TTYBackend->MoveCursor(x, y);
-  else
-    LOG("[TTY STUB] MoveCursor");
+  if (s_vga == nullptr) {
+    LOG("[TTY STUB] MoveCursor to " + std::to_string(x) + "," +
+        std::to_string(y));
+    return;
+  }
+
+  s_column = x;
+  s_row = y;
 }
 void TTY::Clear()
 {
-  if (g_TTYBackend)
-    g_TTYBackend->Clear();
-  else
+  if (s_vga == nullptr) {
     LOG("[TTY STUB] Clear");
+    return;
+  }
+
+  for (size_t y = 0; y < 80; y++) {
+    for (size_t x = 0; x < 80; x++) {
+      s_vga->GetBuffer()[(y * 80 + x) * sizeof(u16)] = 0;
+    }
+  }
 }
 
 char TTY::Read()
 {
-  if (g_TTYBackend) {
-    return g_TTYBackend->Read();
-  } else {
-    LOG("[TTY STUB] Read");
-    return 'A';
-  }
+  LOG("[TTY STUB] Read");
+  return 'A';
 }
 
-u8 TTY::GetCursorRow()
-{
-  if (g_TTYBackend) {
-    return g_TTYBackend->GetCursorRow();
-  } else {
-    LOG("[TTY STUB] Cursor row");
-    return 0;
-  }
-}
+u8 TTY::GetCursorRow() { return s_row; }
 
-void TTY::SetCursorRow(u8 row)
-{
-  if (g_TTYBackend) {
-    g_TTYBackend->SetCursorRow(row);
-  } else {
-    LOG("[TTY STUB] Set cursor row");
-  }
-}
+void TTY::SetCursorRow(u8 row) { s_row = row; }
 
-u8 TTY::GetCursorColumn()
-{
-  if (g_TTYBackend) {
-    return g_TTYBackend->GetCursorColumn();
-  } else {
-    LOG("[TTY STUB] Cursor column");
-    return 0;
-  }
-}
+u8 TTY::GetCursorColumn() { return s_column; }
 
-void TTY::SetCursorColumn(u8 column)
-{
-  if (g_TTYBackend) {
-    g_TTYBackend->SetCursorColumn(column);
-  } else {
-    LOG("[TTY STUB] Set cursor column");
-  }
-}
+void TTY::SetCursorColumn(u8 column) { s_column = column; }
 
 bool TTY::IsCharAvailable()
 {
-  if (g_TTYBackend) {
-    return g_TTYBackend->IsCharAvailable();
-  } else {
-    LOG("[TTY STUB] Char available");
-    return false;
-  }
+  LOG("[TTY STUB] Char available");
+  return false;
 }

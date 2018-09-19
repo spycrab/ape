@@ -16,6 +16,8 @@ add_library(Core
   CPU/Interrupt.cpp
   HW/FloppyDrive.h
   HW/FloppyDrive.cpp
+  HW/VGA.h
+  HW/VGA.cpp
   Machine.h
   Machine.cpp
   Memory.h
@@ -51,7 +53,9 @@ source_group("CPU\\Instructions" FILES
 
 source_group(HW FILES
   HW/FloppyDrive.h
-  HW/FloppyDrive.cpp)
+  HW/FloppyDrive.cpp
+  HW/VGA.h
+  HW/VGA.cpp)
 
 source_group(Machine FILES
   Machine.h

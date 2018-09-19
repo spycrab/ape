@@ -67,8 +67,8 @@ void CPU::Tick()
     throw InvalidInstructionException(opcode);
   }
 
-  //  LOG(String::ToHex<u16>(DS) + ":" + String::ToHex<u16>(old_ip) + ": " +
-  //    ins.ToString());
+  // LOG(String::ToHex<u16>(CS) + ":" + String::ToHex<u16>(old_ip) + ": " +
+  //   ins.ToString());
 
   using Type = Instruction::Type;
   using PType = Instruction::Parameter::Type;
@@ -542,8 +542,13 @@ void CPU::Tick()
 void CPU::Start()
 {
   running = true;
+  u8 counter = 0;
   while (running) {
     Tick();
+
+    if (counter++ == 0)
+      m_machine->GetVGA().Update();
+
     while (paused && running) {
     }
     std::this_thread::sleep_for(

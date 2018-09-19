@@ -147,8 +147,6 @@ void CPU::CALL(const Instruction& instruction)
 {
   auto& parameter = instruction.GetParameters()[0];
 
-  LOG(ParameterTypeToString(parameter.GetType()));
-
   if (parameter.GetType() ==
       Instruction::Parameter::Type::Literal_LongAddress_Immediate) {
     u32 addr = parameter.GetData<u32>();
