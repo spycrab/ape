@@ -39,7 +39,10 @@ void TTYWidget::Update()
     for (u64 x = 0; x < COLUMNS; x++) {
       char c = buffer[(y * COLUMNS + x) * sizeof(u16)];
 
-      s += QChar(c);
+      if (std::isprint(c))
+        s += QChar(c);
+      else
+        s += " ";
     }
 
     s += "\n";
