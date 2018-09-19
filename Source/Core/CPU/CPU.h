@@ -106,6 +106,9 @@ public:
   std::atomic<bool> running = false;
   std::atomic<bool> paused = false;
 
+  // Treating this as if it were a 5 MHz 8088
+  u64 clock_speed = 5'000'000;
+
 private:
   //! \cond PRIVATE
   template <class T>

@@ -4,6 +4,8 @@
 
 #include "Core/CPU/CPU.h"
 
+#include <chrono>
+#include <thread>
 #include <type_traits>
 
 #include "Core/CPU/Flags.h"
@@ -542,7 +544,10 @@ void CPU::Start()
   running = true;
   while (running) {
     Tick();
-    while (paused && running) {}
+    while (paused && running) {
+    }
+    std::this_thread::sleep_for(
+        std::chrono::nanoseconds(1000000000 / clock_speed));
   }
 }
 
