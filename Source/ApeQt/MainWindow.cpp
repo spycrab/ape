@@ -82,8 +82,6 @@ void MainWindow::CreateWidgets()
 
   setMenuBar(m_menu_bar);
 
-  setCentralWidget(new TTYWidget);
-
   m_status_bar = new QStatusBar;
 
   ShowStatus(tr("Welcome to Ape!"), 5000);
@@ -111,6 +109,8 @@ void MainWindow::StartFile(const QString& path)
     return;
 
   m_machine.reset(new Core::Machine);
+
+  setCentralWidget(new TTYWidget(&m_machine->GetVGA()));
 
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     m_thread = std::thread([this, path] {

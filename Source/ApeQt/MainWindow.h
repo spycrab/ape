@@ -36,7 +36,6 @@ private:
   void StopMachine();
   void PauseMachine();
 
-
   void HandleException(Core::CPU::CPUException e);
   void ShowStatus(const QString& status, int timeout = 0);
 

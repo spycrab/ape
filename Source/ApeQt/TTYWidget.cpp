@@ -10,96 +10,43 @@
 #include <QTextBlock>
 
 #include "Common/Logger.h"
+#include "Common/String.h"
 
 #include "Core/TTY.h"
 
-TTYWidget::TTYWidget()
+TTYWidget::TTYWidget(Core::HW::VGACard* card) : VGABackend(card)
 {
-  g_TTYBackend = this;
-  insertPlainText(QStringLiteral("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"));
-  auto cursor = textCursor();
-  cursor.setPosition(0);
-  setTextCursor(cursor);
+  g_VGABackend = this;
 }
-TTYWidget::~TTYWidget() { g_TTYBackend = nullptr; }
+TTYWidget::~TTYWidget() { g_VGABackend = nullptr; }
 
-void TTYWidget::Write(const std::string& string)
+void TTYWidget::SetMode(u8 mode)
 {
-  QueueOnObject(this, [this, string] {
-    insertPlainText(QString::fromStdString(string));
-  });
+  LOG("Ignoring mode set to " + String::ToHex(mode) +
+      ". TTYWidget only supports text mode!");
 }
 
-void TTYWidget::Write(const char c)
+void TTYWidget::Update()
 {
-  QueueOnObject(this, [this, c] { insertPlainText(QString(QLatin1Char(c))); });
-}
+  u8* buffer = GetCard()->GetBuffer();
 
-void TTYWidget::Clear() { clear(); }
+  constexpr u64 COLUMNS = 80;
+  constexpr u64 ROWS = 25;
 
-char TTYWidget::Read()
-{
-  while (m_pressed_keys.empty()) {
+  QString s;
+
+  for (u64 y = 0; y < ROWS; y++) {
+    for (u64 x = 0; x < COLUMNS; x++) {
+      char c = buffer[(y * COLUMNS + x) * sizeof(u16)];
+
+      s += QChar(c);
+    }
+
+    s += "\n";
   }
 
-  return (*m_pressed_keys.begin()).first;
-}
-
-bool TTYWidget::IsCharAvailable() const { return !m_pressed_keys.empty(); }
-
-void TTYWidget::Scroll(const u8, const u8) {}
-void TTYWidget::MoveCursor(const u32 row, const u32 column)
-{
-  m_row = row;
-  m_column = column;
-}
-
-u8 TTYWidget::GetCursorRow() const { return m_row; }
-
-void TTYWidget::SetCursorRow(u8 row)
-{
-  if (m_row == row)
-    return;
-
-  m_row = row;
-
-  QueueOnObject(this, [this, row] {
-    auto cursor = textCursor();
-    cursor.setPosition(0);
-    cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row);
-    setTextCursor(cursor);
-
+  QueueOnObject(this, [this, s] {
+    clear();
+    append(s);
   });
-}
-
-u8 TTYWidget::GetCursorColumn() const { return m_column; }
-void TTYWidget::SetCursorColumn(u8 column)
-{
-  if (m_column == column)
-    return;
-
-  m_column = column;
-
-  QueueOnObject(this, [this, column] {
-    auto cursor = textCursor();
-    cursor.movePosition(QTextCursor::StartOfLine);
-    cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, column);
-    setTextCursor(cursor);
-  });
-}
-
-void TTYWidget::keyPressEvent(QKeyEvent* event)
-{
-  std::string s = event->text().toStdString();
-  char c = s[0];
-
-  m_pressed_keys[c] = true;
-}
-
-void TTYWidget::keyReleaseEvent(QKeyEvent* event)
-{
-  char c = event->text().toStdString()[0];
-
-  if (m_pressed_keys.count(c))
-    m_pressed_keys.erase(m_pressed_keys.find(c));
 }
