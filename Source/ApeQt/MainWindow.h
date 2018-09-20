@@ -39,6 +39,8 @@ private:
   void HandleException(Core::CPU::CPUException e);
   void ShowStatus(const QString& status, int timeout = 0);
 
+  void OnMachineStateChanged(bool running);
+
   QMenuBar* m_menu_bar;
   QAction* m_machine_stop;
   QAction* m_machine_pause;

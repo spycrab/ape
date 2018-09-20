@@ -115,15 +115,9 @@ void MainWindow::StartFile(const QString& path)
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     m_thread = std::thread([this, path] {
       try {
-        m_machine_stop->setEnabled(true);
-        m_machine_pause->setEnabled(true);
-
-        ShowStatus(tr("Running..."));
+        OnMachineStateChanged(true);
         m_machine->BootCOM(path.toStdString());
-        ShowStatus(tr("Stopped."));
-
-        m_machine_stop->setEnabled(false);
-        m_machine_pause->setEnabled(false);
+        OnMachineStateChanged(false);
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
@@ -145,15 +139,9 @@ void MainWindow::StartFile(const QString& path)
 
   m_thread = std::thread([this, path] {
     try {
-      m_machine_stop->setEnabled(true);
-      m_machine_pause->setEnabled(true);
-
-      ShowStatus(tr("Running..."));
+      OnMachineStateChanged(true);
       m_machine->BootFloppy();
-      ShowStatus(tr("Stopped."));
-
-      m_machine_stop->setEnabled(false);
-      m_machine_pause->setEnabled(false);
+      OnMachineStateChanged(false);
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
@@ -162,6 +150,9 @@ void MainWindow::StartFile(const QString& path)
 
 void MainWindow::StopMachine()
 {
+  if (m_machine == nullptr)
+    return;
+
   m_machine->Stop();
 
   if (m_thread.joinable())
@@ -172,6 +163,16 @@ void MainWindow::PauseMachine()
 {
   m_machine->Pause();
   ShowStatus("Paused / Resumed");
+}
+
+void MainWindow::OnMachineStateChanged(bool running)
+{
+  QueueOnObject(this, [this, running] {
+    m_machine_stop->setEnabled(running);
+    m_machine_pause->setEnabled(running);
+  });
+
+  ShowStatus(running ? tr("Running...") : tr("Stopped"));
 }
 
 void MainWindow::HandleException(Core::CPU::CPUException e)
