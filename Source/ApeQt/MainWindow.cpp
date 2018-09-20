@@ -201,6 +201,6 @@ void MainWindow::ShowAbout()
       tr("Version: %1\n\nApe is an experimental IBM PC emulator written in "
          "C++17.\n\nApe is "
          "licensed under the GNU GPL v3 or any later version at your "
-         "option. See LICENSE.")
+         "option. See LICENSE.\n\n(c) Ape Emulator Project, 2018")
           .arg(VERSION_STRING));
 }
