@@ -13,7 +13,12 @@ Core::HW::VGABackend* g_VGABackend = nullptr;
 
 using namespace Core::HW;
 
-VGACard::VGACard(Core::Machine* machine) : m_machine(machine) {}
+VGACard::VGACard(Core::Machine* machine) : m_machine(machine)
+{
+  for (size_t y = 0; y < 25; y++)
+    for (size_t x = 0; x < 80; x++)
+      GetBuffer()[(y * 80 + x) * sizeof(u16) + 1] = 0x0F;
+}
 
 void VGACard::SetMode(u8 mode)
 {

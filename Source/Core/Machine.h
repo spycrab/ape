@@ -42,10 +42,9 @@ public:
   bool BootCOM(const std::string& file, const std::string&& parameters = "");
 
 private:
+  Memory m_memory;
   HW::FloppyDrive m_floppy_drive;
   HW::VGACard m_vga;
   CPU::CPU m_cpu;
-
-  Core::Memory m_memory;
 };
 } // namespace Core

@@ -8,7 +8,7 @@
 
 #include "Core/TTY.h"
 
-Core::Machine::Machine() : m_vga(this), m_cpu(this), m_memory(1024 * 1024)
+Core::Machine::Machine() : m_memory(1024 * 1024), m_vga(this), m_cpu(this)
 {
   TTY::Init(&m_vga);
 }
