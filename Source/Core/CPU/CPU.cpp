@@ -43,18 +43,17 @@ void CPU::Tick()
   u8 opcode = m_memory.Get<u8>(CS, IP++);
   Instruction ins(opcode, old_ip);
 
-  if (ins.IsPrefix()) {
+  if (ins.IsPrefix())
     ins = Instruction(ins, m_memory.Get<u8>(CS, IP++), old_ip);
-  }
+
   if (!ins.IsResolved()) {
     u8 mod = m_memory.Get<u8>(CS, IP++);
     u8 length = ins.GetLength(mod);
 
     std::vector<u8> data;
 
-    for (u32 i = 0; i < length; i++) {
+    for (u32 i = 0; i < length; i++)
       data.push_back(m_memory.Get<u8>(CS, IP++));
-    }
 
     if (!ins.Resolve(mod, data)) {
       LOG("Failed to resolve " + String::ToHex(opcode) + " with mod " +
@@ -63,9 +62,8 @@ void CPU::Tick()
     }
   }
 
-  if (ins.GetType() == Instruction::Type::Invalid) {
+  if (ins.GetType() == Instruction::Type::Invalid)
     throw InvalidInstructionException(opcode);
-  }
 
   // LOG(String::ToHex<u16>(CS) + ":" + String::ToHex<u16>(old_ip) + ": " +
   //   ins.ToString());
