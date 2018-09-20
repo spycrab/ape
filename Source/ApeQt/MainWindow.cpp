@@ -114,13 +114,13 @@ void MainWindow::StartFile(const QString& path)
 
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     m_thread = std::thread([this, path] {
+      OnMachineStateChanged(true);
       try {
-        OnMachineStateChanged(true);
         m_machine->BootCOM(path.toStdString());
-        OnMachineStateChanged(false);
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
+      OnMachineStateChanged(false);
     });
     return;
   }
@@ -138,13 +138,13 @@ void MainWindow::StartFile(const QString& path)
   }
 
   m_thread = std::thread([this, path] {
+    OnMachineStateChanged(true);
     try {
-      OnMachineStateChanged(true);
       m_machine->BootFloppy();
-      OnMachineStateChanged(false);
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
+    OnMachineStateChanged(false);
   });
 }
 
