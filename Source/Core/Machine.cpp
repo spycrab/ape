@@ -24,7 +24,7 @@ Core::Memory& Core::Machine::GetMemory() { return m_memory; }
 
 bool Core::Machine::BootFloppy()
 {
-  if (!m_floppy_drive.Read(0, 512, &(m_memory.Get()[0x7C00])))
+  if (!m_floppy_drive.Read(0, 512, m_memory.GetPtr<u8>(0x0000, 0x7C00)))
     return false;
 
   m_cpu.CS = 0;
@@ -53,7 +53,7 @@ bool Core::Machine::BootCOM(const std::string& file,
 
   size_t index;
   for (index = 0; !ifs.eof(); index++) {
-    m_memory.Get()[0x100 + index] = static_cast<u8>(ifs.get());
+    m_memory.Get<u8>(0x0000, 0x0100 + index) = static_cast<u8>(ifs.get());
   }
 
   LOG("Loaded " + std::to_string(index - 1) + " bytes into memory");
