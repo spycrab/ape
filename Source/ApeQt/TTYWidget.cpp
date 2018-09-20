@@ -5,9 +5,11 @@
 #include "ApeQt/TTYWidget.h"
 #include "ApeQt/QueueOnObject.h"
 
+#include <QFont>
 #include <QKeyEvent>
 #include <QString>
 #include <QTextBlock>
+#include <QVector>
 
 #include "Common/Logger.h"
 #include "Common/String.h"
@@ -17,6 +19,10 @@
 TTYWidget::TTYWidget(Core::HW::VGACard* card) : VGABackend(card)
 {
   g_VGABackend = this;
+
+  QFont font("Monospace");
+  font.setStyleHint(QFont::TypeWriter);
+  setFont(font);
 }
 TTYWidget::~TTYWidget() { g_VGABackend = nullptr; }
 
@@ -28,24 +34,25 @@ void TTYWidget::SetMode(u8 mode)
 
 void TTYWidget::Update()
 {
+  static const QVector<QString> color_str = {
+      "black",      "blue",         "green",      "cyan",
+      "red",        "magenta",      "brown",      "lightgray",
+      "lightblack", "lightblue",    "lightgreen", "lightcyan",
+      "lightred",   "lightmagenta", "yellow",     "white"};
+
   u8* buffer = GetCard()->GetBuffer();
 
-  constexpr u64 COLUMNS = 80;
-  constexpr u64 ROWS = 25;
+  constexpr int COLUMNS = 80;
+  constexpr int ROWS = 25;
 
-  QString s;
+  QString s(ROWS * (COLUMNS + 1));
 
-  for (u64 y = 0; y < ROWS; y++) {
-    for (u64 x = 0; x < COLUMNS; x++) {
+  for (int y = 0; y < ROWS; y++) {
+    for (int x = 0; x < COLUMNS; x++) {
       char c = buffer[(y * COLUMNS + x) * sizeof(u16)];
-
-      if (std::isprint(c))
-        s += QChar(c);
-      else
-        s += " ";
+      s[y * (COLUMNS + 1) + x] = std::isprint(c) ? c : ' ';
     }
-
-    s += "\n";
+    s[(y + 1) * (COLUMNS + 1) - 1] = '\n';
   }
 
   QueueOnObject(this, [this, s] {
