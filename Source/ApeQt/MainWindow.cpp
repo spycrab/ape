@@ -162,7 +162,7 @@ void MainWindow::StartFile(const QString& path)
 
 void MainWindow::StopMachine()
 {
-  m_machine->Shutdown();
+  m_machine->Stop();
 
   if (m_thread.joinable())
     m_thread.join();

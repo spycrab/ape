@@ -35,7 +35,7 @@ bool Core::Machine::BootFloppy()
   return true;
 }
 
-void Core::Machine::Shutdown() { m_cpu.running = false; }
+void Core::Machine::Stop() { m_cpu.running = false; }
 
 void Core::Machine::Pause() { m_cpu.paused = !m_cpu.paused; }
 

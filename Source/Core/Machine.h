@@ -32,8 +32,8 @@ public:
   //! Boot the machine from the floppy drive
   bool BootFloppy();
 
-  //! Shutdown the machine
-  void Shutdown();
+  //! Stop the machine
+  void Stop();
 
   //! Pause the machine (Or unpause it if it's paused already)
   void Pause();
