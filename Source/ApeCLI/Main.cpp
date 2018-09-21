@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "Core/HW/FloppyDrive.h"
 #include "Core/Machine.h"
 #include "Version.h"
 
@@ -32,25 +33,24 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  Core::Machine machine;
+  Core::Machine::Init();
 
   if (p.GetString("floppy") != "") {
-    auto& drive = machine.GetFloppyDrive();
 
-    if (!drive.Insert(p.GetString("floppy"))) {
+    if (!Core::HW::FloppyDrive::Insert(p.GetString("floppy"))) {
       std::cerr << "Failed to mount floppy image " << argv[1] << "!"
                 << std::endl;
       return 1;
     }
 
-    if (!drive.IsBootable()) {
+    if (!Core::HW::FloppyDrive::IsBootable()) {
       std::cerr << argv[1] << " is not a bootable floppy image." << std::endl;
       return 1;
     }
 
-    return machine.BootFloppy() ? 0 : 1;
+    return Core::Machine::BootFloppy() ? 0 : 1;
   } else if (p.GetString("floppy") != "") {
-    return !machine.BootCOM(p.GetString("floppy"));
+    return !Core::Machine::BootCOM(p.GetString("floppy"));
   }
 
   std::cerr << "Nothing to do! See --help" << std::endl;

@@ -16,7 +16,7 @@
 #include "Core/Machine.h"
 #include "Core/TTY.h"
 
-using namespace Core::CPU;
+using namespace Core;
 using namespace Core::MSDOS;
 
 bool CPU::CallMSDOSInterrupt(u8 vector)
@@ -46,7 +46,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
     {
       std::string s = "";
 
-      char* c = m_memory.GetPtr<char>(DS, DX);
+      char* c = Memory::GetPtr<char>(DS, DX);
 
       while (*c != '$')
         s += *(c++);
@@ -67,7 +67,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       AH = 0;
       break;
     case 0x3D: { // Open file
-      auto handle = File::Open(m_memory.GetPtr<char>(DS, DX), AL);
+      auto handle = File::Open(Memory::GetPtr<char>(DS, DX), AL);
 
       if (handle) {
         AX = handle.value();
@@ -79,7 +79,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       break;
     }
     case 0x3F: { // Read file
-      auto read = File::Read(BX, CX, m_memory.GetPtr<u8>(DS, DX));
+      auto read = File::Read(BX, CX, Memory::GetPtr<u8>(DS, DX));
 
       if (read) {
         AX = read.value();

@@ -6,39 +6,24 @@
 
 #include "Common/Types.h"
 
-namespace Core
-{
-class Machine;
-}
-
 namespace Core::HW
 {
-class VGACard
+namespace VGA
 {
-public:
-  VGACard(Core::Machine* machine);
-  void Update();
+void Init();
+void Update();
 
-  void SetMode(u8 mode);
-  u8* GetBuffer();
+bool IsPresent();
 
-private:
-  u8 mode;
-  Core::Machine* m_machine;
-}; // namespace VGA
+void SetMode(u8 mode);
+u8* GetBuffer();
+} // namespace VGA
 
 class VGABackend
 {
 public:
-  VGABackend(VGACard* card);
   virtual void SetMode(u8 mode) = 0;
   virtual void Update() = 0;
-
-protected:
-  VGACard* GetCard();
-
-private:
-  VGACard* m_card;
 };
 } // namespace Core::HW
 

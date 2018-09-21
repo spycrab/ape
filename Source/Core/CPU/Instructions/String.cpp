@@ -4,12 +4,12 @@
 
 #include "Core/CPU/CPU.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
 void CPU::STOSB(const Instruction&)
 {
   do {
-    m_memory.Get<u8>(ES, DI) = AL;
+    Memory::Get<u8>(ES, DI) = AL;
 
     DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
   } while (HandleRepetition());
@@ -18,7 +18,7 @@ void CPU::STOSB(const Instruction&)
 void CPU::STOSW(const Instruction&)
 {
   do {
-    m_memory.Get<u16>(ES, DI) = AX;
+    Memory::Get<u16>(ES, DI) = AX;
 
     DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
@@ -27,8 +27,8 @@ void CPU::STOSW(const Instruction&)
 void CPU::CMPSB(const Instruction&)
 {
   do {
-    u8 dst = m_memory.Get<u8>(DS, SI);
-    u8 src = m_memory.Get<u8>(ES, SI);
+    u8 dst = Memory::Get<u8>(DS, SI);
+    u8 src = Memory::Get<u8>(ES, SI);
     u8 cmp = dst - src;
 
     // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
@@ -50,8 +50,8 @@ void CPU::CMPSB(const Instruction&)
 void CPU::CMPSW(const Instruction&)
 {
   do {
-    u16 dst = m_memory.Get<u16>(DS, SI);
-    u16 src = m_memory.Get<u16>(ES, SI);
+    u16 dst = Memory::Get<u16>(DS, SI);
+    u16 src = Memory::Get<u16>(ES, SI);
     u16 cmp = dst - src;
 
     // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
@@ -73,7 +73,7 @@ void CPU::CMPSW(const Instruction&)
 void CPU::LODSB(const Instruction&)
 {
   do {
-    AL = m_memory.Get<u8>(DS, SI);
+    AL = Memory::Get<u8>(DS, SI);
 
     SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u8));
   } while (HandleRepetition());
@@ -82,7 +82,7 @@ void CPU::LODSB(const Instruction&)
 void CPU::LODSW(const Instruction&)
 {
   do {
-    AX = m_memory.Get<u16>(DS, SI);
+    AX = Memory::Get<u16>(DS, SI);
 
     SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
@@ -91,8 +91,8 @@ void CPU::LODSW(const Instruction&)
 void CPU::MOVSB(const Instruction& ins)
 {
   do {
-    u8& dst = m_memory.Get<u8>(ES, DI);
-    u8 src = m_memory.Get<u8>(PrefixToValue(ins.GetPrefix()), SI);
+    u8& dst = Memory::Get<u8>(ES, DI);
+    u8 src = Memory::Get<u8>(PrefixToValue(ins.GetPrefix()), SI);
 
     dst = src;
 
@@ -104,8 +104,8 @@ void CPU::MOVSB(const Instruction& ins)
 void CPU::MOVSW(const Instruction& ins)
 {
   do {
-    u16& dst = m_memory.Get<u16>(ES, DI);
-    u16 src = m_memory.Get<u16>(PrefixToValue(ins.GetPrefix()), SI);
+    u16& dst = Memory::Get<u16>(ES, DI);
+    u16 src = Memory::Get<u16>(PrefixToValue(ins.GetPrefix()), SI);
 
     dst = src;
 

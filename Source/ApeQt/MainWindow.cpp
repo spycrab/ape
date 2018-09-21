@@ -15,7 +15,9 @@
 #include "ApeQt/QueueOnObject.h"
 #include "ApeQt/TTYWidget.h"
 
+#include "Core/HW/FloppyDrive.h"
 #include "Core/Machine.h"
+#include "Core/Memory.h"
 
 #include "Version.h"
 
@@ -41,6 +43,8 @@ QString MainWindow::GetQuote() const
 
 MainWindow::MainWindow(const std::string&& path)
 {
+  Core::Machine::Init();
+
   setWindowTitle(tr("Ape %1 - %2!").arg(VERSION_STRING).arg(GetQuote()));
 
   CreateWidgets();
@@ -80,6 +84,8 @@ void MainWindow::CreateWidgets()
 
   help_menu->addAction(tr("About..."), this, &MainWindow::ShowAbout);
 
+  setCentralWidget(new TTYWidget);
+
   setMenuBar(m_menu_bar);
 
   m_status_bar = new QStatusBar;
@@ -108,15 +114,11 @@ void MainWindow::StartFile(const QString& path)
   if (path.isEmpty())
     return;
 
-  m_machine.reset(new Core::Machine);
-
-  setCentralWidget(new TTYWidget(&m_machine->GetVGA()));
-
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     m_thread = std::thread([this, path] {
       OnMachineStateChanged(true);
       try {
-        m_machine->BootCOM(path.toStdString());
+        Core::Machine::BootCOM(path.toStdString());
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
@@ -124,14 +126,13 @@ void MainWindow::StartFile(const QString& path)
     });
     return;
   }
-  auto& drive = m_machine->GetFloppyDrive();
 
-  if (!drive.Insert(path.toStdString())) {
+  if (!Core::HW::FloppyDrive::Insert(path.toStdString())) {
     QMessageBox::critical(this, tr("Error"), tr("Failed to mount floppy!"));
     return;
   }
 
-  if (!drive.IsBootable()) {
+  if (!Core::HW::FloppyDrive::IsBootable()) {
     QMessageBox::critical(this, tr("Error"),
                           tr("The provided disk is not bootable!"));
     return;
@@ -140,7 +141,7 @@ void MainWindow::StartFile(const QString& path)
   m_thread = std::thread([this, path] {
     OnMachineStateChanged(true);
     try {
-      m_machine->BootFloppy();
+      Core::Machine::BootFloppy();
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
@@ -150,10 +151,7 @@ void MainWindow::StartFile(const QString& path)
 
 void MainWindow::StopMachine()
 {
-  if (m_machine == nullptr)
-    return;
-
-  m_machine->Stop();
+  Core::Machine::Stop();
 
   if (m_thread.joinable())
     m_thread.join();
@@ -161,7 +159,7 @@ void MainWindow::StopMachine()
 
 void MainWindow::PauseMachine()
 {
-  m_machine->Pause();
+  Core::Machine::Pause();
   ShowStatus("Paused / Resumed");
 }
 

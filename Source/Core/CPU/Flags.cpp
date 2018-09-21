@@ -1,6 +1,6 @@
 #include "Core/CPU/CPU.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
 void CPU::UpdateZF(u16 value) { ZF = (value == 0); }
 

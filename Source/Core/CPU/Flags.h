@@ -2,7 +2,7 @@
 
 #include "Core/CPU/CPU.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
 template <typename T> void CPU::UpdateOF(i32 value)
 {

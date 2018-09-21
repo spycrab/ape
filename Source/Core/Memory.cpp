@@ -1,10 +1,12 @@
 #include "Core/Memory.h"
 
-Core::Memory::Memory(u32 size) { m_data.resize(size); }
+using namespace Core;
 
-std::vector<u8>& Core::Memory::Get() { return m_data; }
+static std::vector<u8> m_data(1024 * 1024);
 
-u32 Core::Memory::VirtToPhys(u16 segment, u16 offset)
+std::vector<u8>& Memory::Get() { return m_data; }
+
+u32 Memory::VirtToPhys(u16 segment, u16 offset)
 {
   return (segment << 4) + offset;
 }

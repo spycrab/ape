@@ -10,14 +10,8 @@
 
 class TTYBackend;
 
-namespace Core::HW
-{
-class VGACard;
-}
-
 namespace TTY
 {
-void Init(Core::HW::VGACard* vga);
 void Write(const std::string& string);
 void Write(const char c);
 void Scroll(const u8 lines, const u8 color);

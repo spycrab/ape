@@ -9,7 +9,7 @@
 
 #include "Core/CPU/Exception.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
 void CPU::AND(const Instruction& ins)
 {

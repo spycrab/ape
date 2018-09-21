@@ -46,6 +46,5 @@ private:
   QAction* m_machine_pause;
   QStatusBar* m_status_bar;
 
-  std::unique_ptr<Core::Machine> m_machine = nullptr;
   std::thread m_thread;
 };

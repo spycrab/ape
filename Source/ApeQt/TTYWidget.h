@@ -11,7 +11,7 @@
 class TTYWidget : public QTextBrowser, public Core::HW::VGABackend
 {
 public:
-  explicit TTYWidget(Core::HW::VGACard* card);
+  explicit TTYWidget();
   ~TTYWidget();
 
   void SetMode(u8 mode) override;

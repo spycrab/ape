@@ -6,72 +6,65 @@
 
 #include "Common/Logger.h"
 
+#include "Core/CPU/CPU.h"
+#include "Core/HW/FloppyDrive.h"
+#include "Core/HW/VGA.h"
 #include "Core/TTY.h"
 
-Core::Machine::Machine() : m_memory(1024 * 1024), m_vga(this), m_cpu(this)
+namespace Core::Machine
 {
-  TTY::Init(&m_vga);
-}
+    void Init() { HW::VGA::Init(); }
 
-Core::HW::FloppyDrive& Core::Machine::GetFloppyDrive()
+bool BootFloppy()
 {
-  return m_floppy_drive;
-}
-
-Core::HW::VGACard& Core::Machine::GetVGA() { return m_vga; }
-
-Core::Memory& Core::Machine::GetMemory() { return m_memory; }
-
-bool Core::Machine::BootFloppy()
-{
-  if (!m_floppy_drive.Read(0, 512, m_memory.GetPtr<u8>(0x0000, 0x7C00)))
+  if (!HW::FloppyDrive::Read(0, 512, Memory::GetPtr<u8>(0x0000, 0x7C00)))
     return false;
 
-  m_cpu.CS = 0;
-  m_cpu.IP = 0x7C00;
+  CPU::CS = 0;
+  CPU::IP = 0x7C00;
 
-  m_cpu.Start();
+  CPU::Start();
 
   return true;
 }
 
-void Core::Machine::Stop() { m_cpu.running = false; }
+void Stop() { CPU::running = false; }
 
-void Core::Machine::Pause() { m_cpu.paused = !m_cpu.paused; }
+void Pause() { CPU::paused = !CPU::paused; }
 
-bool Core::Machine::BootCOM(const std::string& file,
-                            const std::string&& parameters)
+bool BootCOM(const std::string& file, const std::string&& parameters)
 {
   std::ifstream ifs(file, std::ios::binary);
 
   if (!ifs.good())
     return false;
 
-  m_cpu.DS = 0;
-  m_cpu.IP = 0x100;
-  m_cpu.simulate_msdos = true;
+  CPU::DS = 0;
+  CPU::IP = 0x100;
+  CPU::simulate_msdos = true;
 
   size_t index;
   for (index = 0; !ifs.eof(); index++) {
-    m_memory.Get<u8>(0x0000, 0x0100 + index) = static_cast<u8>(ifs.get());
+    Memory::Get<u8>(0x0000, 0x0100 + index) = static_cast<u8>(ifs.get());
   }
 
   LOG("Loaded " + std::to_string(index - 1) + " bytes into memory");
 
-  m_memory.Get<u8>(0x0000, 0x0080) = parameters.size();
+  Memory::Get<u8>(0x0000, 0x0080) = parameters.size();
 
   u16 offset;
 
   for (offset = 0x0081; offset < parameters.length(); offset++)
-    m_memory.Get<char>(0x0000, offset) = parameters[offset - 0x0081];
+    Memory::Get<char>(0x0000, offset) = parameters[offset - 0x0081];
 
-  m_memory.Get<char>(0x0000, offset) = '\0';
+  Memory::Get<char>(0x0000, offset) = '\0';
 
   LOG("Command line parameters are \"" + parameters + "\"");
 
   ifs.close();
 
-  m_cpu.Start();
+  CPU::Start();
 
   return true;
 }
+} // namespace Core::Machine

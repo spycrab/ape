@@ -10,21 +10,63 @@
 
 #include "Core/CPU/Flags.h"
 #include "Core/CPU/Instruction.h"
-
+#include "Core/HW/VGA.h"
 #include "Core/Machine.h"
 
-using Machine = Core::Machine;
+using namespace Core;
 
-CPU::CPU(Core::Machine* machine)
-    : m_machine(machine), m_memory(machine->GetMemory())
-{
-}
+u16& CPU::AX = AX_struct.AX;
+u16& CPU::BX = BX_struct.BX;
+u16& CPU::CX = CX_struct.CX;
+u16& CPU::DX = DX_struct.DX;
+
+u8& CPU::AH = AX_struct.b8.AH;
+u8& CPU::AL = AX_struct.b8.AL;
+
+u8& CPU::BH = BX_struct.b8.BH;
+u8& CPU::BL = BX_struct.b8.BL;
+
+u8& CPU::CH = CX_struct.b8.CH;
+u8& CPU::CL = CX_struct.b8.CL;
+
+u8& CPU::DH = DX_struct.b8.DH;
+u8& CPU::DL = DX_struct.b8.DL;
+
+u16 CPU::IP = 0;
+u16 CPU::DI = 0;
+u16 CPU::SI = 0;
+u16 CPU::SP = 0;
+u16 CPU::BP = 0;
+
+u16 CPU::CS = 0;
+u16 CPU::DS = 0;
+u16 CPU::SS = 0;
+u16 CPU::ES = 0;
+
+bool CPU::AF = false;
+bool CPU::CF = false;
+bool CPU::IF = false;
+bool CPU::DF = false;
+bool CPU::OF = false;
+bool CPU::PF = false;
+bool CPU::SF = false;
+bool CPU::ZF = false;
+
+bool CPU::simulate_msdos = false;
+
+std::atomic<bool> CPU::running;
+std::atomic<bool> CPU::paused;
+
+// Treating this as if it were a 5 MHz 8088
+u64 CPU::clock_speed = 5'000'000;
+
+CPU::RepeatMode s_repeat_mode = CPU::RepeatMode::None;
 
 bool CPU::HandleRepetition()
 {
-  if (m_repeat_mode != RepeatMode::None)
+  if (s_repeat_mode != RepeatMode::None)
     CX--;
-  switch (m_repeat_mode) {
+  switch (s_repeat_mode) {
   case RepeatMode::Repeat:
     return (CX != 0);
   case RepeatMode::Repeat_Zero:
@@ -40,20 +82,20 @@ void CPU::Tick()
 {
   const auto old_ip = IP;
 
-  u8 opcode = m_memory.Get<u8>(CS, IP++);
+  u8 opcode = Memory::Get<u8>(CS, IP++);
   Instruction ins(opcode, old_ip);
 
   if (ins.IsPrefix())
-    ins = Instruction(ins, m_memory.Get<u8>(CS, IP++), old_ip);
+    ins = Instruction(ins, Memory::Get<u8>(CS, IP++), old_ip);
 
   if (!ins.IsResolved()) {
-    u8 mod = m_memory.Get<u8>(CS, IP++);
+    u8 mod = Memory::Get<u8>(CS, IP++);
     u8 length = ins.GetLength(mod);
 
     std::vector<u8> data;
 
     for (u32 i = 0; i < length; i++)
-      data.push_back(m_memory.Get<u8>(CS, IP++));
+      data.push_back(Memory::Get<u8>(CS, IP++));
 
     if (!ins.Resolve(mod, data)) {
       LOG("Failed to resolve " + String::ToHex(opcode) + " with mod " +
@@ -294,7 +336,7 @@ void CPU::Tick()
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
     u16& src16 = ParameterTo<u16&>(src, ins.GetPrefix());
 
-    dst16 = static_cast<u16>(&src16 - m_memory.GetPtr<u16>(DS, 0));
+    dst16 = static_cast<u16>(&src16 - Memory::GetPtr<u16>(DS, 0));
 
     break;
   }
@@ -429,7 +471,7 @@ void CPU::Tick()
     u16 data16 = ParameterTo<u16>(data, ins.GetPrefix());
 
     SP -= sizeof(u16);
-    m_memory.Get<u16>(SS, SP) = data16;
+    Memory::Get<u16>(SS, SP) = data16;
 
     break;
   }
@@ -441,12 +483,12 @@ void CPU::Tick()
                  (static_cast<u16>(OF) << 11) | (1 << 14) | (1 << 15);
 
     SP -= sizeof(u16);
-    m_memory.Get<u16>(SS, SP) = eflags;
+    Memory::Get<u16>(SS, SP) = eflags;
 
     break;
   }
   case Type::POPF: {
-    u16 eflags = m_memory.Get<u16>(SS, SP);
+    u16 eflags = Memory::Get<u16>(SS, SP);
 
     CF = eflags & 1;
     PF = eflags & (1 << 2);
@@ -470,16 +512,16 @@ void CPU::Tick()
 
     u16& dst16 = ParameterTo<u16&>(dst, ins.GetPrefix());
 
-    dst16 = m_memory.Get<u16>(SS, SP);
+    dst16 = Memory::Get<u16>(SS, SP);
     SP += sizeof(u16);
 
     break;
   }
   case Type::REPZ:
-    m_repeat_mode = RepeatMode::Repeat_Zero;
+    s_repeat_mode = RepeatMode::Repeat_Zero;
     return;
   case Type::REPNZ:
-    m_repeat_mode = RepeatMode::Repeat_Non_Zero;
+    s_repeat_mode = RepeatMode::Repeat_Non_Zero;
     return;
   case Type::ROL:
     ROL(ins);
@@ -534,7 +576,7 @@ void CPU::Tick()
     throw UnhandledInstructionException(ins);
   }
 
-  m_repeat_mode = RepeatMode::None;
+  s_repeat_mode = RepeatMode::None;
 }
 
 void CPU::Start()
@@ -545,7 +587,7 @@ void CPU::Start()
     Tick();
 
     if (counter++ == 0)
-      m_machine->GetVGA().Update();
+      Core::HW::VGA::Update();
 
     while (paused && running) {
     }

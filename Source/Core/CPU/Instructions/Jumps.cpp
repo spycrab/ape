@@ -9,10 +9,10 @@
 
 #include "Core/CPU/Exception.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
-using Type = Instruction::Type;
-using PType = Instruction::Parameter::Type;
+using Type = CPU::Instruction::Type;
+using PType = CPU::Instruction::Parameter::Type;
 
 void CPU::JMP(const Instruction& instruction)
 {
@@ -155,7 +155,7 @@ void CPU::CALL(const Instruction& instruction)
     u16 segment = (addr & 0xFFFF);
 
     SP -= sizeof(u16);
-    m_memory.Get<u16>(SS, SP) = IP;
+    Memory::Get<u16>(SS, SP) = IP;
 
     CS = segment;
     IP = offset;
@@ -169,14 +169,14 @@ void CPU::CALL(const Instruction& instruction)
   u16 offset = ParameterTo<u16>(parameter, instruction.GetPrefix());
 
   SP -= sizeof(u16);
-  m_memory.Get<u16>(SS, SP) = IP;
+  Memory::Get<u16>(SS, SP) = IP;
 
   IP += offset;
 }
 
 void CPU::RET(const Instruction&)
 {
-  IP = m_memory.Get<u16>(SS, SP);
+  IP = Memory::Get<u16>(SS, SP);
 
   SP += sizeof(u16);
 }

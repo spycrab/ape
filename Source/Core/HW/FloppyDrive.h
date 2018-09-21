@@ -8,47 +8,36 @@
 
 #include "Common/Types.h"
 
-namespace Core::HW
-{
 //! Representation of a floppy drive
-class FloppyDrive
+namespace Core::HW::FloppyDrive
 {
-public:
-  //! Insert an image into the drive
-  bool Insert(const std::string& path);
+//! Insert an image into the drive
+bool Insert(const std::string& path);
 
-  //! Check if a disc is present
-  bool HasDisc() const;
+//! Check if a disc is present
+bool HasDisc();
 
-  //! Get the size of the inserted disc
-  u32 GetSize() const;
+//! Get the size of the inserted disc
+u32 GetSize();
 
-  //! Check if the provided image is bootable
-  bool IsBootable();
+//! Check if the provided image is bootable
+bool IsBootable();
 
-  //! Get size of a floppy
-  u32 GetSectorSize() const;
+//! Get size of a floppy
+u32 GetSectorSize();
 
-  //! Get sectors per track
-  u32 GetSectorsPerTrack() const;
+//! Get sectors per track
+u32 GetSectorsPerTrack();
 
-  //! Get head count
-  u32 GetHeadCount() const;
+//! Get head count
+u32 GetHeadCount();
 
-  //! Eject the image
-  void Eject();
+//! Eject the image
+void Eject();
 
-  //! Read data from the image
-  bool Read(u32 offset, u32 size, u8* buffer);
-  bool Read(u8 cylinder, u8 head, u8 sector, u8 count, u8* buffer);
+//! Read data from the image
+bool Read(u32 offset, u32 size, u8* buffer);
+bool Read(u8 cylinder, u8 head, u8 sector, u8 count, u8* buffer);
 
-private:
-  bool GuessFormat();
-
-  u16 m_sectors_per_track;
-  u16 m_sector_size;
-  u16 m_head_count;
-
-  std::unique_ptr<std::ifstream> m_file;
-};
-}
+bool GuessFormat();
+} // namespace Core::HW::FloppyDrive

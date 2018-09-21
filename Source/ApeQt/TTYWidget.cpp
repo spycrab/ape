@@ -16,7 +16,7 @@
 
 #include "Core/TTY.h"
 
-TTYWidget::TTYWidget(Core::HW::VGACard* card) : VGABackend(card)
+TTYWidget::TTYWidget()
 {
   g_VGABackend = this;
 
@@ -40,7 +40,7 @@ void TTYWidget::Update()
       "lightblack", "lightblue",    "lightgreen", "lightcyan",
       "lightred",   "lightmagenta", "yellow",     "white"};
 
-  u8* buffer = GetCard()->GetBuffer();
+  u8* buffer = Core::HW::VGA::GetBuffer();
 
   constexpr int COLUMNS = 80;
   constexpr int ROWS = 25;

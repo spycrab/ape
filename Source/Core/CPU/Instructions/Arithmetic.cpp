@@ -6,7 +6,7 @@
 
 #include "Core/CPU/Exception.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
 void CPU::ADC(const Instruction& ins)
 {

@@ -9,7 +9,15 @@
 
 #include <iostream>
 
-bool Core::HW::FloppyDrive::Insert(const std::string& path)
+namespace Core::HW::FloppyDrive
+{
+u16 m_sectors_per_track;
+u16 m_sector_size;
+u16 m_head_count;
+
+std::unique_ptr<std::ifstream> m_file;
+
+bool Insert(const std::string& path)
 {
   m_file.reset(new std::ifstream(path, std::ios::binary));
 
@@ -22,15 +30,15 @@ bool Core::HW::FloppyDrive::Insert(const std::string& path)
   return true;
 }
 
-bool Core::HW::FloppyDrive::HasDisc() const { return m_file != nullptr; }
+bool HasDisc() { return m_file != nullptr; }
 
-u32 Core::HW::FloppyDrive::GetSize() const
+u32 GetSize()
 {
   m_file->seekg(0, std::ios_base::end);
   return static_cast<u32>(m_file->tellg());
 }
 
-bool Core::HW::FloppyDrive::GuessFormat()
+bool GuessFormat()
 {
   std::string type;
   switch (GetSize()) {
@@ -64,7 +72,7 @@ bool Core::HW::FloppyDrive::GuessFormat()
   return true;
 }
 
-bool Core::HW::FloppyDrive::IsBootable()
+bool IsBootable()
 {
   if (!HasDisc())
     return false;
@@ -80,7 +88,7 @@ bool Core::HW::FloppyDrive::IsBootable()
   return signature == 0xAA55;
 }
 
-bool Core::HW::FloppyDrive::Read(u32 offset, u32 size, u8* buffer)
+bool Read(u32 offset, u32 size, u8* buffer)
 {
   if (!HasDisc())
     return false;
@@ -92,8 +100,7 @@ bool Core::HW::FloppyDrive::Read(u32 offset, u32 size, u8* buffer)
   return m_file->good();
 }
 
-bool Core::HW::FloppyDrive::Read(u8 cylinder, u8 head, u8 sector, u8 count,
-                                 u8* buffer)
+bool Read(u8 cylinder, u8 head, u8 sector, u8 count, u8* buffer)
 {
   const auto sector_size = GetSectorSize();
   const auto total_sector =
@@ -105,12 +112,10 @@ bool Core::HW::FloppyDrive::Read(u8 cylinder, u8 head, u8 sector, u8 count,
   return Read(total_sector * sector_size, count * sector_size, buffer);
 }
 
-void Core::HW::FloppyDrive::Eject() { m_file.reset(); }
+void Eject() { m_file.reset(); }
 
 // This is presuming a 360K 5.25" floppy disc
-u32 Core::HW::FloppyDrive::GetSectorSize() const { return m_sector_size; }
-u32 Core::HW::FloppyDrive::GetSectorsPerTrack() const
-{
-  return m_sectors_per_track;
-}
-u32 Core::HW::FloppyDrive::GetHeadCount() const { return m_head_count; }
+u32 GetSectorSize() { return m_sector_size; }
+u32 GetSectorsPerTrack() { return m_sectors_per_track; }
+u32 GetHeadCount() { return m_head_count; }
+} // namespace Core::HW::FloppyDrive

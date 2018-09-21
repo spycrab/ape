@@ -12,10 +12,10 @@
 #include "Common/Types.h"
 
 #include "Core/CPU/Exception.h"
-#include "Core/Machine.h"
+#include "Core/HW/FloppyDrive.h"
 #include "Core/TTY.h"
 
-using namespace Core::CPU;
+using namespace Core;
 
 bool CPU::CallBIOSInterrupt(u8 vector)
 {
@@ -71,7 +71,7 @@ bool CPU::CallBIOSInterrupt(u8 vector)
         break;
       }
 
-      u8* dest = &m_memory.Get<u8>(ES, BX);
+      u8* dest = Memory::GetPtr<u8>(ES, BX);
 
       LOG("C:H:S = " + String::ToHex<u8>(cylinder) + ":" +
           String::ToHex<u8>(head) + ":" + String::ToHex<u8>(sector));
@@ -80,8 +80,8 @@ bool CPU::CallBIOSInterrupt(u8 vector)
 
       LOG(String::ToHex<u32>(sector_count) + " to be read.");
 
-      if (!m_machine->GetFloppyDrive().Read(cylinder, head, sector,
-                                            sector_count, dest)) {
+      if (!Core::HW::FloppyDrive::Read(cylinder, head, sector, sector_count,
+                                       dest)) {
         AH = 0x40; // Bad seek (Is there a more fitting one?)
         CF = true;
         LOG("Read error!");
