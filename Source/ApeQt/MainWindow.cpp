@@ -13,6 +13,7 @@
 #include <QStatusBar>
 
 #include "ApeQt/QueueOnObject.h"
+#include "ApeQt/Debugger/RegisterWidget.h"
 #include "ApeQt/TTYWidget.h"
 
 #include "Core/HW/FloppyDrive.h"
@@ -93,6 +94,8 @@ void MainWindow::CreateWidgets()
   ShowStatus(tr("Welcome to Ape!"), 5000);
 
   setStatusBar(m_status_bar);
+
+  addDockWidget(Qt::LeftDockWidgetArea, new RegisterWidget);
 }
 
 void MainWindow::ConnectWidgets() {}
