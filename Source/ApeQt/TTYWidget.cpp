@@ -5,6 +5,8 @@
 #include "ApeQt/TTYWidget.h"
 #include "ApeQt/QueueOnObject.h"
 
+#include <cctype>
+
 #include <QFont>
 #include <QKeyEvent>
 #include <QString>
