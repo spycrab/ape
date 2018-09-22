@@ -54,13 +54,19 @@ bool CPU::ZF = false;
 
 bool CPU::simulate_msdos = false;
 
-std::atomic<bool> CPU::running;
-std::atomic<bool> CPU::paused;
+std::atomic<bool> running;
+std::atomic<bool> paused;
 
 // Treating this as if it were a 5 MHz 8088
 u64 CPU::clock_speed = 5'000'000;
 
 CPU::RepeatMode s_repeat_mode = CPU::RepeatMode::None;
+
+void CPU::Stop() { running = false; }
+void CPU::SetPaused(bool value) { paused = value; }
+
+bool CPU::IsRunning() { return running; }
+bool CPU::IsPaused() { return paused; }
 
 bool CPU::HandleRepetition()
 {

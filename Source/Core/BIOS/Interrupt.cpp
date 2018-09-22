@@ -126,8 +126,8 @@ bool CPU::CallBIOSInterrupt(u8 vector)
   }
   case 0x19: // Reset
   {
-    LOG("[STUB] Reset requested; Exiting...");
-    running = false;
+    LOG("[STUB] Reset requested; Stopping...");
+    Stop();
     break;
   }
   default:

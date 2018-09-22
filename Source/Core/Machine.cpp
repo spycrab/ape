@@ -13,7 +13,7 @@
 
 namespace Core::Machine
 {
-    void Init() { HW::VGA::Init(); }
+void Init() { HW::VGA::Init(); }
 
 bool BootFloppy()
 {
@@ -28,9 +28,9 @@ bool BootFloppy()
   return true;
 }
 
-void Stop() { CPU::running = false; }
+void Stop() { CPU::Stop(); }
 
-void Pause() { CPU::paused = !CPU::paused; }
+void Pause() { CPU::SetPaused(!CPU::IsPaused()); }
 
 bool BootCOM(const std::string& file, const std::string&& parameters)
 {

@@ -124,9 +124,13 @@ extern bool ZF;
 //! Simulate MS-DOS (Handle its interrupts)
 extern bool simulate_msdos;
 
-//! Set whether the CPU is running
-extern std::atomic<bool> running;
-extern std::atomic<bool> paused;
+//! Stop the CPU
+void Stop();
+
+void SetPaused(bool paused);
+
+bool IsRunning();
+bool IsPaused();
 
 extern u64 clock_speed;
 

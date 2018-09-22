@@ -23,8 +23,8 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
 {
   switch (vector) {
   case 0x20: // Exit program
-    LOG("Exit requested, shutting down...");
-    running = false;
+    LOG("Exit requested, stopping...");
+    Stop();
     break;
   case 0x21: {
     switch (AH) {
@@ -105,7 +105,7 @@ bool CPU::CallMSDOSInterrupt(u8 vector)
       break;
     }
     case 0x4C: // Exit program with return code
-      running = false;
+      Stop();
       LOG("Program exited with return code " + String::ToHex(AL));
       break;
     case 0x50: // Set PSP

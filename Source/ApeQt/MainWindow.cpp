@@ -12,10 +12,11 @@
 #include <QMessageBox>
 #include <QStatusBar>
 
-#include "ApeQt/QueueOnObject.h"
 #include "ApeQt/Debugger/RegisterWidget.h"
+#include "ApeQt/QueueOnObject.h"
 #include "ApeQt/TTYWidget.h"
 
+#include "Core/CPU/CPU.h"
 #include "Core/HW/FloppyDrive.h"
 #include "Core/Machine.h"
 #include "Core/Memory.h"
@@ -74,9 +75,8 @@ void MainWindow::CreateWidgets()
   m_machine_stop = machine_menu->addAction(
       tr("Stop"), this, &MainWindow::StopMachine, QKeySequence("Ctrl+H"));
 
-  m_machine_pause = machine_menu->addAction(tr("Pause / Resume"), this,
-                                            &MainWindow::PauseMachine,
-                                            QKeySequence("Ctrl+P"));
+  m_machine_pause = machine_menu->addAction(
+      tr("Pause"), this, &MainWindow::PauseMachine, QKeySequence("Ctrl+P"));
 
   m_machine_stop->setEnabled(false);
   m_machine_pause->setEnabled(false);
@@ -102,12 +102,17 @@ void MainWindow::ConnectWidgets() {}
 
 void MainWindow::OpenFile()
 {
-  if (m_thread.joinable())
-    m_thread.join();
-
   const QString& path =
       QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
                                    tr("Floppy Image(*.img);; COM File(*.com)"));
+
+  if (path.isEmpty())
+    return;
+
+  Core::Machine::Stop();
+
+  if (m_thread.joinable())
+    m_thread.join();
 
   StartFile(path);
 }
@@ -162,8 +167,10 @@ void MainWindow::StopMachine()
 
 void MainWindow::PauseMachine()
 {
+  ShowStatus(Core::CPU::IsRunning() ? tr("Resumed") : tr("Paused"));
+  m_machine_pause->setText(Core::CPU::IsRunning() ? tr("Resume") : tr("Pause"));
+
   Core::Machine::Pause();
-  ShowStatus("Paused / Resumed");
 }
 
 void MainWindow::OnMachineStateChanged(bool running)
