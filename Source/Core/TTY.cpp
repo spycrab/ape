@@ -22,6 +22,25 @@ void TTY::Write(const std::string& string)
 
 void TTY::Write(const char c)
 {
+  if (c == '\n') {
+    s_row++;
+    return;
+  }
+
+  if (c == '\r') {
+    s_column = 0;
+    return;
+  }
+
+  if (c == '\b') {
+    s_column--;
+    return;
+  }
+
+  // TODO: Implement bell
+  if (c == '\a')
+    return;
+
   if (!Core::HW::VGA::IsPresent()) {
     LOG("[TTY STUB] CHAR: " + std::string(1, c));
     return;
