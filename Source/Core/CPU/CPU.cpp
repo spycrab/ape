@@ -600,6 +600,10 @@ void CPU::Start()
     std::this_thread::sleep_for(
         std::chrono::nanoseconds(1000000000 / clock_speed));
   }
+
+  // Update the output for the last time before stopping so all output gets
+  // shown
+  Core::HW::VGA::Update();
 }
 
 u16 CPU::PrefixToValue(Instruction::SegmentPrefix prefix)
