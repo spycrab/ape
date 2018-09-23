@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QStatusBar>
 
+#include "ApeQt/Debugger/CodeWidget.h"
 #include "ApeQt/Debugger/RegisterWidget.h"
 #include "ApeQt/QueueOnObject.h"
 #include "ApeQt/TTYWidget.h"
@@ -96,7 +97,13 @@ void MainWindow::CreateWidgets()
 
   setStatusBar(m_status_bar);
 
-  addDockWidget(Qt::LeftDockWidgetArea, new RegisterWidget);
+  auto* code_widget = new CodeWidget;
+  auto* register_widget = new RegisterWidget;
+
+  addDockWidget(Qt::LeftDockWidgetArea, code_widget);
+  addDockWidget(Qt::LeftDockWidgetArea, register_widget);
+
+  tabifyDockWidget(code_widget, register_widget);
 }
 
 void MainWindow::ConnectWidgets() {}
