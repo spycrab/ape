@@ -8,5 +8,5 @@ std::vector<u8>& Memory::Get() { return m_data; }
 
 u32 Memory::VirtToPhys(u16 segment, u16 offset)
 {
-  return (segment << 4) + offset;
+  return segment * 0x10 + offset;
 }
