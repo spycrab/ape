@@ -167,8 +167,9 @@ void MainWindow::StopMachine()
 
 void MainWindow::PauseMachine()
 {
-  ShowStatus(Core::CPU::IsRunning() ? tr("Resumed") : tr("Paused"));
-  m_machine_pause->setText(Core::CPU::IsRunning() ? tr("Resume") : tr("Pause"));
+  const bool paused = Core::CPU::IsPaused();
+  ShowStatus(paused ? tr("Resumed") : tr("Paused"));
+  m_machine_pause->setText(paused ? tr("Resume") : tr("Pause"));
 
   Core::Machine::Pause();
 }
