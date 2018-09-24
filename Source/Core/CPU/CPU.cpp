@@ -13,62 +13,65 @@
 #include "Core/HW/VGA.h"
 #include "Core/Machine.h"
 
-using namespace Core;
+namespace Core::CPU
+{
 
-u16& CPU::AX = AX_struct.AX;
-u16& CPU::BX = BX_struct.BX;
-u16& CPU::CX = CX_struct.CX;
-u16& CPU::DX = DX_struct.DX;
+GPR A, B, C, D;
 
-u8& CPU::AH = AX_struct.b8.AH;
-u8& CPU::AL = AX_struct.b8.AL;
+u16& AX = A.X;
+u16& BX = B.X;
+u16& CX = C.X;
+u16& DX = D.X;
 
-u8& CPU::BH = BX_struct.b8.BH;
-u8& CPU::BL = BX_struct.b8.BL;
+u8& AH = A.b8.H;
+u8& AL = B.b8.L;
 
-u8& CPU::CH = CX_struct.b8.CH;
-u8& CPU::CL = CX_struct.b8.CL;
+u8& BH = B.b8.H;
+u8& BL = B.b8.L;
 
-u8& CPU::DH = DX_struct.b8.DH;
-u8& CPU::DL = DX_struct.b8.DL;
+u8& CH = C.b8.H;
+u8& CL = C.b8.L;
 
-u16 CPU::IP = 0;
-u16 CPU::DI = 0;
-u16 CPU::SI = 0;
-u16 CPU::SP = 0;
-u16 CPU::BP = 0;
+u8& DH = D.b8.H;
+u8& DL = D.b8.L;
 
-u16 CPU::CS = 0;
-u16 CPU::DS = 0;
-u16 CPU::SS = 0;
-u16 CPU::ES = 0;
+u16 IP = 0;
+u16 DI = 0;
+u16 SI = 0;
+u16 SP = 0;
+u16 BP = 0;
 
-bool CPU::AF = false;
-bool CPU::CF = false;
-bool CPU::IF = false;
-bool CPU::DF = false;
-bool CPU::OF = false;
-bool CPU::PF = false;
-bool CPU::SF = false;
-bool CPU::ZF = false;
+u16 CS = 0;
+u16 DS = 0;
+u16 SS = 0;
+u16 ES = 0;
 
-bool CPU::simulate_msdos = false;
+bool AF = false;
+bool CF = false;
+bool IF = false;
+bool DF = false;
+bool OF = false;
+bool PF = false;
+bool SF = false;
+bool ZF = false;
+
+bool simulate_msdos = false;
 
 std::atomic<bool> running;
 std::atomic<bool> paused;
 
 // Treating this as if it were a 5 MHz 8088
-u64 CPU::clock_speed = 5'000'000;
+u64 clock_speed = 5'000'000;
 
-CPU::RepeatMode s_repeat_mode = CPU::RepeatMode::None;
+RepeatMode s_repeat_mode = RepeatMode::None;
 
-void CPU::Stop() { running = false; }
-void CPU::SetPaused(bool value) { paused = value; }
+void Stop() { running = false; }
+void SetPaused(bool value) { paused = value; }
 
-bool CPU::IsRunning() { return running; }
-bool CPU::IsPaused() { return paused; }
+bool IsRunning() { return running; }
+bool IsPaused() { return paused; }
 
-bool CPU::HandleRepetition()
+bool HandleRepetition()
 {
   if (s_repeat_mode != RepeatMode::None)
     CX--;
@@ -84,7 +87,7 @@ bool CPU::HandleRepetition()
   }
 }
 
-void CPU::Tick()
+void Tick()
 {
   const auto old_ip = IP;
 
@@ -585,7 +588,7 @@ void CPU::Tick()
   s_repeat_mode = RepeatMode::None;
 }
 
-void CPU::Start()
+void Start()
 {
   running = true;
   u8 counter = 0;
@@ -606,7 +609,7 @@ void CPU::Start()
   Core::HW::VGA::Update();
 }
 
-u16 CPU::PrefixToValue(Instruction::SegmentPrefix prefix)
+u16 PrefixToValue(Instruction::SegmentPrefix prefix)
 {
   using Prefix = Instruction::SegmentPrefix;
   switch (prefix) {
@@ -622,3 +625,4 @@ u16 CPU::PrefixToValue(Instruction::SegmentPrefix prefix)
     return DS;
   }
 }
+}; // namespace Core::CPU

@@ -25,34 +25,18 @@ void Tick();
 //! Execute instructions until shutdown is requested
 void Start();
 
-union {
-  u16 AX = 0;
+union GPR {
+  u16 X = 0;
   struct {
-    u8 AL;
-    u8 AH;
+    u8 L;
+    u8 H;
   } b8;
-} AX_struct;
-union {
-  u16 BX = 0;
-  struct {
-    u8 BL;
-    u8 BH;
-  } b8;
-} BX_struct;
-union {
-  u16 CX = 0;
-  struct {
-    u8 CL;
-    u8 CH;
-  } b8;
-} CX_struct;
-union {
-  u16 DX = 0;
-  struct {
-    u8 DL;
-    u8 DH;
-  } b8;
-} DX_struct;
+};
+
+extern GPR A;
+extern GPR B;
+extern GPR C;
+extern GPR D;
 
 enum class RepeatMode : u8 { None, Repeat, Repeat_Zero, Repeat_Non_Zero };
 
