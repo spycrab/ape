@@ -9,6 +9,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
+#include <QSignalBlocker>
 #include <QSpinBox>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -33,8 +34,10 @@ QSpinBox* RegisterWidget::Get16BitInput(u16* value)
   spin->setMaximum(0xffff);
   spin->setValue(*value);
 
-  connect(this, &RegisterWidget::OnUpdate, this,
-          [spin, value] { spin->setValue(*value); });
+  connect(this, &RegisterWidget::OnUpdate, this, [spin, value] {
+    QSignalBlocker blocker(spin);
+    spin->setValue(*value);
+  });
   connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), this,
           [spin, value] { *value = spin->value(); });
 
@@ -50,8 +53,10 @@ QSpinBox* RegisterWidget::Get8BitInput(u8* value)
   spin->setMaximum(0xff);
   spin->setValue(*value);
 
-  connect(this, &RegisterWidget::OnUpdate, this,
-          [spin, value] { spin->setValue(*value); });
+  connect(this, &RegisterWidget::OnUpdate, this, [spin, value] {
+    QSignalBlocker blocker(spin);
+    spin->setValue(*value);
+  });
   connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), this,
           [spin, value] { *value = spin->value(); });
 
@@ -64,8 +69,10 @@ QCheckBox* RegisterWidget::GetFlagInput(QString label, bool* value)
 
   check->setChecked(*value);
 
-  connect(this, &RegisterWidget::OnUpdate, this,
-          [check, value] { check->setChecked(*value); });
+  connect(this, &RegisterWidget::OnUpdate, this, [check, value] {
+    QSignalBlocker blocker(check);
+    check->setChecked(*value);
+  });
   connect(check, &QCheckBox::toggled, this,
           [check, value] { *value = check->isChecked(); });
 
