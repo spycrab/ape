@@ -24,7 +24,7 @@ u16& CX = C.X;
 u16& DX = D.X;
 
 u8& AH = A.b8.H;
-u8& AL = B.b8.L;
+u8& AL = A.b8.L;
 
 u8& BH = B.b8.H;
 u8& BL = B.b8.L;
@@ -160,7 +160,7 @@ void Tick()
     throw InvalidInstructionException(opcode);
 
   // LOG(String::ToHex<u16>(CS) + ":" + String::ToHex<u16>(old_ip) + ": " +
-  //   ins.ToString());
+  //     ins.ToString());
 
   using Type = Instruction::Type;
   using PType = Instruction::Parameter::Type;
