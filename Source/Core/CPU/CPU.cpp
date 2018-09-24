@@ -625,4 +625,4 @@ u16 PrefixToValue(Instruction::SegmentPrefix prefix)
     return DS;
   }
 }
-}; // namespace Core::CPU
+} // namespace Core::CPU
