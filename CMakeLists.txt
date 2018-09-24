@@ -14,7 +14,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Binaries)
 
 # Generate version information
 
-set(APE_VERSION "DONTRELEASEME")
 find_package(Git)
 if(GIT_FOUND)
   execute_process(
@@ -36,7 +35,21 @@ if(GIT_FOUND)
 
     execute_process(
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-      COMMAND ${GIT_EXECUTABLE} rev-list HEAD --count
+      COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags
+      OUTPUT_VARIABLE APE_LATEST_TAG
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_QUIET)
+
+    if (APE_LATEST_TAG STREQUAL "")
+      set(APE_VERSION "DONTRELEASEME")
+    else()
+      set(APE_VERSION "${APE_LATEST_TAG}")
+      set(GIT_REV_OPTS ^${APE_LATEST_TAG})
+    endif()
+
+    execute_process(
+      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+      COMMAND ${GIT_EXECUTABLE} rev-list HEAD ${GIT_REV_OPTS} --count
       OUTPUT_VARIABLE APE_BUILD_NUMBER
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -56,7 +69,7 @@ if(GIT_FOUND)
       set(APE_VERSION "${APE_VERSION}-${APE_BRANCH}")
     endif()
 
-    if (NOT APE_BRANCH STREQUAL "stable" OR NOT IS_GIT_DIRTY STREQUAL "")
+    if (NOT APE_BRANCH STREQUAL "stable" OR NOT IS_GIT_DIRTY STREQUAL "" OR APE_BUILD_NUMBER GREATER 0)
       set(APE_VERSION "${APE_VERSION}-${APE_BUILD_NUMBER}")
     endif()
 
