@@ -16,9 +16,7 @@
 #include "ApeQt/QueueOnObject.h"
 #include "ApeQt/TTYWidget.h"
 
-#include "Core/CPU/CPU.h"
 #include "Core/HW/FloppyDrive.h"
-#include "Core/Machine.h"
 #include "Core/Memory.h"
 
 #include "Version.h"
@@ -55,6 +53,9 @@ MainWindow::MainWindow(const std::string&& path)
   resize(800, 600);
 
   StartFile(QString::fromStdString(path));
+
+  Core::CPU::RegisterStateChangedCallback(
+      [this](Core::CPU::State s) { OnMachineStateChanged(s); });
 }
 
 MainWindow::~MainWindow() { StopMachine(); }
@@ -124,13 +125,11 @@ void MainWindow::StartFile(const QString& path)
 
   if (path.endsWith(".com", Qt::CaseInsensitive)) {
     m_thread = std::thread([this, path] {
-      OnMachineStateChanged(true);
       try {
         Core::Machine::BootCOM(path.toStdString());
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
-      OnMachineStateChanged(false);
     });
     return;
   }
@@ -147,13 +146,11 @@ void MainWindow::StartFile(const QString& path)
   }
 
   m_thread = std::thread([this, path] {
-    OnMachineStateChanged(true);
     try {
       Core::Machine::BootFloppy();
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
-    OnMachineStateChanged(false);
   });
 }
 
@@ -174,14 +171,24 @@ void MainWindow::PauseMachine()
   Core::Machine::Pause();
 }
 
-void MainWindow::OnMachineStateChanged(bool running)
+void MainWindow::OnMachineStateChanged(Core::CPU::State state)
 {
-  QueueOnObject(this, [this, running] {
-    m_machine_stop->setEnabled(running);
-    m_machine_pause->setEnabled(running);
+  QueueOnObject(this, [this, state] {
+    m_machine_stop->setEnabled(state != Core::CPU::State::Stopped);
+    m_machine_pause->setEnabled(state != Core::CPU::State::Stopped);
   });
 
-  ShowStatus(running ? tr("Running...") : tr("Stopped"));
+  switch (state) {
+  case Core::CPU::State::Stopped:
+    ShowStatus(tr("Stopped"));
+    break;
+  case Core::CPU::State::Running:
+    ShowStatus(tr("Running"));
+    break;
+  case Core::CPU::State::Paused:
+    ShowStatus(tr("Paused"));
+    break;
+  }
 }
 
 void MainWindow::HandleException(Core::CPU::CPUException e)

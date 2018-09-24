@@ -20,7 +20,9 @@ RegisterWidget::RegisterWidget()
 {
   setWindowTitle(tr("Registers"));
   CreateWidgets();
-  Update();
+
+  Core::CPU::RegisterStateChangedCallback(
+      [this](Core::CPU::State) { Update(); });
 }
 
 void RegisterWidget::Update() { emit OnUpdate(); }
@@ -163,14 +165,9 @@ void RegisterWidget::CreateWidgets()
   si_layout->setColumnStretch(1, 1);
   si_layout->setColumnStretch(3, 1);
 
-  auto* update_btn = new QPushButton(tr("Update"));
-
-  connect(update_btn, &QPushButton::pressed, this, &RegisterWidget::Update);
-
   layout->addWidget(gp_box);
   layout->addWidget(flags_box);
   layout->addWidget(si_box);
-  layout->addWidget(update_btn);
   layout->addStretch();
 
   auto* widget = new QWidget;

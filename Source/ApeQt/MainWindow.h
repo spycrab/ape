@@ -9,6 +9,7 @@
 #include <QMainWindow>
 #include <QString>
 
+#include "Core/CPU/CPU.h"
 #include "Core/CPU/Exception.h"
 #include "Core/Machine.h"
 
@@ -39,7 +40,7 @@ private:
   void HandleException(Core::CPU::CPUException e);
   void ShowStatus(const QString& status, int timeout = 0);
 
-  void OnMachineStateChanged(bool running);
+  void OnMachineStateChanged(Core::CPU::State state);
 
   QMenuBar* m_menu_bar;
   QAction* m_machine_stop;

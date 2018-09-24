@@ -6,6 +6,7 @@
 //! \file
 
 #include <atomic>
+#include <functional>
 
 #include "Common/Logger.h"
 #include "Common/String.h"
@@ -18,12 +19,19 @@
 //! Representation of the Central Processing Unit
 namespace Core::CPU
 {
-
 //! Execute one CPU cycle
 void Tick();
 
 //! Execute instructions until shutdown is requested
 void Start();
+
+enum class RepeatMode : u8 { None, Repeat, Repeat_Zero, Repeat_Non_Zero };
+enum class State : u8 { Stopped, Running, Paused };
+
+using StateCallbackFunc = std::function<void(State)>;
+
+void RegisterStateChangedCallback(StateCallbackFunc fnc);
+void UnregisterStateChangedCallback(StateCallbackFunc fnc);
 
 union GPR {
   u16 X = 0;
@@ -37,8 +45,6 @@ extern GPR A;
 extern GPR B;
 extern GPR C;
 extern GPR D;
-
-enum class RepeatMode : u8 { None, Repeat, Repeat_Zero, Repeat_Non_Zero };
 
 //! AX (Accumulator)
 extern u16& AX;
@@ -115,6 +121,7 @@ void SetPaused(bool paused);
 
 bool IsRunning();
 bool IsPaused();
+State GetState();
 
 extern u64 clock_speed;
 

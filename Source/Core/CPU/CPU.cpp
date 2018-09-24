@@ -70,6 +70,49 @@ void SetPaused(bool value) { paused = value; }
 
 bool IsRunning() { return running; }
 bool IsPaused() { return paused; }
+State GetState()
+{
+  if (!running)
+    return State::Stopped;
+
+  if (paused)
+    return State::Paused;
+
+  return State::Running;
+}
+
+std::vector<StateCallbackFunc> fncs;
+
+void RegisterStateChangedCallback(StateCallbackFunc fnc)
+{
+  fncs.push_back(fnc);
+}
+
+template <typename T, typename... U> size_t GetAddress(std::function<T(U...)> f)
+{
+  typedef T(FunctionType)(U...);
+  FunctionType** fn_ptr = f.template target<FunctionType*>();
+  return (size_t)*fn_ptr;
+}
+
+void UnregisterStateChangedCallback(StateCallbackFunc fnc)
+{
+  auto it =
+      std::find_if(fncs.begin(), fncs.end(), [fnc](const StateCallbackFunc& f) {
+        return GetAddress(fnc) == GetAddress(f);
+      });
+
+  if (it != fncs.end()) {
+    fncs.erase(it);
+  }
+}
+
+void TriggerCallbacks()
+{
+  for (auto& fnc : fncs) {
+    fnc(GetState());
+  }
+}
 
 bool HandleRepetition()
 {
@@ -591,18 +634,26 @@ void Tick()
 void Start()
 {
   running = true;
+  TriggerCallbacks();
   u8 counter = 0;
+
   while (running) {
     Tick();
 
     if (counter++ == 0)
       Core::HW::VGA::Update();
 
+    if (paused)
+      TriggerCallbacks();
+
     while (paused && running) {
     }
+
     std::this_thread::sleep_for(
         std::chrono::nanoseconds(1000000000 / clock_speed));
   }
+
+  TriggerCallbacks();
 
   // Update the output for the last time before stopping so all output gets
   // shown
