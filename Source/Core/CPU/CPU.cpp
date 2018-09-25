@@ -141,8 +141,10 @@ void Tick()
     LOG("Hit a breakpoint at " + String::ToHex(CS) + ":" + String::ToHex(IP) +
         "!");
     SetPaused(true);
+
     just_hit.segment = CS;
     just_hit.offset = IP;
+
     return;
   }
 
