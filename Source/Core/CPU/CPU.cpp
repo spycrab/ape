@@ -8,6 +8,7 @@
 #include <thread>
 #include <type_traits>
 
+#include "Core/CPU/Breakpoint.h"
 #include "Core/CPU/Flags.h"
 #include "Core/CPU/Instruction.h"
 #include "Core/HW/VGA.h"
@@ -130,9 +131,23 @@ bool HandleRepetition()
   }
 }
 
+Breakpoint just_hit = {0, 0};
+
 void Tick()
 {
   const auto old_ip = IP;
+
+  if (IsBreakpointHit() && (just_hit.segment != CS || just_hit.offset != IP)) {
+    LOG("Hit a breakpoint at " + String::ToHex(CS) + ":" + String::ToHex(IP) +
+        "!");
+    SetPaused(true);
+    just_hit.segment = CS;
+    just_hit.offset = IP;
+    return;
+  }
+
+  just_hit.segment = 0;
+  just_hit.offset = 0;
 
   u8 opcode = Memory::Get<u8>(CS, IP++);
   Instruction ins(opcode, old_ip);

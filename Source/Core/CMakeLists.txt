@@ -2,6 +2,8 @@ add_library(Core
   BIOS/Interrupt.cpp
   CPU/CPU.h
   CPU/CPU.cpp
+  CPU/Breakpoint.h
+  CPU/Breakpoint.cpp
   CPU/Decoder.cpp
   CPU/Exception.h
   CPU/Exception.cpp
