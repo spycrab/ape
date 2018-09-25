@@ -16,7 +16,7 @@ template <typename T> std::string ToHex(const T& value)
 {
   std::stringstream ss;
   ss << "0x" << std::setfill('0') << std::setw(sizeof(T) * 2) << std::hex
-     << static_cast<u64>(value);
+     << static_cast<i64>(value);
   return ss.str();
 }
 
