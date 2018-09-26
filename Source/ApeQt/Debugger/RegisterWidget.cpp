@@ -14,6 +14,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "ApeQt/QueueOnObject.h"
+
 #include "Core/CPU/CPU.h"
 
 RegisterWidget::RegisterWidget()
@@ -22,7 +24,7 @@ RegisterWidget::RegisterWidget()
   CreateWidgets();
 
   Core::CPU::RegisterStateChangedCallback(
-      [this](Core::CPU::State) { Update(); });
+      [this](Core::CPU::State) { QueueOnObject(this, [this] { Update(); }); });
 }
 
 void RegisterWidget::Update() { emit OnUpdate(); }

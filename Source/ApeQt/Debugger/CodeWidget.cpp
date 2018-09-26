@@ -20,6 +20,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "ApeQt/QueueOnObject.h"
+
 #include "Core/CPU/Breakpoint.h"
 #include "Core/CPU/CPU.h"
 #include "Core/CPU/Instruction.h"
@@ -53,7 +55,8 @@ CodeWidget::CodeWidget()
   Core::CPU::RegisterStateChangedCallback([this](Core::CPU::State) {
     m_segment = Core::CPU::CS;
     m_offset = Core::CPU::IP;
-    Update();
+
+    QueueOnObject(this, [this] { Update(); });
   });
 
   Update();
