@@ -45,7 +45,7 @@ make ApeQt # Emulator with a Qt5 UI
 
 make all # All of the above
 
-make test # Run the testsuite
+make tests # Run the testsuite
 ```
 
 ## Windows
