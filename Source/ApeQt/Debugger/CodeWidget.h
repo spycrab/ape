@@ -8,8 +8,8 @@
 
 #include "Common/Types.h"
 
+class CodeViewWidget;
 class QListWidget;
-class QTableWidget;
 class QResizeEvent;
 class QSpinBox;
 
@@ -19,18 +19,15 @@ class CodeWidget : public QDockWidget
 public:
   explicit CodeWidget();
 
-  void resizeEvent(QResizeEvent*);
-
 private:
   QListWidget* m_stack_list;
-  QTableWidget* m_table;
   QSpinBox* m_segment_spin;
   QSpinBox* m_offset_spin;
+
+  CodeViewWidget* m_code_view;
 
   void CreateWidgets();
   void Update();
 
   void OnContextMenu();
-
-  u16 m_segment = 0, m_offset = 0;
 };

@@ -4,6 +4,8 @@ find_package(Threads REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
 add_executable(ApeQt
+  Debugger/CodeViewWidget.h
+  Debugger/CodeViewWidget.cpp
   Debugger/CodeWidget.h
   Debugger/CodeWidget.cpp
   Debugger/RegisterWidget.h
