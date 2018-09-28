@@ -21,7 +21,7 @@ class QStatusBar;
 class MainWindow : public QMainWindow
 {
 public:
-  explicit MainWindow(const std::string&& path = "");
+  explicit MainWindow(const std::string&& path = "", bool floppy = false);
   ~MainWindow();
 
 private:
@@ -33,7 +33,7 @@ private:
   void OpenFile();
   void ShowAbout();
 
-  void StartFile(const QString& path);
+  void StartFile(const QString& path, bool floppy);
 
   void StopMachine();
   void PauseMachine();

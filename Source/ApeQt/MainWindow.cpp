@@ -43,7 +43,7 @@ QString MainWindow::GetQuote() const
   return list[rnd(engine)];
 }
 
-MainWindow::MainWindow(const std::string&& path)
+MainWindow::MainWindow(const std::string&& path, bool floppy)
 {
   Core::Machine::Init();
 
@@ -54,7 +54,8 @@ MainWindow::MainWindow(const std::string&& path)
 
   resize(800, 600);
 
-  StartFile(QString::fromStdString(path));
+  if (!path.empty())
+    StartFile(QString::fromStdString(path), floppy);
 
   Core::CPU::RegisterStateChangedCallback(
       [this](Core::CPU::State s) { OnMachineStateChanged(s); });
@@ -126,15 +127,15 @@ void MainWindow::OpenFile()
   if (m_thread.joinable())
     m_thread.join();
 
-  StartFile(path);
+  StartFile(path, !path.endsWith(".com", Qt::CaseInsensitive));
 }
 
-void MainWindow::StartFile(const QString& path)
+void MainWindow::StartFile(const QString& path, bool floppy)
 {
   if (path.isEmpty())
     return;
 
-  if (path.endsWith(".com", Qt::CaseInsensitive)) {
+  if (!floppy) {
     m_thread = std::thread([this, path] {
       try {
         Core::Machine::BootCOM(path.toStdString());
