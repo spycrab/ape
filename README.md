@@ -14,14 +14,15 @@ Currently Ape has the following limitations:
   - No Intel 8087 emulation
   - No Harddrive support
 - Limited graphics capabilities
-  - currently only outputting plain text
+  - Only plain text
+  - Basic VGA text mode support
 
 ## Requirements
 - A C++17 capable compiler
-- CMake
-- Qt 5 (5.9 or newer)
-- Doxygen (*Docs only*)
-- GoogleTest (*Tests only*)
+- [CMake](https://cmake.org/)
+- [Qt 5](https://www.qt.io) (5.9 or newer)
+- [Doxygen](http://www.doxygen.nl/) (*Docs only*)
+- [GoogleTest](https://github.com/google/googletest/) (*Tests only*)
 
 ## Documentation
 
@@ -49,7 +50,7 @@ make tests # Run the testsuite
 ```
 
 ## Windows
-Either use MinGW or Cygwin to get a Posix-like environment or use CMake GUI to generate a Visual Studio Project.
+Either use MinGW or Cygwin to get a POSIX-like environment or use CMake GUI to generate a Visual Studio Project.
 
 
 ## License
