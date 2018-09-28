@@ -33,8 +33,6 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  Core::Machine::Init();
-
   if (p.GetString("floppy") != "") {
 
     if (!Core::HW::FloppyDrive::Insert(p.GetString("floppy"))) {

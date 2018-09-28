@@ -13,10 +13,15 @@
 
 namespace Core::Machine
 {
-void Init() { HW::VGA::Init(); }
+void Init()
+{
+  HW::VGA::Init();
+  TTY::Clear();
+}
 
 bool BootFloppy()
 {
+  Init();
   if (!HW::FloppyDrive::Read(0, 512, Memory::GetPtr<u8>(0x0000, 0x7C00)))
     return false;
 
@@ -34,6 +39,8 @@ void Pause() { CPU::SetPaused(!CPU::IsPaused()); }
 
 bool BootCOM(const std::string& file, const std::string&& parameters)
 {
+  Init();
+
   std::ifstream ifs(file, std::ios::binary);
 
   if (!ifs.good())

@@ -12,7 +12,7 @@
 #include "Core/HW/VGA.h"
 
 static u8 s_column = 0;
-static u8 s_row = 1;
+static u8 s_row = 0;
 
 void TTY::Write(const std::string& string)
 {
@@ -46,7 +46,7 @@ void TTY::Write(const char c)
     return;
   }
 
-  Core::HW::VGA::GetBuffer()[((s_row - 1) * 80 + s_column) * sizeof(u16)] = c;
+  Core::HW::VGA::GetBuffer()[(s_row * 80 + s_column) * sizeof(u16)] = c;
   s_column++;
 
   s_column %= 80;
@@ -70,6 +70,9 @@ void TTY::MoveCursor(const u32 x, const u32 y)
 }
 void TTY::Clear()
 {
+  s_column = 0;
+  s_row = 0;
+
   if (!Core::HW::VGA::IsPresent()) {
     LOG("[TTY STUB] Clear");
     return;

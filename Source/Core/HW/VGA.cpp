@@ -17,8 +17,10 @@ using namespace Core::HW;
 void VGA::Init()
 {
   for (size_t y = 0; y < 25; y++)
-    for (size_t x = 0; x < 80; x++)
+    for (size_t x = 0; x < 80; x++) {
+      GetBuffer()[(y * 80 + x) * sizeof(u16)] = ' ';
       GetBuffer()[(y * 80 + x) * sizeof(u16) + 1] = 0x0F;
+    }
 }
 
 bool VGA::IsPresent() { return g_VGABackend != nullptr; }

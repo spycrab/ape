@@ -45,8 +45,6 @@ QString MainWindow::GetQuote() const
 
 MainWindow::MainWindow(const std::string&& path, bool floppy)
 {
-  Core::Machine::Init();
-
   setWindowTitle(tr("Ape %1 - %2!").arg(VERSION_STRING).arg(GetQuote()));
 
   CreateWidgets();
