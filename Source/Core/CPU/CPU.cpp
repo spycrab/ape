@@ -4,6 +4,7 @@
 
 #include "Core/CPU/CPU.h"
 
+#include <algorithm>
 #include <chrono>
 #include <thread>
 #include <type_traits>
