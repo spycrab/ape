@@ -8,6 +8,7 @@
 #include <random>
 
 #include <QFileDialog>
+#include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QStatusBar>
@@ -92,6 +93,9 @@ void MainWindow::CreateWidgets()
   setMenuBar(m_menu_bar);
 
   m_status_bar = new QStatusBar;
+  m_status_label = new QLabel(tr("Ready"));
+
+  m_status_bar->addPermanentWidget(m_status_label);
 
   ShowStatus(tr("Welcome to Ape!"), 5000);
 
@@ -180,22 +184,26 @@ void MainWindow::PauseMachine()
 
 void MainWindow::OnMachineStateChanged(Core::CPU::State state)
 {
-  QueueOnObject(this, [this, state] {
-    m_machine_stop->setEnabled(state != Core::CPU::State::Stopped);
-    m_machine_pause->setEnabled(state != Core::CPU::State::Stopped);
-  });
-
+  QString msg;
   switch (state) {
   case Core::CPU::State::Stopped:
-    ShowStatus(tr("Stopped"));
+    msg = tr("Stopped");
     break;
   case Core::CPU::State::Running:
-    ShowStatus(tr("Running"));
+    msg = tr("Running");
     break;
   case Core::CPU::State::Paused:
-    ShowStatus(tr("Paused"));
+    msg = tr("Paused");
     break;
   }
+
+  ShowStatus(msg);
+
+  QueueOnObject(this, [this, state, msg] {
+    m_machine_stop->setEnabled(state != Core::CPU::State::Stopped);
+    m_machine_pause->setEnabled(state != Core::CPU::State::Stopped);
+    m_status_label->setText(msg);
+  });
 }
 
 void MainWindow::HandleException(Core::CPU::CPUException e)

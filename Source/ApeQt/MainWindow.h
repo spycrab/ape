@@ -14,6 +14,7 @@
 #include "Core/Machine.h"
 
 class QAction;
+class QLabel;
 class QMenuBar;
 class QStatusBar;
 
@@ -45,7 +46,9 @@ private:
   QMenuBar* m_menu_bar;
   QAction* m_machine_stop;
   QAction* m_machine_pause;
+
   QStatusBar* m_status_bar;
+  QLabel* m_status_label;
 
   std::thread m_thread;
 };
