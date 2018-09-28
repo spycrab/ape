@@ -28,8 +28,8 @@ int main(int argc, char** argv)
   }
 
   if (p.CheckCommand("help")) {
-    std::cerr << argv[0] << " (floppy image) [floppy/com] [boot parameters]"
-              << std::endl;
+    std::cerr << argv[0] << " (--floppy/--com) [file]" << std::endl;
+
     return 1;
   }
 
@@ -49,8 +49,8 @@ int main(int argc, char** argv)
     }
 
     return Core::Machine::BootFloppy() ? 0 : 1;
-  } else if (p.GetString("floppy") != "") {
-    return !Core::Machine::BootCOM(p.GetString("floppy"));
+  } else if (p.GetString("com") != "") {
+    return !Core::Machine::BootCOM(p.GetString("com"));
   }
 
   std::cerr << "Nothing to do! See --help" << std::endl;
