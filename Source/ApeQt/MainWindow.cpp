@@ -216,14 +216,7 @@ void MainWindow::StopMachine()
     m_thread.join();
 }
 
-void MainWindow::PauseMachine()
-{
-  const bool paused = Core::CPU::IsPaused();
-  ShowStatus(paused ? tr("Resumed") : tr("Paused"));
-  m_machine_pause->setText(paused ? tr("Resume") : tr("Pause"));
-
-  Core::Machine::Pause();
-}
+void MainWindow::PauseMachine() { Core::Machine::Pause(); }
 
 void MainWindow::OnMachineStateChanged(Core::CPU::State state)
 {
@@ -245,6 +238,8 @@ void MainWindow::OnMachineStateChanged(Core::CPU::State state)
   QueueOnObject(this, [this, state, msg] {
     m_machine_stop->setEnabled(state != Core::CPU::State::Stopped);
     m_machine_pause->setEnabled(state != Core::CPU::State::Stopped);
+    m_machine_pause->setText(state == Core::CPU::State::Paused ? tr("Resume")
+                                                               : tr("Pause"));
     m_status_label->setText(msg);
   });
 }
