@@ -152,7 +152,7 @@ void CPU::CALL(const Instruction& instruction)
       Instruction::Parameter::Type::Literal_LongAddress_Immediate) {
     u32 addr = parameter.GetData<u32>();
 
-    u16 offset = (addr & 0xFFFF0000) >> 8;
+    u16 offset = static_cast<u16>((addr & 0xFFFF0000) >> 8);
     u16 segment = (addr & 0xFFFF);
 
     SP -= sizeof(u16);

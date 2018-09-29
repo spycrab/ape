@@ -72,13 +72,13 @@ void CodeViewWidget::Update()
       u8 mod = static_cast<u8>(Core::Memory::Get<u8>(segment, offset++));
       u8 length = ins.GetLength(mod);
 
-      std::vector<u8> data;
+      std::vector<u8> ins_data;
 
-      for (u16 i = 0; i < length; i++) {
-        data.push_back(Core::Memory::Get<u8>(segment, offset++));
+      for (u16 j = 0; j < length; j++) {
+        ins_data.push_back(Core::Memory::Get<u8>(segment, offset++));
       }
 
-      ins.Resolve(mod, data);
+      ins.Resolve(mod, ins_data);
     }
 
     ins_str = QString::fromStdString(ins.ToString());

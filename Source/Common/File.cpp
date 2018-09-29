@@ -18,7 +18,7 @@ std::string Path::ToUnix(const std::string& path)
 {
   std::string unix_path = path;
 
-  for (int index = unix_path.find('\\'); index != -1;
+  for (size_t index = unix_path.find('\\'); index != -1;
        index = unix_path.find('\\')) {
     unix_path[index] = '/';
   }

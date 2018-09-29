@@ -52,12 +52,12 @@ bool BootCOM(const std::string& file, const std::string&& parameters)
 
   size_t index;
   for (index = 0; !ifs.eof(); index++) {
-    Memory::Get<u8>(0x0000, 0x0100 + index) = static_cast<u8>(ifs.get());
+    Memory::Get<u8>(0x0000, static_cast<u16>(0x0100 + index)) = static_cast<u8>(ifs.get());
   }
 
   LOG("Loaded " + std::to_string(index - 1) + " bytes into memory");
 
-  Memory::Get<u8>(0x0000, 0x0080) = parameters.size();
+  Memory::Get<u8>(0x0000, 0x0080) = static_cast<u8>(parameters.size());
 
   u16 offset;
 

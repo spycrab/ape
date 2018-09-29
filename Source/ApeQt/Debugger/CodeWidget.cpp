@@ -102,7 +102,7 @@ void CodeWidget::Update()
             .arg(Core::CPU::SS, 4, 16, QLatin1Char('0'))
             .arg(Core::CPU::SP + i * sizeof(u16), 4, 16, QLatin1Char('0'))
             .arg(Core::Memory::Get<u16>(Core::CPU::SS,
-                                        Core::CPU::SP + i * sizeof(u16)),
+                                        static_cast<u16>(Core::CPU::SP + i * sizeof(u16))),
                  4, 16, QLatin1Char('0'))));
   }
 }

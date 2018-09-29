@@ -149,7 +149,7 @@ T ParameterTo(const Instruction::Parameter& parameter,
                   "Bad type provided!");
   }
 
-  using Type = Instruction::Parameter::Type;
+  using PType = Instruction::Parameter::Type;
   if constexpr (std::is_same<T, u8>::value || std::is_same<T, u8&>::value) {
     if (parameter.IsWord()) {
       LOG("[BYTE] Tried to convert a WORD parameter to BYTE for " +
@@ -158,85 +158,85 @@ T ParameterTo(const Instruction::Parameter& parameter,
     }
 
     switch (parameter.GetType()) {
-    case Type::AL:
+    case PType::AL:
       return AL;
-    case Type::AH:
+    case PType::AH:
       return AH;
 
-    case Type::BL:
+    case PType::BL:
       return BL;
-    case Type::BH:
+    case PType::BH:
       return BH;
 
-    case Type::CL:
+    case PType::CL:
       return CL;
-    case Type::CH:
+    case PType::CH:
       return CH;
 
-    case Type::DL:
+    case PType::DL:
       return DL;
-    case Type::DH:
+    case PType::DH:
       return DH;
 
-    case Type::Value_WordAddress:
+    case PType::Value_WordAddress:
       return Memory::Get<u8>(seg_val, parameter.GetData<u16>());
-    case Type::Value_BP_Offset:
+    case PType::Value_BP_Offset:
       return Memory::Get<u8>(seg_val, BP + parameter.GetData<u8>());
-    case Type::Value_BP_WordOffset:
+    case PType::Value_BP_WordOffset:
       return Memory::Get<u8>(seg_val, BP + parameter.GetData<u16>());
-    case Type::Value_BP_DI:
+    case PType::Value_BP_DI:
       return Memory::Get<u8>(seg_val, BP + DI);
-    case Type::Value_BP_DI_Offset:
+    case PType::Value_BP_DI_Offset:
       return Memory::Get<u8>(seg_val, BP + DI + parameter.GetData<u8>());
-    case Type::Value_BP_DI_WordOffset:
+    case PType::Value_BP_DI_WordOffset:
       return Memory::Get<u8>(seg_val, BP + DI + parameter.GetData<u16>());
-    case Type::Value_BP_SI:
+    case PType::Value_BP_SI:
       return Memory::Get<u8>(seg_val, BP + SI);
-    case Type::Value_BP_SI_Offset:
+    case PType::Value_BP_SI_Offset:
       return Memory::Get<u8>(seg_val, BP + SI + parameter.GetData<u8>());
-    case Type::Value_BP_SI_WordOffset:
+    case PType::Value_BP_SI_WordOffset:
       return Memory::Get<u8>(seg_val, BP + SI + parameter.GetData<u16>());
-    case Type::Value_BX:
+    case PType::Value_BX:
       return Memory::Get<u8>(seg_val, BX);
-    case Type::Value_BX_Offset:
+    case PType::Value_BX_Offset:
       return Memory::Get<u8>(seg_val, BX + parameter.GetData<u8>());
-    case Type::Value_BX_WordOffset:
+    case PType::Value_BX_WordOffset:
       return Memory::Get<u8>(seg_val, BX + parameter.GetData<u16>());
-    case Type::Value_BX_SI:
+    case PType::Value_BX_SI:
       return Memory::Get<u8>(seg_val, BX + SI);
-    case Type::Value_BX_SI_Offset:
+    case PType::Value_BX_SI_Offset:
       return Memory::Get<u8>(seg_val, BX + SI + parameter.GetData<u8>());
-    case Type::Value_BX_SI_WordOffset:
+    case PType::Value_BX_SI_WordOffset:
       return Memory::Get<u8>(seg_val, BX + SI + parameter.GetData<u16>());
-    case Type::Value_BX_DI:
+    case PType::Value_BX_DI:
       return Memory::Get<u8>(seg_val, BX + DI);
-    case Type::Value_BX_DI_Offset:
+    case PType::Value_BX_DI_Offset:
       return Memory::Get<u8>(seg_val, BX + DI + parameter.GetData<u8>());
-    case Type::Value_BX_DI_WordOffset:
+    case PType::Value_BX_DI_WordOffset:
       return Memory::Get<u8>(seg_val, BX + DI + parameter.GetData<u16>());
-    case Type::Value_DI:
+    case PType::Value_DI:
       return Memory::Get<u8>(seg_val, DI);
-    case Type::Value_DI_Offset:
+    case PType::Value_DI_Offset:
       return Memory::Get<u8>(seg_val, DI + parameter.GetData<u8>());
-    case Type::Value_DI_WordOffset:
+    case PType::Value_DI_WordOffset:
       return Memory::Get<u8>(seg_val, DI + parameter.GetData<u16>());
-    case Type::Value_SI:
+    case PType::Value_SI:
       return Memory::Get<u8>(seg_val, SI);
-    case Type::Value_SI_Offset:
+    case PType::Value_SI_Offset:
       return Memory::Get<u8>(seg_val, SI + parameter.GetData<u8>());
-    case Type::Value_SI_WordOffset:
+    case PType::Value_SI_WordOffset:
       return Memory::Get<u8>(seg_val, SI + parameter.GetData<u16>());
     default:
       if constexpr (std::is_same<T, u8>::value) {
         switch (parameter.GetType()) {
-        case Type::Implied_0:
+        case PType::Implied_0:
           return 0;
-        case Type::Implied_1:
+        case PType::Implied_1:
           return 1;
-        case Type::Implied_3:
+        case PType::Implied_3:
           return 3;
-        case Type::Literal_Byte:
-        case Type::Literal_Byte_Immediate:
+        case PType::Literal_Byte:
+        case PType::Literal_Byte_Immediate:
           return parameter.GetData<u8>();
         default:
           break;
@@ -252,86 +252,86 @@ T ParameterTo(const Instruction::Parameter& parameter,
       throw ParameterLengthMismatchException(parameter);
 
     switch (parameter.GetType()) {
-    case Type::AX:
+    case PType::AX:
       return AX;
-    case Type::BX:
+    case PType::BX:
       return BX;
-    case Type::CX:
+    case PType::CX:
       return CX;
-    case Type::DX:
+    case PType::DX:
       return DX;
 
-    case Type::CS:
+    case PType::CS:
       return CS;
-    case Type::DS:
+    case PType::DS:
       return DS;
-    case Type::ES:
+    case PType::ES:
       return ES;
-    case Type::SS:
+    case PType::SS:
       return SS;
 
-    case Type::IP:
+    case PType::IP:
       return IP;
-    case Type::BP:
+    case PType::BP:
       return BP;
-    case Type::SP:
+    case PType::SP:
       return SP;
-    case Type::SI:
+    case PType::SI:
       return SI;
-    case Type::DI:
+    case PType::DI:
       return DI;
 
-    case Type::Value_WordAddress_Word:
+    case PType::Value_WordAddress_Word:
       return Memory::Get<u16>(seg_val, parameter.GetData<u16>());
-    case Type::Value_DI_Word:
+    case PType::Value_DI_Word:
       return Memory::Get<u16>(seg_val, DI);
-    case Type::Value_DI_Offset_Word:
+    case PType::Value_DI_Offset_Word:
       return Memory::Get<u16>(seg_val, DI + parameter.GetData<u8>());
-    case Type::Value_SI_Word:
+    case PType::Value_SI_Word:
       return Memory::Get<u16>(seg_val, SI);
-    case Type::Value_SI_Offset_Word:
+    case PType::Value_SI_Offset_Word:
       return Memory::Get<u16>(seg_val, SI + parameter.GetData<u8>());
-    case Type::Value_BP_Offset_Word:
+    case PType::Value_BP_Offset_Word:
       return Memory::Get<u16>(seg_val, BP + parameter.GetData<u8>());
-    case Type::Value_BP_WordOffset_Word:
+    case PType::Value_BP_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BP + parameter.GetData<u16>());
-    case Type::Value_BP_DI_Word:
+    case PType::Value_BP_DI_Word:
       return Memory::Get<u16>(seg_val, BP + DI);
-    case Type::Value_BP_DI_Offset_Word:
+    case PType::Value_BP_DI_Offset_Word:
       return Memory::Get<u16>(seg_val, BP + DI + parameter.GetData<u8>());
-    case Type::Value_BP_DI_WordOffset_Word:
+    case PType::Value_BP_DI_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BP + DI + parameter.GetData<u16>());
-    case Type::Value_BP_SI_Word:
+    case PType::Value_BP_SI_Word:
       return Memory::Get<u16>(seg_val, BP + SI);
-    case Type::Value_BP_SI_Offset_Word:
+    case PType::Value_BP_SI_Offset_Word:
       return Memory::Get<u16>(seg_val, BP + SI + parameter.GetData<u8>());
-    case Type::Value_BP_SI_WordOffset_Word:
+    case PType::Value_BP_SI_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BP + SI + parameter.GetData<u16>());
-    case Type::Value_BX_Word:
+    case PType::Value_BX_Word:
       return Memory::Get<u16>(seg_val, BX);
-    case Type::Value_BX_Offset_Word:
+    case PType::Value_BX_Offset_Word:
       return Memory::Get<u16>(seg_val, BX + parameter.GetData<u8>());
-    case Type::Value_BX_DI_Word:
+    case PType::Value_BX_DI_Word:
       return Memory::Get<u16>(seg_val, BX + DI);
-    case Type::Value_BX_DI_Offset_Word:
+    case PType::Value_BX_DI_Offset_Word:
       return Memory::Get<u16>(seg_val, BX + DI + parameter.GetData<u8>());
-    case Type::Value_BX_DI_WordOffset_Word:
+    case PType::Value_BX_DI_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BX + DI + parameter.GetData<u16>());
-    case Type::Value_BX_SI_Word:
+    case PType::Value_BX_SI_Word:
       return Memory::Get<u16>(seg_val, BX + SI);
-    case Type::Value_BX_SI_Offset_Word:
+    case PType::Value_BX_SI_Offset_Word:
       return Memory::Get<u16>(seg_val, BX + SI + parameter.GetData<u8>());
-    case Type::Value_BX_SI_WordOffset_Word:
+    case PType::Value_BX_SI_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BX + SI + parameter.GetData<u16>());
 
     default:
       if constexpr (std::is_same<T, u16>::value) {
         switch (parameter.GetType()) {
-        case Type::Literal_Word:
+        case PType::Literal_Word:
           return parameter.GetData<u16>();
-        case Type::Literal_Word_Immediate:
+        case PType::Literal_Word_Immediate:
           return parameter.GetData<u16>();
-        case Type::Literal_WordOffset:
+        case PType::Literal_WordOffset:
           return parameter.GetData<u16>();
         default:
           LOG("[WORD] Unknown type: " +

@@ -57,7 +57,7 @@ void TTY::Scroll(const u8 lines, const u8 color)
   LOG("[TTY STUB] Scroll " + String::ToHex(lines) +
       " C: " + String::ToHex(color));
 }
-void TTY::MoveCursor(const u32 x, const u32 y)
+void TTY::MoveCursor(const u8 x, const u8 y)
 {
   if (!Core::HW::VGA::IsPresent()) {
     LOG("[TTY STUB] MoveCursor to " + std::to_string(x) + "," +

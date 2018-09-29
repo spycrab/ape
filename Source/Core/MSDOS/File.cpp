@@ -28,7 +28,7 @@ std::optional<HFile> File::Open(const std::string& path, u8 mode)
     return std::nullopt;
   }
 
-  for (size_t handle = 0; handle < 0xFFFF; handle++) {
+  for (u16 handle = 0; handle < 0xFFFF; handle++) {
     if (s_handles.count(handle))
       continue;
 
