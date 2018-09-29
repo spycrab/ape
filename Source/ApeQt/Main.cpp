@@ -29,6 +29,9 @@ int main(int argc, char** argv)
     return 1;
   }
 
+  QCoreApplication::setOrganizationName("Ape Team");
+  QCoreApplication::setApplicationName("ApeQt");
+
   QApplication app(argc, argv);
 
   MainWindow win(parser.GetString("com").empty() ? parser.GetString("floppy")
