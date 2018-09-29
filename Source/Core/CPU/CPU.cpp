@@ -58,6 +58,7 @@ bool SF = false;
 bool ZF = false;
 
 bool simulate_msdos = false;
+bool pause_on_boot = false;
 
 std::atomic<bool> running;
 std::atomic<bool> paused;
@@ -655,9 +656,10 @@ void Start()
   TriggerCallbacks();
   u8 counter = 0;
 
-  while (running) {
-    Tick();
+  if (pause_on_boot)
+    paused = true;
 
+  while (running) {
     if (counter++ == 0)
       Core::HW::VGA::Update();
 
@@ -666,6 +668,8 @@ void Start()
 
     while (paused && running) {
     }
+
+    Tick();
 
     std::this_thread::sleep_for(
         std::chrono::nanoseconds(1000000000 / clock_speed));

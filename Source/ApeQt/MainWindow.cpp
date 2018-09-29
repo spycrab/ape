@@ -86,6 +86,21 @@ void MainWindow::CreateWidgets()
 
   auto* debug_menu = m_menu_bar->addMenu(tr("Debug"));
 
+  auto* pause_on_boot = debug_menu->addAction(tr("Pause on Boot"));
+
+  Core::CPU::pause_on_boot =
+      QSettings().value("cpu/pauseonboot", false).toBool();
+
+  pause_on_boot->setCheckable(true);
+  pause_on_boot->setChecked(Core::CPU::pause_on_boot);
+
+  connect(pause_on_boot, &QAction::toggled, this, [this](bool checked) {
+    Core::CPU::pause_on_boot = checked;
+    QSettings().setValue("cpu/pauseonboot", checked);
+  });
+
+  debug_menu->addSeparator();
+
   m_show_code = debug_menu->addAction(tr("Show Code"));
   m_show_register = debug_menu->addAction(tr("Show Registers"));
 

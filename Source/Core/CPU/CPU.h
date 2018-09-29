@@ -114,6 +114,10 @@ extern bool ZF;
 //! Simulate MS-DOS (Handle its interrupts)
 extern bool simulate_msdos;
 
+//! Whether or not to pause after emulation has started (Useful for debugging
+//! purposes)
+extern bool pause_on_boot;
+
 //! Stop the CPU
 void Stop();
 
