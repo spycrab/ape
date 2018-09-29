@@ -13,6 +13,8 @@
 #include "Core/CPU/Exception.h"
 #include "Core/Machine.h"
 
+class CodeWidget;
+class RegisterWidget;
 class QAction;
 class QLabel;
 class QMenuBar;
@@ -46,9 +48,14 @@ private:
   QMenuBar* m_menu_bar;
   QAction* m_machine_stop;
   QAction* m_machine_pause;
+  QAction* m_show_code;
+  QAction* m_show_register;
 
   QStatusBar* m_status_bar;
   QLabel* m_status_label;
+
+  CodeWidget* m_code_widget;
+  RegisterWidget* m_register_widget;
 
   std::thread m_thread;
 };

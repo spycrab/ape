@@ -19,6 +19,11 @@ class CodeWidget : public QDockWidget
 public:
   explicit CodeWidget();
 
+  void closeEvent(QCloseEvent*) override;
+
+signals:
+  void Closed();
+
 private:
   QListWidget* m_stack_list;
   QSpinBox* m_segment_spin;
@@ -28,6 +33,4 @@ private:
 
   void CreateWidgets();
   void Update();
-
-  void OnContextMenu();
 };

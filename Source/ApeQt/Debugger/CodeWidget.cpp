@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
+#include <QSettings>
 #include <QSpinBox>
 #include <QSplitter>
 #include <QVBoxLayout>
@@ -29,6 +30,8 @@ CodeWidget::CodeWidget()
 {
   setWindowTitle(tr("Code"));
   CreateWidgets();
+
+  setVisible(QSettings().value("debug/showcode", true).toBool());
 
   Core::CPU::RegisterStateChangedCallback(
       [this](Core::CPU::State) { QueueOnObject(this, [this] { Update(); }); });
@@ -89,6 +92,12 @@ void CodeWidget::CreateWidgets()
   setWidget(widget);
 }
 
+void CodeWidget::closeEvent(QCloseEvent*)
+{
+  QSettings().setValue("debug/showcode", false);
+  emit Closed();
+}
+
 void CodeWidget::Update()
 {
   m_segment_spin->setValue(m_code_view->GetSegment());
@@ -101,8 +110,9 @@ void CodeWidget::Update()
         QStringLiteral("%1:%2 %3")
             .arg(Core::CPU::SS, 4, 16, QLatin1Char('0'))
             .arg(Core::CPU::SP + i * sizeof(u16), 4, 16, QLatin1Char('0'))
-            .arg(Core::Memory::Get<u16>(Core::CPU::SS,
-                                        static_cast<u16>(Core::CPU::SP + i * sizeof(u16))),
+            .arg(Core::Memory::Get<u16>(
+                     Core::CPU::SS,
+                     static_cast<u16>(Core::CPU::SP + i * sizeof(u16))),
                  4, 16, QLatin1Char('0'))));
   }
 }

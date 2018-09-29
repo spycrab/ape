@@ -9,6 +9,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
+#include <QSettings>
 #include <QSignalBlocker>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -23,11 +24,19 @@ RegisterWidget::RegisterWidget()
   setWindowTitle(tr("Registers"));
   CreateWidgets();
 
+  setVisible(QSettings().value("debug/showregister", true).toBool());
+
   Core::CPU::RegisterStateChangedCallback(
       [this](Core::CPU::State) { QueueOnObject(this, [this] { Update(); }); });
 }
 
 void RegisterWidget::Update() { emit OnUpdate(); }
+
+void RegisterWidget::closeEvent(QCloseEvent*)
+{
+  QSettings().setValue("debug/showregister", false);
+  emit Closed();
+}
 
 QSpinBox* RegisterWidget::Get16BitInput(u16* value)
 {

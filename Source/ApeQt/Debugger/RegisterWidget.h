@@ -19,8 +19,11 @@ public:
   explicit RegisterWidget();
   void Update();
 
+  void closeEvent(QCloseEvent*) override;
+
 signals:
   void OnUpdate();
+  void Closed();
 
 private:
   void CreateWidgets();

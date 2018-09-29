@@ -11,6 +11,7 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QSettings>
 #include <QStatusBar>
 
 #include "ApeQt/Debugger/CodeWidget.h"
@@ -83,6 +84,28 @@ void MainWindow::CreateWidgets()
   m_machine_stop->setEnabled(false);
   m_machine_pause->setEnabled(false);
 
+  auto* debug_menu = m_menu_bar->addMenu(tr("Debug"));
+
+  m_show_code = debug_menu->addAction(tr("Show Code"));
+  m_show_register = debug_menu->addAction(tr("Show Registers"));
+
+  m_show_code->setCheckable(true);
+  m_show_code->setChecked(QSettings().value("debug/showcode", true).toBool());
+
+  connect(m_show_code, &QAction::toggled, this, [this](bool checked) {
+    m_code_widget->setVisible(checked);
+    QSettings().setValue("debug/showcode", checked);
+  });
+
+  m_show_register->setCheckable(true);
+  m_show_register->setChecked(
+      QSettings().value("debug/showregister", true).toBool());
+
+  connect(m_show_register, &QAction::toggled, this, [this](bool checked) {
+    m_register_widget->setVisible(checked);
+    QSettings().setValue("debug/showregister", checked);
+  });
+
   auto* help_menu = m_menu_bar->addMenu(tr("Help"));
 
   help_menu->addAction(tr("About..."), this, &MainWindow::ShowAbout);
@@ -100,13 +123,19 @@ void MainWindow::CreateWidgets()
 
   setStatusBar(m_status_bar);
 
-  auto* code_widget = new CodeWidget;
-  auto* register_widget = new RegisterWidget;
+  m_code_widget = new CodeWidget;
+  m_register_widget = new RegisterWidget;
 
-  addDockWidget(Qt::LeftDockWidgetArea, code_widget);
-  addDockWidget(Qt::LeftDockWidgetArea, register_widget);
+  addDockWidget(Qt::LeftDockWidgetArea, m_code_widget);
+  addDockWidget(Qt::LeftDockWidgetArea, m_register_widget);
 
-  tabifyDockWidget(code_widget, register_widget);
+  connect(m_code_widget, &CodeWidget::Closed, this,
+          [this] { m_show_code->setChecked(false); });
+
+  connect(m_register_widget, &RegisterWidget::Closed, this,
+          [this] { m_show_register->setChecked(false); });
+
+  tabifyDockWidget(m_code_widget, m_register_widget);
 }
 
 void MainWindow::ConnectWidgets() {}
