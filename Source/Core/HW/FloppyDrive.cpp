@@ -79,7 +79,7 @@ bool GuessFormat()
   }
 
   LOG("Guessing this is a " + type + " floppy disc with " +
-      std::to_string(GetSize() / 1000) + "K of capacity");
+      std::to_string(GetSize() / 1024) + "K of capacity");
 
   return true;
 }
