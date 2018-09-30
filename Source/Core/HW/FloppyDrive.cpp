@@ -7,13 +7,14 @@
 #include "Common/Logger.h"
 #include "Common/String.h"
 
+#include "Core/HW/DiskFormats.h"
+
 #include <iostream>
+#include <map>
 
 namespace Core::HW::FloppyDrive
 {
-u16 m_sectors_per_track;
-u16 m_sector_size;
-u16 m_head_count;
+const DiskFormat* m_format = nullptr;
 
 std::unique_ptr<std::ifstream> m_file;
 
@@ -40,46 +41,22 @@ u32 GetSize()
 
 bool GuessFormat()
 {
-  std::string type;
-  switch (GetSize()) {
-  case 163840:
-    type = "IBM 5.25\"";
-    m_sectors_per_track = 8;
-    m_sector_size = 512;
-    m_head_count = 1;
-    break;
-  case 184320:
-    type = "IBM 5.25\"";
-    m_sectors_per_track = 9;
-    m_sector_size = 512;
-    m_head_count = 1;
-    break;
-  case 368640:
-    type = "IBM 5.25\"";
-    m_sectors_per_track = 9;
-    m_sector_size = 512;
-    m_head_count = 2;
-    break;
-  case 1228800:
-    type = "IBM 5.25\"";
-    m_sectors_per_track = 15;
-    m_sector_size = 512;
-    m_head_count = 2;
-    break;
-  case 1474560:
-    type = "IBM 3.5\"";
-    m_sectors_per_track = 18;
-    m_sector_size = 512;
-    m_head_count = 2;
-    break;
-  default:
+  static const std::map<size_t, DiskFormat> formats = {
+      {163'840, {PhysicalFormat::IBM_5_25_INCH_FLOPPY, 8, 512, 1}},
+      {184'320, {PhysicalFormat::IBM_5_25_INCH_FLOPPY, 9, 512, 1}},
+      {368'640, {PhysicalFormat::IBM_5_25_INCH_FLOPPY, 9, 512, 2}},
+      {1'228'800, {PhysicalFormat::IBM_5_25_INCH_FLOPPY, 15, 512, 2}},
+      {1'474'560, {PhysicalFormat::IBM_3_5_INCH_FLOPPY, 18, 512, 2}}};
+
+  if (formats.count(GetSize()) == 0) {
     ERROR("Unknown format");
     return false;
-    break;
   }
 
-  LOG("Guessing this is a " + type + " floppy disc with " +
-      std::to_string(GetSize() / 1024) + "K of capacity");
+  m_format = &formats.at(GetSize());
+
+  LOG("Guessing this is a " + PhysicalFormatToString(m_format->physical) +
+      " disc with " + std::to_string(GetSize() / 1024) + "K of capacity");
 
   return true;
 }
@@ -126,8 +103,10 @@ bool Read(u8 cylinder, u8 head, u8 sector, u8 count, u8* buffer)
 
 void Eject() { m_file.reset(); }
 
-// This is presuming a 360K 5.25" floppy disc
-u32 GetSectorSize() { return m_sector_size; }
-u32 GetSectorsPerTrack() { return m_sectors_per_track; }
-u32 GetHeadCount() { return m_head_count; }
+u32 GetSectorSize() { return m_format == nullptr ? 0 : m_format->sector_size; }
+u32 GetSectorsPerTrack()
+{
+  return m_format == nullptr ? 0 : m_format->sectors_per_track;
+}
+u32 GetHeadCount() { return m_format == nullptr ? 0 : m_format->head_count; }
 } // namespace Core::HW::FloppyDrive

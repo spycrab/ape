@@ -16,6 +16,8 @@ add_library(Core
   CPU/Instructions/Jumps.cpp
   CPU/Instructions/String.cpp
   CPU/Interrupt.cpp
+  HW/DiskFormats.h
+  HW/DiskFormats.cpp
   HW/FloppyDrive.h
   HW/FloppyDrive.cpp
   HW/VGA.h
@@ -54,6 +56,8 @@ source_group("CPU\\Instructions" FILES
   CPU/Instructions/String.cpp)
 
 source_group(HW FILES
+  HW/DiskFormats.h
+  HW/DiskFormats.cpp
   HW/FloppyDrive.h
   HW/FloppyDrive.cpp
   HW/VGA.h
