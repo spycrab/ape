@@ -42,6 +42,12 @@ bool GuessFormat()
 {
   std::string type;
   switch (GetSize()) {
+  case 163840:
+    type = "IBM 5.25\"";
+    m_sectors_per_track = 8;
+    m_sector_size = 512;
+    m_head_count = 1;
+    break;
   case 184320:
     type = "IBM 5.25\"";
     m_sectors_per_track = 9;
@@ -51,6 +57,12 @@ bool GuessFormat()
   case 368640:
     type = "IBM 5.25\"";
     m_sectors_per_track = 9;
+    m_sector_size = 512;
+    m_head_count = 2;
+    break;
+  case 1228800:
+    type = "IBM 5.25\"";
+    m_sectors_per_track = 15;
     m_sector_size = 512;
     m_head_count = 2;
     break;
