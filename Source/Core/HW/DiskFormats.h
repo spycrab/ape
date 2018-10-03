@@ -27,4 +27,4 @@ struct DiskFormat {
   //! Amount of heads (i.e. the amount of sides a disk has)
   const u16 head_count;
 };
-}; // namespace Core::HW
+} // namespace Core::HW

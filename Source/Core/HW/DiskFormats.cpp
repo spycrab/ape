@@ -19,4 +19,4 @@ std::string PhysicalFormatToString(const PhysicalFormat& f)
     return "Unknown";
   }
 }
-}; // namespace Core::HW
+} // namespace Core::HW
