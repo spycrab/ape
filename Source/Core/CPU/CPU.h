@@ -291,11 +291,15 @@ T ParameterTo(const Instruction::Parameter& parameter,
       return Memory::Get<u16>(seg_val, DI);
     case PType::Value_DI_Offset_Word:
       return Memory::Get<u16>(seg_val, DI + parameter.GetData<u8>());
+    case PType::Value_DI_WordOffset_Word:
+      return Memory::Get<u16>(seg_val, DI + parameter.GetData<u16>());
     case PType::Value_SI_Word:
       return Memory::Get<u16>(seg_val, SI);
     case PType::Value_SI_Offset_Word:
       return Memory::Get<u16>(seg_val, SI + parameter.GetData<u8>());
-    case PType::Value_BP_Offset_Word:
+    case PType::Value_SI_WordOffset_Word:
+      return Memory::Get<u16>(seg_val, SI + parameter.GetData<u16>());
+	case PType::Value_BP_Offset_Word:
       return Memory::Get<u16>(seg_val, BP + parameter.GetData<u8>());
     case PType::Value_BP_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BP + parameter.GetData<u16>());
@@ -315,6 +319,8 @@ T ParameterTo(const Instruction::Parameter& parameter,
       return Memory::Get<u16>(seg_val, BX);
     case PType::Value_BX_Offset_Word:
       return Memory::Get<u16>(seg_val, BX + parameter.GetData<u8>());
+    case PType::Value_BX_WordOffset_Word:
+      return Memory::Get<u16>(seg_val, BX + parameter.GetData<u16>());
     case PType::Value_BX_DI_Word:
       return Memory::Get<u16>(seg_val, BX + DI);
     case PType::Value_BX_DI_Offset_Word:
