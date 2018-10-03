@@ -249,7 +249,7 @@ void MainWindow::HandleException(Core::CPU::CPUException e)
   QueueOnObject(this, [this, e] {
     QMessageBox::critical(
         this, tr("Error"),
-        tr("A fatal error exception and emulation cannot continue:\n\n%1")
+        tr("A fatal error occurred and emulation cannot continue:\n\n%1")
             .arg(QString::fromStdString(e.what())));
   });
 
