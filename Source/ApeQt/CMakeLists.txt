@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 add_executable(ApeQt
   Debugger/CodeViewWidget.h
   Debugger/CodeViewWidget.cpp
+  Debugger/DebugSpinBox.cpp
+  Debugger/DebugSpinBox.h
   Debugger/CodeWidget.h
   Debugger/CodeWidget.cpp
   Debugger/RegisterWidget.h

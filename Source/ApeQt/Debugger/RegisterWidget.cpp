@@ -11,11 +11,11 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QSignalBlocker>
-#include <QSpinBox>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "ApeQt/QueueOnObject.h"
+#include "ApeQt/Debugger/DebugSpinBox.h"
 
 #include "Core/CPU/CPU.h"
 
@@ -40,11 +40,7 @@ void RegisterWidget::closeEvent(QCloseEvent*)
 
 QSpinBox* RegisterWidget::Get16BitInput(u16* value)
 {
-  auto* spin = new QSpinBox;
-
-  spin->setDisplayIntegerBase(16);
-  spin->setMinimum(0);
-  spin->setMaximum(0xffff);
+  auto* spin = new DebugSpinBox(sizeof(u16));
   spin->setValue(*value);
 
   connect(this, &RegisterWidget::OnUpdate, this, [spin, value] {
@@ -59,11 +55,8 @@ QSpinBox* RegisterWidget::Get16BitInput(u16* value)
 
 QSpinBox* RegisterWidget::Get8BitInput(u8* value)
 {
-  auto* spin = new QSpinBox;
+  auto* spin = new DebugSpinBox(sizeof(u8));
 
-  spin->setDisplayIntegerBase(16);
-  spin->setMinimum(0);
-  spin->setMaximum(0xff);
   spin->setValue(*value);
 
   connect(this, &RegisterWidget::OnUpdate, this, [spin, value] {

@@ -13,13 +13,13 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QSettings>
-#include <QSpinBox>
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "ApeQt/Debugger/CodeViewWidget.h"
 #include "ApeQt/QueueOnObject.h"
+#include "ApeQt/Debugger/DebugSpinBox.h"
 
 #include "Core/CPU/Breakpoint.h"
 #include "Core/CPU/CPU.h"
@@ -43,15 +43,9 @@ void CodeWidget::CreateWidgets()
 {
   auto* jump_layout = new QHBoxLayout;
 
-  m_segment_spin = new QSpinBox;
-  m_offset_spin = new QSpinBox;
+  m_segment_spin = new DebugSpinBox(sizeof(u16));
+  m_offset_spin = new DebugSpinBox(sizeof(u16));
   m_code_view = new CodeViewWidget;
-
-  for (auto* spin : {m_segment_spin, m_offset_spin}) {
-    spin->setDisplayIntegerBase(16);
-    spin->setMinimum(0);
-    spin->setMaximum(0xffff);
-  }
 
   auto* scroll_btn = new QPushButton(tr("Scroll"));
 
