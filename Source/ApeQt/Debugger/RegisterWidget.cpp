@@ -14,8 +14,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "ApeQt/QueueOnObject.h"
 #include "ApeQt/Debugger/DebugSpinBox.h"
+#include "ApeQt/QueueOnObject.h"
 
 #include "Core/CPU/CPU.h"
 

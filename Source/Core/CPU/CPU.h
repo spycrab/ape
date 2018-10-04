@@ -299,7 +299,7 @@ T ParameterTo(const Instruction::Parameter& parameter,
       return Memory::Get<u16>(seg_val, SI + parameter.GetData<u8>());
     case PType::Value_SI_WordOffset_Word:
       return Memory::Get<u16>(seg_val, SI + parameter.GetData<u16>());
-	case PType::Value_BP_Offset_Word:
+    case PType::Value_BP_Offset_Word:
       return Memory::Get<u16>(seg_val, BP + parameter.GetData<u8>());
     case PType::Value_BP_WordOffset_Word:
       return Memory::Get<u16>(seg_val, BP + parameter.GetData<u16>());

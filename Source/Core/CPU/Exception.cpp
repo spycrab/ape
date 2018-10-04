@@ -21,7 +21,8 @@ CPUException::CPUException() : std::runtime_error("Unknown exception occured")
 UnhandledInstructionException::UnhandledInstructionException(
     const Instruction& ins)
     : CPUException("Don't know what to do with instruction type: " +
-                   TypeToString(ins.GetType()) + " at " + String::ToHex(CPU::CS) + ":" + String::ToHex(CPU::IP))
+                   TypeToString(ins.GetType()) + " at " +
+                   String::ToHex(CPU::CS) + ":" + String::ToHex(CPU::IP))
 {
 }
 
