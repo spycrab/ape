@@ -120,7 +120,16 @@ configure_file(Source/Version.h.in ${CMAKE_CURRENT_BINARY_DIR}/Version.h)
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/Version.h PROPERTIES GENERATED TRUE)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-if (ENABLE_TESTING)
+if (ENABLE_TESTS)
+
+  set(INSTALL_GTEST OFF CACHE BOOL "Don't install GTest" FORCE)
+
+  find_package(GTest)
+  if (NOT GTest_FOUND)
+    message(STATUS "Using GTest from Externals")
+    add_subdirectory(Externals/googletest)
+  endif()
+
   include(CTest)
   enable_testing()
 endif()

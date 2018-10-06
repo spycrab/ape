@@ -22,7 +22,6 @@ Currently Ape has the following limitations:
 - [CMake](https://cmake.org/)
 - [Qt 5](https://www.qt.io) (5.9 or newer)
 - [Doxygen](http://www.doxygen.nl/) (*Docs only*)
-- [GoogleTest](https://github.com/google/googletest/) (*Tests only*)
 
 ## Documentation
 
