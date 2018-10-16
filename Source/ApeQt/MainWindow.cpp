@@ -11,6 +11,8 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QOpenGLWidget>
+#include <QStackedWidget>
 #include <QSettings>
 #include <QStatusBar>
 
@@ -125,7 +127,12 @@ void MainWindow::CreateWidgets()
 
   help_menu->addAction(tr("About..."), this, &MainWindow::ShowAbout);
 
-  setCentralWidget(new TTYWidget);
+  auto* stack_widget = new QStackedWidget;
+
+  stack_widget->addWidget(new TTYWidget);
+  stack_widget->addWidget(new QOpenGLWidget);
+
+  setCentralWidget(stack_widget);
 
   setMenuBar(m_menu_bar);
 

@@ -5,6 +5,8 @@
 
 #include "Common/Types.h"
 
+#include "Core/CPU/Exception.h"
+
 namespace Core
 {
 //! Wrapper around emulated RAM
@@ -18,7 +20,12 @@ u32 VirtToPhys(u16 segment, u16 offset);
 
 template <typename T> T& Get(u16 segment, u16 offset)
 {
-  return *reinterpret_cast<T*>(&Get()[VirtToPhys(segment, offset)]);
+  u32 address = VirtToPhys(segment, offset);
+
+  if (address + sizeof(T) >= Get().size())
+    throw Core::CPU::MemoryOutOfRangeException();
+
+  return *reinterpret_cast<T*>(&Get()[address]);
 }
 
 template <typename T> T* GetPtr(u16 segment, u16 offset)

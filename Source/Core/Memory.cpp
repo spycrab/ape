@@ -1,5 +1,7 @@
 #include "Core/Memory.h"
 
+#include "Core/CPU/Exception.h"
+
 using namespace Core;
 
 static std::vector<u8> m_data(1024 * 1024);

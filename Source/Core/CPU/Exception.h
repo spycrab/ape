@@ -70,4 +70,10 @@ public:
 class UnhandledInterruptException : public CPUException
 {
 };
+
+//! Thrown whenever non-existant memory is accessed
+class MemoryOutOfRangeException : public CPUException
+{
+};
+
 } // namespace Core::CPU
