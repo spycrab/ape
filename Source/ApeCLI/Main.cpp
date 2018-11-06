@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "Core/HW/FloppyDrive.h"
-#include "Core/Machine.h"
+#include "Core/Core.h"
 #include "Version.h"
 
 #include "Common/ParameterParser.h"
@@ -46,9 +46,9 @@ int main(int argc, char** argv)
       return 1;
     }
 
-    return Core::Machine::BootFloppy() ? 0 : 1;
+    return Core::BootFloppy() ? 0 : 1;
   } else if (p.GetString("com") != "") {
-    return !Core::Machine::BootCOM(p.GetString("com"));
+    return !Core::BootCOM(p.GetString("com"));
   }
 
   std::cerr << "Nothing to do! See --help" << std::endl;
