@@ -7,7 +7,7 @@
 #include "Common/Logger.h"
 #include "Common/String.h"
 
-#include "Core/Machine.h"
+#include "Core/Core.h"
 #include "Core/Memory.h"
 
 Core::HW::VGABackend* g_VGABackend = nullptr;

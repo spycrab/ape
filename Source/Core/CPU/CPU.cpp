@@ -12,8 +12,8 @@
 #include "Core/CPU/Breakpoint.h"
 #include "Core/CPU/Flags.h"
 #include "Core/CPU/Instruction.h"
+#include "Core/Core.h"
 #include "Core/HW/VGA.h"
-#include "Core/Machine.h"
 
 namespace Core::CPU
 {

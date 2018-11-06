@@ -171,7 +171,7 @@ void MainWindow::OpenFile()
   if (path.isEmpty())
     return;
 
-  Core::Machine::Stop();
+  Core::Stop();
 
   if (m_thread.joinable())
     m_thread.join();
@@ -187,7 +187,7 @@ void MainWindow::StartFile(const QString& path, bool floppy)
   if (!floppy) {
     m_thread = std::thread([this, path] {
       try {
-        Core::Machine::BootCOM(path.toStdString());
+        Core::BootCOM(path.toStdString());
       } catch (Core::CPU::CPUException& e) {
         HandleException(e);
       }
@@ -208,7 +208,7 @@ void MainWindow::StartFile(const QString& path, bool floppy)
 
   m_thread = std::thread([this, path] {
     try {
-      Core::Machine::BootFloppy();
+      Core::BootFloppy();
     } catch (Core::CPU::CPUException& e) {
       HandleException(e);
     }
@@ -217,13 +217,13 @@ void MainWindow::StartFile(const QString& path, bool floppy)
 
 void MainWindow::StopMachine()
 {
-  Core::Machine::Stop();
+  Core::Stop();
 
   if (m_thread.joinable())
     m_thread.join();
 }
 
-void MainWindow::PauseMachine() { Core::Machine::Pause(); }
+void MainWindow::PauseMachine() { Core::Pause(); }
 
 void MainWindow::OnMachineStateChanged(Core::CPU::State state)
 {

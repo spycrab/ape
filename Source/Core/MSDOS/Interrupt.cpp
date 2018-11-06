@@ -12,8 +12,8 @@
 #include "Common/Types.h"
 
 #include "Core/CPU/Exception.h"
+#include "Core/Core.h"
 #include "Core/MSDOS/File.h"
-#include "Core/Machine.h"
 #include "Core/TTY.h"
 
 using namespace Core;

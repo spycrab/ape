@@ -8,7 +8,7 @@
 #include <string>
 
 //! Representation of a PC
-namespace Core::Machine
+namespace Core
 {
 void Init();
 

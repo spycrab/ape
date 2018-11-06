@@ -1,5 +1,7 @@
 add_library(Core
   BIOS/Interrupt.cpp
+  Core.h
+  Core.cpp
   CPU/CPU.h
   CPU/CPU.cpp
   CPU/Breakpoint.h
@@ -22,8 +24,6 @@ add_library(Core
   HW/FloppyDrive.cpp
   HW/VGA.h
   HW/VGA.cpp
-  Machine.h
-  Machine.cpp
   Memory.h
   Memory.cpp
   MSDOS/File.cpp
@@ -63,9 +63,9 @@ source_group(HW FILES
   HW/VGA.h
   HW/VGA.cpp)
 
-source_group(Machine FILES
-  Machine.h
-  Machine.cpp)
+source_group(Core FILES
+  Core.h
+  Core.cpp)
 
 source_group(Memory FILES
   Memory.h

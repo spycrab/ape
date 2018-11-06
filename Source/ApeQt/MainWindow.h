@@ -11,7 +11,7 @@
 
 #include "Core/CPU/CPU.h"
 #include "Core/CPU/Exception.h"
-#include "Core/Machine.h"
+#include "Core/Core.h"
 
 class CodeWidget;
 class RegisterWidget;

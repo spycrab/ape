@@ -2,7 +2,7 @@
 // Licensed under GPLv3+
 // Refer to the LICENSE file included.
 
-#include "Core/Machine.h"
+#include "Core/Core.h"
 
 #include "Common/Logger.h"
 
@@ -11,7 +11,7 @@
 #include "Core/HW/VGA.h"
 #include "Core/TTY.h"
 
-namespace Core::Machine
+namespace Core
 {
 void Init()
 {
