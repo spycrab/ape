@@ -23,3 +23,14 @@ PRIVATE
   Core
   Qt5::Widgets
   Threads::Threads)
+
+source_group(Debugger FILES
+  Debugger/CodeViewWidget.h
+  Debugger/CodeViewWidget.cpp
+  Debugger/DebugSpinBox.cpp
+  Debugger/DebugSpinBox.h
+  Debugger/CodeWidget.h
+  Debugger/CodeWidget.cpp
+  Debugger/RegisterWidget.h
+  Debugger/RegisterWidget.cpp
+  )
