@@ -38,6 +38,8 @@ source_group(BIOS FILES
   BIOS/Interrupt.cpp)
 
 source_group(CPU FILES
+  CPU/Breakpoint.h
+  CPU/Breakpoint.cpp
   CPU/CPU.h
   CPU/CPU.cpp
   CPU/Decoder.cpp

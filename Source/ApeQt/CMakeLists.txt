@@ -34,3 +34,7 @@ source_group(Debugger FILES
   Debugger/RegisterWidget.h
   Debugger/RegisterWidget.cpp
   )
+
+source_group(TTYWidget FILES
+  TTYWidget.cpp
+  TTYWidget.h)
