@@ -13,7 +13,7 @@ DebugSpinBox::DebugSpinBox(int size)
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   setDisplayIntegerBase(16);
   setMinimum(0);
-  setMaximum(std::powl(2, size * 8) - 1);
+  setMaximum(std::pow(2, size * 8) - 1);
 }
 
 QString DebugSpinBox::textFromValue(int value) const
