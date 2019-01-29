@@ -123,12 +123,12 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 if (ENABLE_TESTS)
 
   set(INSTALL_GTEST OFF CACHE BOOL "Don't install GTest" FORCE)
+  set(BUILD_GMOCK OFF CACHE BOOL "Don't build GMock" FORCE)
 
-  find_package(GTest)
-  if (NOT GTest_FOUND)
-    message(STATUS "Using GTest from Externals")
-    add_subdirectory(Externals/googletest)
-  endif()
+  message(STATUS "Using GTest from Externals")
+  set(GTEST_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/Externals/googletest/googletest/include)
+
+  add_subdirectory(Externals/googletest)
 
   include(CTest)
   enable_testing()
