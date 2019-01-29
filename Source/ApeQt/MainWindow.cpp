@@ -12,8 +12,8 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QOpenGLWidget>
-#include <QStackedWidget>
 #include <QSettings>
+#include <QStackedWidget>
 #include <QStatusBar>
 
 #include "ApeQt/Debugger/CodeWidget.h"
@@ -261,6 +261,10 @@ void MainWindow::HandleException(Core::CPU::CPUException e)
   });
 
   ShowStatus("Crashed :(");
+
+  // Reset CS:IP to the last proper value for sensible debugging
+  Core::CPU::IP = Core::CPU::LAST_IP;
+  Core::CPU::CS = Core::CPU::LAST_CS;
 }
 
 void MainWindow::ShowStatus(const QString& message, int timeout)

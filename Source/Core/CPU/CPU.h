@@ -94,6 +94,10 @@ extern u16 SI;
 //! Destination Index
 extern u16 DI;
 
+//! Last instruction
+extern u16 LAST_CS;
+extern u16 LAST_IP;
+
 //! Adjust Flag
 extern bool AF;
 //! Carry Flag

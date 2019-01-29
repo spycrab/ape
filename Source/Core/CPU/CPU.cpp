@@ -48,6 +48,9 @@ u16 DS = 0;
 u16 SS = 0;
 u16 ES = 0;
 
+u16 LAST_CS = 0;
+u16 LAST_IP = 0;
+
 bool AF = false;
 bool CF = false;
 bool IF = false;
@@ -138,6 +141,8 @@ Breakpoint just_hit = {0, 0};
 void Tick()
 {
   const auto old_ip = IP;
+  LAST_CS = CS;
+  LAST_IP = IP;
 
   if (IsBreakpointHit() && (just_hit.segment != CS || just_hit.offset != IP)) {
     LOG("Hit a breakpoint at " + String::ToHex(CS) + ":" + String::ToHex(IP) +
