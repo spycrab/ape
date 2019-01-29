@@ -763,7 +763,7 @@ bool Instruction::Resolve(u8 modrm, std::vector<u8> data)
     switch (reg_bits) {
     case 0x00:
       m_type = Type::TEST;
-      m_parameters.push_back(Parameter(PType::Literal_Byte_Immediate));
+      m_parameters.push_back(Parameter(PType::Literal_Word_Immediate));
       break;
     case 0x02:
       m_type = Type::NOT;
