@@ -22,6 +22,12 @@ bool CPU::CallBIOSInterrupt(u8 vector)
   switch (vector) {
   case 0x10: // Video services
     switch (AH) {
+    case 0x00: // Set video mode
+      WARN("Video mode setting ignored, might cause issues");
+      break;
+    case 0x01: // Set cursor shape
+      WARN("Cursor shape setting ignored, might cause issues");
+      break;
     case 0x06: { // Scroll screen
       TTY::Scroll(BL, BH);
       break;
@@ -103,6 +109,10 @@ bool CPU::CallBIOSInterrupt(u8 vector)
       AL = TTY::Read();
       AH = 0; // TODO: This should be the scancode...
       CF = false;
+      break;
+    case 0x01: // Poll keys
+      WARN("Key polling ignored");
+      ZF = true;
       break;
     default:
       LOG("[INT 16h] Unknown parameter AH=" + String::ToHex(AH));
