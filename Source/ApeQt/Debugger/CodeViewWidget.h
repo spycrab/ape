@@ -20,10 +20,11 @@ public:
   void SetSegment(u16 segment);
   void SetOffset(u16 offset);
 
+  void Update();
+
   void resizeEvent(QResizeEvent*) override;
 
 private:
-  void Update();
   void OnContextMenu();
 
   u16 m_segment = 0, m_offset = 0;

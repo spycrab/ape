@@ -137,11 +137,13 @@ void CodeViewWidget::OnContextMenu()
   menu->addAction(tr("Scroll To Here"), this, [this, segment, offset] {
     m_segment = segment;
     m_offset = offset;
+    Update();
   });
 
   menu->addAction(tr("Scroll To CS:IP"), this, [this] {
     m_segment = Core::CPU::CS;
     m_offset = Core::CPU::IP;
+    Update();
   });
 
   menu->addSeparator();
@@ -149,6 +151,7 @@ void CodeViewWidget::OnContextMenu()
   menu->addAction(tr("Jump To Here"), this, [this, segment, offset] {
     Core::CPU::CS = m_segment;
     Core::CPU::IP = m_offset;
+    Update();
   });
 
   menu->addSeparator();
@@ -166,6 +169,8 @@ void CodeViewWidget::OnContextMenu()
       Core::CPU::RemoveBreakpoint(bp);
     else
       Core::CPU::AddBreakpoint(bp);
+
+    Update();
   });
 
   menu->addSeparator();

@@ -99,6 +99,8 @@ void CodeWidget::Update()
 
   m_stack_list->clear();
 
+  m_code_view->Update();
+
   for (u32 i = 0; i < 16; i++) {
     m_stack_list->addItem(new QListWidgetItem(
         QStringLiteral("%1:%2 %3")
