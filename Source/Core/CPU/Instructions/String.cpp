@@ -51,7 +51,7 @@ void CPU::CMPSW(const Instruction&)
 {
   do {
     u16 dst = Memory::Get<u16>(DS, SI);
-    u16 src = Memory::Get<u16>(ES, SI);
+    u16 src = Memory::Get<u16>(ES, DI);
     u16 cmp = dst - src;
 
     // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
