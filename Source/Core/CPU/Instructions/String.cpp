@@ -28,7 +28,7 @@ void CPU::CMPSB(const Instruction&)
 {
   do {
     u8 dst = Memory::Get<u8>(DS, SI);
-    u8 src = Memory::Get<u8>(ES, SI);
+    u8 src = Memory::Get<u8>(ES, DI);
     u8 cmp = dst - src;
 
     // LOG("Comparing " + String::ToHex(dst) + " (" + String::ToHex(DS) + ":"
