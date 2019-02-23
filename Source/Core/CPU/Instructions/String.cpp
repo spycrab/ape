@@ -20,7 +20,7 @@ void CPU::STOSW(const Instruction&)
   do {
     Memory::Get<u16>(ES, DI) = AX;
 
-    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+    DI += (DF ? -2 : 2) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
 }
 
@@ -65,8 +65,8 @@ void CPU::CMPSW(const Instruction&)
     UpdateOF<i16>(cmp);
     UpdateCF<i16>(cmp);
 
-    SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
-    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+    SI += (DF ? -2 : 2) * static_cast<int>(sizeof(u16));
+    DI += (DF ? -2 : 2) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
 }
 
@@ -84,7 +84,7 @@ void CPU::LODSW(const Instruction&)
   do {
     AX = Memory::Get<u16>(DS, SI);
 
-    SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+    SI += (DF ? -2 : 2) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
 }
 
@@ -109,7 +109,7 @@ void CPU::MOVSW(const Instruction& ins)
 
     dst = src;
 
-    DI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
-    SI += (DF ? -1 : 1) * static_cast<int>(sizeof(u16));
+    DI += (DF ? -2 : 2) * static_cast<int>(sizeof(u16));
+    SI += (DF ? -2 : 2) * static_cast<int>(sizeof(u16));
   } while (HandleRepetition());
 }
