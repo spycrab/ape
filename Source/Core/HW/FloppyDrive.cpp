@@ -56,7 +56,7 @@ bool GuessFormat()
   m_format = &formats.at(GetSize());
 
   LOG("Guessing this is a " + PhysicalFormatToString(m_format->physical) +
-      " disc with " + std::to_string(GetSize() / 1024) + "K of capacity");
+      " with " + std::to_string(GetSize() / 1024) + "K of capacity");
 
   return true;
 }
