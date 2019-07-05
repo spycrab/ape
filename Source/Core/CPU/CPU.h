@@ -27,6 +27,9 @@ void Start();
 
 enum class RepeatMode : u8 { None, Repeat, Repeat_Zero, Repeat_Non_Zero };
 enum class State : u8 { Stopped, Running, Paused };
+enum Type : u32 { I8086, I186, I286, I386 };
+
+extern Type type;
 
 using StateCallbackFunc = std::function<void(State)>;
 

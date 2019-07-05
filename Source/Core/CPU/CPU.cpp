@@ -18,6 +18,8 @@
 namespace Core::CPU
 {
 
+Type type;
+
 GPR A, B, C, D;
 
 u16& AX = A.X;

@@ -90,6 +90,20 @@ void MainWindow::CreateWidgets()
 
   auto* pause_on_boot = debug_menu->addAction(tr("Pause on Boot"));
 
+  auto* cpu_type = m_menu_bar->addMenu(tr("CPU Type"));
+
+  auto cpu_type_i8086 = cpu_type->addAction(tr("i8086"));
+
+  connect(cpu_type_i8086, &QAction::toggled, this, [this]() {
+    Core::CPU::type = Core::CPU::Type::I8086;
+  });
+
+  auto cpu_type_i186 = cpu_type->addAction(tr("i186"));
+
+  connect(cpu_type_i186, &QAction::toggled, this, [this]() {
+    Core::CPU::type = Core::CPU::Type::I186;
+  });
+
   Core::CPU::pause_on_boot =
       QSettings().value("cpu/pauseonboot", false).toBool();
 
